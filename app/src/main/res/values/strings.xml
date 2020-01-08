@@ -3,12 +3,13 @@
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="done">Done</string>
+    <string name="locate">Locate</string>
+    <string name="last_seen_location"><em>Last location:</em> %1$s</string>
+    <string name="last_seen_time"><em>Time:</em> %1$s</string>
     <string name="devicelocation">devicelocation</string>
     <string name="devicename">devicename</string>
     <string name="devicetimestamp">devicetimestamp</string>
     <string name="map_button_label_buzz">BUZZ</string>
     <string name="map_button_label_sit">SIT</string>
-    <string name="nav_label_home">Home</string>
-    <string name="nav_label_map">Map</string>
-    <string name="nav_label_settings">Setiings</string>
+    <string name="activity_date_time_info">%1$s at %1$s</string>
 </resources>

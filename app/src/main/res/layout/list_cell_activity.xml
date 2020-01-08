@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    android:padding="@dimen/mSpacing">
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_activity_cell_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Backpack tag has been disconnected"
+            android:textSize="@dimen/sTextSize">
+        </TextView>
+        <TextView
+            android:textSize="@dimen/xsTextSize"
+            android:id="@+id/tv_activity_cell_date_time_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_date_time_info">
+        </TextView>
+    </LinearLayout>
+    <ImageButton
+        android:id="@+id/btn_activity_cell_actions"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/xxlSize"
+        android:layout_height="@dimen/xxlSize"
+        android:src="@drawable/ic_launcher_foreground">
+    </ImageButton>
+</LinearLayout>
