@@ -21,12 +21,18 @@ import java.util.Date;
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
 
     private ArrayList<Tag> tags;
+    private OnTagListener onTagListener;
+
+    public TagAdapter(ArrayList<Tag> tags, OnTagListener onTagListener) {
+        this.tags = tags;
+        this.onTagListener = onTagListener;
+    }
 
     @NonNull
     @Override
     public TagViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tag_cell, parent, false);
-        return new TagViewHolder(view);
+        return new TagViewHolder(view, onTagListener);
     }
 
     @Override
@@ -49,19 +55,23 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
         return tags != null ? tags.size() : 0;
     }
 
-    static class TagViewHolder extends RecyclerView.ViewHolder {
+    static class TagViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
 
         private TextView tagName;
         private TextView tagLocation;
         private TextView tagTime;
         private TextView tagLocate;
+        private OnTagListener onTagListener;
 
-        TagViewHolder(@NonNull View itemView) {
+        TagViewHolder(@NonNull View itemView, OnTagListener onTagListener) {
             super(itemView);
             tagName = itemView.findViewById(R.id.tv_key_cell_name);
             tagLocation = itemView.findViewById(R.id.tv_key_cell_last_location);
             tagTime = itemView.findViewById(R.id.tv_key_cell_time);
             tagLocate = itemView.findViewById(R.id.tv_key_cell_locate);
+
+            this.onTagListener = onTagListener;
+            tagLocate.setOnClickListener(this);
         }
 
         void bindTagName(String content) {
@@ -75,10 +85,14 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
         void bindTagTime(String content) {
             tagTime.setText(content);
         }
+
+        @Override
+        public void onClick(View view) {
+            onTagListener.onClick(getAdapterPosition());
+        }
     }
 
-    public void setTagsData(ArrayList<Tag> tags) {
-        this.tags = tags;
-        notifyDataSetChanged();
+    public interface OnTagListener{
+        void onClick(int index);
     }
 }
