@@ -18,12 +18,12 @@ import com.sktt1.butters.data.utilities.DateUtility;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
+public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.TagViewHolder> {
 
     private ArrayList<Tag> tags;
     private OnTagListener onTagListener;
 
-    public TagAdapter(ArrayList<Tag> tags, OnTagListener onTagListener) {
+    public TagRecyclerAdapter(ArrayList<Tag> tags, OnTagListener onTagListener) {
         this.tags = tags;
         this.onTagListener = onTagListener;
     }
