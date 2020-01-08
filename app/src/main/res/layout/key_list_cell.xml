@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    android:padding="@dimen/mSpacing">
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_key_cell_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="School backpack"
+            android:textSize="@dimen/smTextSize">
+        </TextView>
+
+
+        <TextView
+            android:id="@+id/tv_key_cell_last_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/last_location">
+        </TextView>
+
+
+        <TextView
+            android:id="@+id/tv_key_cell_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time">
+        </TextView>
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/sSpacing"
+        android:background="@color/colorPrimaryInvert"
+        android:layout_marginEnd="@dimen/sSpacing">
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_key_cell_locate"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/locate"
+        android:textSize="@dimen/sTextSize"
+        android:textStyle="bold">
+    </TextView>
+
+</LinearLayout>
