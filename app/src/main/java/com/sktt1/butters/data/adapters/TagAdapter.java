@@ -17,11 +17,10 @@ import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
 
-    private List<Tag> tags;
+    private ArrayList<Tag> tags;
 
     @NonNull
     @Override
@@ -47,7 +46,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return tags != null ? tags.size() : 0;
     }
 
     static class TagViewHolder extends RecyclerView.ViewHolder {
