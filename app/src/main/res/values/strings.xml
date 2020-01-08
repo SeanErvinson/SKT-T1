@@ -11,4 +11,5 @@
     <string name="devicetimestamp">devicetimestamp</string>
     <string name="map_button_label_buzz">BUZZ</string>
     <string name="map_button_label_sit">SIT</string>
+    <string name="activity_date_time_info">%1$s at %1$s</string>
 </resources>
