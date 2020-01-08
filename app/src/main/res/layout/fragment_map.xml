@@ -19,20 +19,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/map_text_devicename"
-            android:text="@string/devicename"
+            android:text="@string/deviceName"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/map_text_devicelocation"
-            android:text="@string/devicelocation"/>
+            android:text="@string/deviceLocation"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/map_text_devicetimestamp"
-            android:text="@string/devicetimestamp"
+            android:text="@string/deviceLastSeen"
             />
 
         <Button
