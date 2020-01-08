@@ -26,7 +26,7 @@
             android:id="@+id/tv_key_cell_last_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/last_location">
+            android:text="@string/last_seen_location">
         </TextView>
 
 
@@ -34,7 +34,7 @@
             android:id="@+id/tv_key_cell_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time">
+            android:text="@string/last_seen_time">
         </TextView>
 
     </LinearLayout>
