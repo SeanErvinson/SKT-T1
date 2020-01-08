@@ -6,4 +6,9 @@
     <string name="locate">Locate</string>
     <string name="last_seen_location"><em>Last location:</em> %1$s</string>
     <string name="last_seen_time"><em>Time:</em> %1$s</string>
+    <string name="devicelocation">devicelocation</string>
+    <string name="devicename">devicename</string>
+    <string name="devicetimestamp">devicetimestamp</string>
+    <string name="map_button_label_buzz">BUZZ</string>
+    <string name="map_button_label_sit">SIT</string>
 </resources>
