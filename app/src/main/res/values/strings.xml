@@ -3,4 +3,7 @@
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="done">Done</string>
+    <string name="locate">Locate</string>
+    <string name="last_location"><em>Last location:</em> %1$s</string>
+    <string name="time"><em>Time:</em> %1$s</string>
 </resources>

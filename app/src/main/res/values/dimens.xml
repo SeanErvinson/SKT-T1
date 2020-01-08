@@ -24,6 +24,7 @@
     <dimen name="xxsTextSize">4sp</dimen>
     <dimen name="xsTextSize">8sp</dimen>
     <dimen name="sTextSize">16sp</dimen>
+    <dimen name="smTextSize">20sp</dimen>
     <dimen name="mTextSize">24sp</dimen>
     <dimen name="lTextSize">32sp</dimen>
     <dimen name="xlTextSize">40sp</dimen>
