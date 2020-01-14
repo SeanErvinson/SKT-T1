@@ -13,4 +13,16 @@
         <item name="android:textSize">@dimen/mTextSize</item>
     </style>
 
+    <style name="Title" parent="Widget.AppCompat.TextView">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/mTextSize</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="SubTitle" parent="Widget.AppCompat.TextView">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/xsTextSize</item>
+        <item name="android:textColor">@color/colorPrimaryInvert</item>
+    </style>
+
 </resources>
