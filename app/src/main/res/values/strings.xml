@@ -18,4 +18,8 @@
     <string name="settings_alarm_sound_description">Set the sound the device plays when alerted</string>
     <string name="settings_phone_alarm_sound_description">Set the sound this smartphone plays when alerted</string>
     <string name="settings_phone_alarm_sound">Find phone alarm sound</string>
+    <string name="action_bar_notification">Notification</string>
+    <string name="action_bar_profile">Profile</string>
+    <string name="content_description_user_profile">User Profile</string>
+    <string name="content_description_notification">Notification</string>
 </resources>
