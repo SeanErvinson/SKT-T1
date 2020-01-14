@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryInvert</item>
         <item name="colorAccent">@color/colorSecondary</item>
+        <item name="android:fontFamily">@font/roboto</item>
     </style>
 
     <style name="RectangleButtonTheme" parent="Widget.AppCompat.Button">
