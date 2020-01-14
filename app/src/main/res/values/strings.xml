@@ -12,7 +12,4 @@
     <string name="activity_date_time_info">%1$s at %1$s</string>
     <string name="nav_label_settings">Settings</string>
     <string name="nav_label_home">Home</string>
-    <string name="deviceName">devicename</string>
-    <string name="deviceLocation">Device Location</string>
-    <string name="deviceLastSeen">deviceLastSeen</string>
 </resources>
