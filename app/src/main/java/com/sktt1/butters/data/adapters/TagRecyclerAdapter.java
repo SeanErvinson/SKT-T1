@@ -1,6 +1,5 @@
 package com.sktt1.butters.data.adapters;
 
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,13 +40,16 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         holder.bindTagName(tags.get(position).getName());
 
         Location lastSeenLocation = tags.get(position).getLastSeenLocation();
-        String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
-        holder.bindTagLocation(tagLocation);
-
-        Date lastSeenTime = tags.get(position).getLastSeenTime();
-        String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
-        String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
-        holder.bindTagTime(tagTime);
+        if(lastSeenLocation != null){
+            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
+            holder.bindTagLocation(tagLocation);
+        }
+        if(lastSeenLocation != null){
+            Date lastSeenTime = tags.get(position).getLastSeenTime();
+            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
+            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
+            holder.bindTagTime(tagTime);
+        }
     }
 
     @Override
