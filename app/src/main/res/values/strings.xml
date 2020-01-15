@@ -22,4 +22,5 @@
     <string name="action_bar_profile">Profile</string>
     <string name="content_description_user_profile">User Profile</string>
     <string name="content_description_notification">Notification</string>
+    <string name="app_description">LOCATE EVERYTHING</string>
 </resources>

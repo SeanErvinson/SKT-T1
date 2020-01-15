@@ -10,6 +10,7 @@
     <dimen name="xlSize">40dp</dimen>
     <dimen name="xxlSize">48dp</dimen>
     <dimen name="xxxlSize">80dp</dimen>
+    <dimen name="hSize">96dp</dimen>
 
 
     <!--  Margins & Padding  -->
@@ -19,6 +20,8 @@
     <dimen name="mSpacing">24dp</dimen>
     <dimen name="lSpacing">32dp</dimen>
     <dimen name="xlSpacing">40dp</dimen>
+    <dimen name="xxlSpacing">56dp</dimen>
+    <dimen name="hSpacing">96dp</dimen>
 
     <!--  Text  -->
     <dimen name="xxsTextSize">8sp</dimen>
@@ -28,5 +31,7 @@
     <dimen name="mTextSize">24sp</dimen>
     <dimen name="lTextSize">32sp</dimen>
     <dimen name="xlTextSize">40sp</dimen>
+    <dimen name="xxlTextSize">56dp</dimen>
+    <dimen name="xxxlTextSize">80dp</dimen>
 
 </resources>
