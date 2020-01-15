@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         mActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fragmentManager.beginTransaction().hide(currentFragment).show(mActivityFragment).commit();
-                currentFragment = mActivityFragment;
+                currentFragment = new ActivityFragment();
+                fragmentManager.beginTransaction().replace(R.id.fl_main_container, currentFragment).commit();
             }
         });
     }
@@ -78,10 +78,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     private void initializeFragments() {
-        mHomeFragment = new HomeFragment();
-        mMapFragment = new MapFragment();
-        mSettingsFragment = new SettingsFragment();
-        mActivityFragment = new ActivityFragment();
         fragmentManager = getSupportFragmentManager();
         currentFragment = new HomeFragment();
         fragmentManager.beginTransaction().replace(R.id.fl_main_container, currentFragment).commit();
