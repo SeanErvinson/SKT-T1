@@ -7,13 +7,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.sktt1.butters.data.fragments.ActivityFragment;
 import com.sktt1.butters.data.fragments.HomeFragment;
 import com.sktt1.butters.data.fragments.MapFragment;
 import com.sktt1.butters.data.fragments.OnFragmentInteractionListener;
@@ -24,9 +28,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private BottomNavigationView mBottomNavigationView;
     private FrameLayout mMainContainer;
-    private Fragment mHomeFragment, mMapFragment, mSettingsFragment;
+    private Fragment mHomeFragment, mMapFragment, mSettingsFragment, mActivityFragment;
     private Fragment currentFragment;
     private FragmentManager mFragmentManager;
+    private ImageView mAccountProfile, mActivity;
 
 
     @Override
@@ -36,10 +41,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         initializeActionBar();
         initializeWidget();
         initializeFragments();
+//        Intent intent = new Intent(this, PairTagActivity.class);
+//        startActivity(intent);
 
+// TODO: Find a better way of handling fragments
         mFragmentManager.beginTransaction().add(R.id.fl_main_container, mHomeFragment, HomeFragment.TAG).hide(mSettingsFragment).commit();
         mFragmentManager.beginTransaction().add(R.id.fl_main_container, mMapFragment, MapFragment.TAG).hide(mMapFragment).commit();
-        mFragmentManager.beginTransaction().add(R.id.fl_main_container,mSettingsFragment, SettingsFragment.TAG).commit();
+        mFragmentManager.beginTransaction().add(R.id.fl_main_container, mSettingsFragment, SettingsFragment.TAG).commit();
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -65,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    // TODO: Simplify the configuration for the custom action bar.
     private void initializeActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(false);
@@ -77,20 +91,33 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         actionBar.setCustomView(view, layoutParams);
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+        mActivity = view.findViewById(R.id.iv_action_bar_notification);
+        mAccountProfile = view.findViewById(R.id.iv_action_bar_account);
+
+        mActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mFragmentManager.beginTransaction().hide(currentFragment).show(mActivityFragment).commit();
+                currentFragment = mActivityFragment;
+                Log.d(TAG, "onClick: " + currentFragment.getTag());
+            }
+        });
     }
 
-    private void initializeWidget(){
+    private void initializeWidget() {
         mMainContainer = findViewById(R.id.fl_main_container);
         mBottomNavigationView = findViewById(R.id.bnv_main_navigation);
     }
 
-    private void initializeFragments(){
+    private void initializeFragments() {
         mHomeFragment = new HomeFragment();
         mMapFragment = new MapFragment();
         mSettingsFragment = new SettingsFragment();
+        mActivityFragment = new ActivityFragment();
         currentFragment = mHomeFragment;
         mFragmentManager = getSupportFragmentManager();
     }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {

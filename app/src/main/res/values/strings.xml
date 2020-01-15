@@ -23,7 +23,9 @@
     <string name="content_description_user_profile">User Profile</string>
     <string name="content_description_notification">Notification</string>
     <string name="app_description">LOCATE EVERYTHING</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bluetooth_off_message">Bluetooth is turned off. Turn on to bluetooth to scan devices.</string>
+    <string name="bluetooth_scan_message">Searching for compatible devices.</string>
+    <string name="bluetooth_finish_empty_message">No devices were found</string>
+    <string name="bluetooth_finish_message">Scan complete!</string>
+    <string name="bluetooth_not_supported_message">Bluetooth is not supported by the device</string>
 </resources>

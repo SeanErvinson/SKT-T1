@@ -40,6 +40,13 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+//        TODO: Check for all connected devices
+        //        if(bluetoothAdapter.isEnabled()){
+//            Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
+//            for (BluetoothDevice device: bluetoothDevices) {
+//                Log.d(TAG, "initializeBluetooth: "+ device.getName());
+//            }
+//        }
         mTagsView = view.findViewById(R.id.rv_home_tag_list);
         mTagsView.setLayoutManager(linearLayoutManager);
         tags = new ArrayList<Tag>();
