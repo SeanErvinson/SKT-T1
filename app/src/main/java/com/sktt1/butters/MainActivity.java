@@ -47,19 +47,19 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Simplify the configuration for the custom action bar.
     private void initializeActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(false);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        View view = getLayoutInflater().inflate(R.layout.main_action_bar,
-                null);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.MATCH_PARENT);
-        actionBar.setCustomView(view, layoutParams);
+
+        if (actionBar == null)
+            throw new NullPointerException("Action bar is not set.");
+
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.main_action_bar);
+        View view = getSupportActionBar().getCustomView();
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
+
         mActivity = view.findViewById(R.id.iv_action_bar_notification);
         mAccountProfile = view.findViewById(R.id.iv_action_bar_account);
 
