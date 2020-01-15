@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="144dp"
-    android:padding="@dimen/mSpacing">
+    android:layout_height="96dp"
+    android:padding="@dimen/smSpacing">
 
     <LinearLayout
         android:layout_gravity="center"
@@ -33,6 +33,7 @@
         android:layout_gravity="center"
         android:layout_width="@dimen/xxlSize"
         android:layout_height="@dimen/xxlSize"
-        android:src="@drawable/ic_launcher_foreground">
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_more_vert_black_24dp">
     </ImageButton>
 </LinearLayout>

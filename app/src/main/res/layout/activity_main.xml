@@ -12,7 +12,6 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/fl_main_container">
     </FrameLayout>
 
@@ -22,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/colorPrimary"
-        app:itemIconTint="@color/colorSecondary"
-        app:itemTextColor="@color/colorSecondary"
+        app:itemIconTint="@color/bottom_navigation_color_state"
+        app:itemTextColor="@color/bottom_navigation_color_state"
         app:menu="@menu/bottom_navigation_menu">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
