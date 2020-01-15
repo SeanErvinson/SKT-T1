@@ -35,7 +35,9 @@ public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecycl
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
         holder.bindMessage(activities.get(position).getMessage());
-
+        if(activities.get(position).getNotifiedOn() == null){
+            return;
+        }
         String formattedDate = DateUtility.getFormattedDate(activities.get(position).getNotifiedOn(), DateTimePattern.DATE);
         String formattedTime= DateUtility.getFormattedDate(activities.get(position).getNotifiedOn(), DateTimePattern.TIME);
         holder.bindDateTimeInfo(String.format("%s at %s", formattedDate, formattedTime));
