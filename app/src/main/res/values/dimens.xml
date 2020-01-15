@@ -17,6 +17,7 @@
     <dimen name="xxsSpacing">4dp</dimen>
     <dimen name="xsSpacing">8dp</dimen>
     <dimen name="sSpacing">16dp</dimen>
+    <dimen name="smSpacing">20dp</dimen>
     <dimen name="mSpacing">24dp</dimen>
     <dimen name="lSpacing">32dp</dimen>
     <dimen name="xlSpacing">40dp</dimen>
