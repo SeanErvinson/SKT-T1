@@ -64,11 +64,11 @@ public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecycl
 
         @Override
         public void onClick(View view) {
-            onActivityListener.OnClick(getAdapterPosition());
+            onActivityListener.onClick(getAdapterPosition());
         }
     }
 
     public interface OnActivityListener {
-        void OnClick(int index);
+        void onClick(int index);
     }
 }
