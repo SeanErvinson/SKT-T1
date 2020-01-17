@@ -7,7 +7,6 @@ import java.util.Date;
 public class Tag {
     private String id;
     private String name;
-    private String mac;
     private Location lastSeenLocation;
     private String macAddress;
     private Date lastSeenTime;
@@ -42,14 +41,6 @@ public class Tag {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public void setMac(String mac) {
-        this.mac = mac;
     }
 
     public String getMacAddress() {
