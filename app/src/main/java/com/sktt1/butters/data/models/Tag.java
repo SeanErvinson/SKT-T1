@@ -5,18 +5,28 @@ import androidx.annotation.NonNull;
 import java.util.Date;
 
 public class Tag {
-    private String id;
+    private int id;
     private String name;
-    private Location lastSeenLocation;
     private String macAddress;
+    private int lastSeenLocationId;
     private Date lastSeenTime;
+    private boolean isConnected;
 
-    public Location getLastSeenLocation() {
-        return lastSeenLocation;
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
-    public void setLastSeenLocation(Location lastSeenLocation) {
-        this.lastSeenLocation = lastSeenLocation;
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
+    public int getLastSeenLocationId() {
+        return lastSeenLocationId;
+    }
+
+    public void setLastSeenLocationId(int lastSeenLocationId) {
+        this.lastSeenLocationId = lastSeenLocationId;
     }
 
     public Date getLastSeenTime() {
@@ -27,11 +37,11 @@ public class Tag {
         this.lastSeenTime = lastSeenTime;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

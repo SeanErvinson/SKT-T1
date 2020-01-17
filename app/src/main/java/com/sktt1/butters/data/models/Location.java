@@ -1,16 +1,16 @@
 package com.sktt1.butters.data.models;
 
 public class Location {
-    private String id;
+    private int id;
     private String name;
-    private String longtitude;
+    private String longitude;
     private String latitude;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -23,11 +23,11 @@ public class Location {
     }
 
     public String getLongtitude() {
-        return longtitude;
+        return longitude;
     }
 
-    public void setLongtitude(String longtitude) {
-        this.longtitude = longtitude;
+    public void setLongtitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public String getLatitude() {
@@ -40,6 +40,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return id;
+        return String.valueOf(this.id);
     }
 }
