@@ -8,13 +8,15 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PairTagActivity"></activity>
+        <activity android:name=".TestNotificationActivity"></activity>
+        <activity android:name=".PairTagActivity" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
@@ -29,7 +31,7 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
