@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         tags = new ArrayList<Tag>();
         tags.add(
                 new Tag(){{
-                    setId("1");
+                    setId(1);
                     setName("First Tag");
                 }}
         );
