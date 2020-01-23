@@ -1,5 +1,6 @@
 package com.sktt1.butters.data.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -13,6 +14,9 @@ import com.sktt1.butters.data.database.tables.TagTable;
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "skt.db";
     public static final int DB_VERSION=1;
+
+
+    private SQLiteDatabase sqLiteDatabase;
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -28,5 +32,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    public long createNotification(DatabaseHelper databaseHelper, String message, String notified_on) {
+
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        ContentValues activityValues = new ContentValues();
+        activityValues.put(ActivityTable.COL_MESSAGE, message);
+        activityValues.put(ActivityTable.COL_NOTIFIED_ON, notified_on);
+        activityValues.put(ActivityTable.COL_HAS_READ, "false");
+
+        return sqLiteDatabase.insert("activities", null, activityValues);
+    }
+
+    public void updateNotification(DatabaseHelper databaseHelper, Long id) {
+
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        ContentValues activitesValues = new ContentValues();
+        activitesValues.put(ActivityTable.COL_HAS_READ, "true");
+
+        sqLiteDatabase.update(ActivityTable.TABLE, activitesValues, "id = ?", new String[] {Long.toString(id)});
     }
 }
