@@ -53,7 +53,6 @@ public class PairTagActivity extends AppCompatActivity {
                 }
                 mBluetoothStatus.setText(getString(R.string.bluetooth_finish_message));
                 bluetoothAdapter.cancelDiscovery();
-                unregisterReceiver(receiver);
             }
         }
     };
