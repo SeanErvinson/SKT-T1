@@ -1,12 +1,5 @@
 package com.sktt1.butters.data.fragments;
 
-// Added Code for review
-
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-
-// End Code for review
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -67,11 +60,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         Log.d("TAG", activities.get(index).toString());
     }
 
-
-    // Added code for review
-
     private DatabaseHelper databaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +74,4 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         databaseHelper.close();
         super.onDestroy();
     }
-
-// End code for review
 }
