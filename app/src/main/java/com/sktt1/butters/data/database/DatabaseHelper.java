@@ -34,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public long createNotification(DatabaseHelper databaseHelper, String message, String notified_on) {
+    public long activityCreateNotification(DatabaseHelper databaseHelper, String message, String notified_on) {
 
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
@@ -46,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sqLiteDatabase.insert("activities", null, activityValues);
     }
 
-    public void updateNotification(DatabaseHelper databaseHelper, Long id) {
+    public void activityUpdateNotification(DatabaseHelper databaseHelper, Long id) {
 
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
