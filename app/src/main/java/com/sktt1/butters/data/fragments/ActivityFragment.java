@@ -105,6 +105,11 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         sqLiteDatabase.update("activities", activityValues, "id = ?", new String[] {Integer.toString(id)});
     }
 
+    @Override
+    public void onDestroy() {
+        databaseHelper.close();
+        super.onDestroy();
+    }
 
-    // End code for review
+// End code for review
 }
