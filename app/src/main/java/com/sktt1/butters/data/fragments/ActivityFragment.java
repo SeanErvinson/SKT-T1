@@ -81,19 +81,30 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     }
 
     // Insert statement
-    public long createNotification(){
+    public long createNotification(String message, String notified_on){
 
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
         ContentValues activityValues = new ContentValues();
-        activityValues.put("message", "Any message/notification/activity");
-        activityValues.put("notified_on", "is this the time where the user gets notified?");
+        activityValues.put("message", message);
+        activityValues.put("notified_on", notified_on);
         activityValues.put("has_read", false);
 
         return sqLiteDatabase.insert("activities", null, activityValues);
     }
 
     // Read Activity Table
+
+    public void updateNotification(int id){
+
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        ContentValues activityValues = new ContentValues();
+        activityValues.put("has_read", true);
+
+        sqLiteDatabase.update("activities", activityValues, "id = ?", new String[] {Integer.toString(id)});
+    }
+
 
     // End code for review
 }
