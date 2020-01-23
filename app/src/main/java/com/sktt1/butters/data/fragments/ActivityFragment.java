@@ -80,31 +80,6 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         databaseHelper = new DatabaseHelper(getContext());
     }
 
-    // Insert statement
-    public long createNotification(String message, String notified_on){
-
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
-
-        ContentValues activityValues = new ContentValues();
-        activityValues.put("message", message);
-        activityValues.put("notified_on", notified_on);
-        activityValues.put("has_read", false);
-
-        return sqLiteDatabase.insert("activities", null, activityValues);
-    }
-
-    // Read Activity Table
-
-    public void updateNotification(int id){
-
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
-
-        ContentValues activityValues = new ContentValues();
-        activityValues.put("has_read", true);
-
-        sqLiteDatabase.update("activities", activityValues, "id = ?", new String[] {Integer.toString(id)});
-    }
-
     @Override
     public void onDestroy() {
         databaseHelper.close();
