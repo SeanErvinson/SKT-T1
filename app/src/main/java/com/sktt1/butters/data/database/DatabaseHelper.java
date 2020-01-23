@@ -50,9 +50,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
-        ContentValues activitesValues = new ContentValues();
-        activitesValues.put(ActivityTable.COL_HAS_READ, "true");
+        ContentValues activityValues = new ContentValues();
+        activityValues.put(ActivityTable.COL_HAS_READ, "true");
 
-        sqLiteDatabase.update(ActivityTable.TABLE, activitesValues, "id = ?", new String[] {Long.toString(id)});
+        sqLiteDatabase.update(ActivityTable.TABLE, activityValues, "id = ?", new String[] {Long.toString(id)});
     }
 }
