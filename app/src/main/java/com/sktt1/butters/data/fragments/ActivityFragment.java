@@ -1,5 +1,11 @@
 package com.sktt1.butters.data.fragments;
 
+// Added Code for review
+
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
+// End Code for review
 
 import android.os.Bundle;
 
@@ -16,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.ActivityRecyclerAdapter;
+import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Activity;
 
 import java.util.ArrayList;
@@ -59,4 +66,34 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     public void onClick(int index) {
         Log.d("TAG", activities.get(index).toString());
     }
+
+
+    // Added code for review
+
+    private DatabaseHelper databaseHelper;
+    private SQLiteDatabase sqLiteDatabase;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        databaseHelper = new DatabaseHelper(getContext());
+    }
+
+    // Insert statement
+    public long createNotification(){
+
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        ContentValues activityValues = new ContentValues();
+        activityValues.put("message", "Any message/notification/activity");
+        activityValues.put("notified_on", "is this the time where the user gets notified?");
+        activityValues.put("has_read", false);
+
+        return sqLiteDatabase.insert("activities", null, activityValues);
+    }
+
+    // Read Activity Table
+
+    // End code for review
 }
