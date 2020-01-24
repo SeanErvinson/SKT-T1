@@ -71,5 +71,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         locationValues.put(LocationTable.COL_LONGITUDE, longitude);
         locationValues.put(LocationTable.COL_LATITUDE, latitude);
 
+        return sqLiteDatabase.insert(LocationTable.TABLE, null, locationValues);
     }
 }
