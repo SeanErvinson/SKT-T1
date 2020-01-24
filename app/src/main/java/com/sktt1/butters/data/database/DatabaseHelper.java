@@ -59,6 +59,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
+    public long tagCreateDevice(DatabaseHelper databaseHelper, String name, String mac_address, String last_send_location_id, String last_seen_time, boolean is_connected){
+
+        sqLiteDatabase = databaseHelper.getWritableDatabase();
+
+        ContentValues tagValues = new ContentValues();
+
+        tagValues.put(TagTable.COL_NAME, name);
+        tagValues.put(TagTable.COL_MAC_ADDRESS, mac_address);
+        tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, last_send_location_id);
+        tagValues.put(TagTable.COL_LAST_SEEN_TIME, last_seen_time);
+        tagValues.put(TagTable.COL_IS_CONNECTED, Boolean.toString(is_connected));
+
+        return sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
+    }
 
     // Location table interactions
 
