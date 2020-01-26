@@ -1,5 +1,6 @@
 package com.sktt1.butters.data.fragments;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,15 @@ import android.view.ViewGroup;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.ActivityRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
+import com.sktt1.butters.data.database.tables.ActivityTable;
 import com.sktt1.butters.data.models.Activity;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class ActivityFragment extends Fragment implements ActivityRecyclerAdapter.OnActivityListener {
@@ -45,14 +52,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mActivityView = view.findViewById(R.id.rv_activity_activity_list);
         mActivityView.setLayoutManager(linearLayoutManager);
-        activities = new ArrayList<>();
-        activities.add(
-                new Activity(){{
-                    setId(1);
-                    setMessage("Keys has been disconnected");
-                }}
-        );
-//        activities.addAll(databaseHelper.activityFeedList());
+        fetchData();
         activityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
         mActivityView.setAdapter(activityRecyclerAdapter);
     }
@@ -67,9 +67,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         databaseHelper = new DatabaseHelper(getActivity());
-        databaseHelper.activityCreateNotification("OOPS NATANGAL","9/9/2019");
     }
 
     @Override
@@ -77,4 +75,30 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         databaseHelper.close();
         super.onDestroy();
     }
+
+    public void fetchData(){
+        final Cursor data = databaseHelper.activityFeedList();
+
+        activities = new ArrayList<>();
+        data.moveToFirst();
+        while(data.moveToNext()){
+            if(data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false"));
+            {
+                activities.add(
+                        new Activity() {{
+                            Date date = new Date();
+                            setId(data.getInt(data.getColumnIndex(ActivityTable.COL_ID)));
+                            setMessage(data.getString(data.getColumnIndex(ActivityTable.COL_MESSAGE)));
+                            try {
+                                date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            setNotifiedOn(date);
+                        }}
+                );
+            }
+        }
+    }
+
 }
