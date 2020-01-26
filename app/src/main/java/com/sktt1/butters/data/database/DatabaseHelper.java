@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Location table interactions
 
-    public long locationCreateRow(DatabaseHelper databaseHelper, long id, String name, String longitude, String latitude) {
+    public long locationCreateRow(DatabaseHelper databaseHelper, String name, String longitude, String latitude) {
 
         sqLiteDatabase = databaseHelper.getWritableDatabase();
 
