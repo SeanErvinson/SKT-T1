@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     private RecyclerView mActivityView;
     private ArrayList<Activity> activities;
     private ActivityRecyclerAdapter activityRecyclerAdapter;
+    private DatabaseHelper databaseHelper;
 
     public ActivityFragment() {}
 
@@ -50,6 +52,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
                     setMessage("Keys has been disconnected");
                 }}
         );
+//        activities.addAll(databaseHelper.activityFeedList());
         activityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
         mActivityView.setAdapter(activityRecyclerAdapter);
     }
@@ -60,13 +63,13 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         Log.d("TAG", activities.get(index).toString());
     }
 
-    private DatabaseHelper databaseHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         databaseHelper = new DatabaseHelper(getContext());
+        databaseHelper.activityCreateNotification("OOPS NATANGAL","9/9/2019");
     }
 
     @Override
