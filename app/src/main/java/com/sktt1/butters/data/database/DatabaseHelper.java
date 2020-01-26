@@ -2,14 +2,22 @@ package com.sktt1.butters.data.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 
 import androidx.annotation.Nullable;
 
 import com.sktt1.butters.data.database.tables.ActivityTable;
 import com.sktt1.butters.data.database.tables.LocationTable;
 import com.sktt1.butters.data.database.tables.TagTable;
+import com.sktt1.butters.data.models.Activity;
+import com.sktt1.butters.data.models.Tag;
+
+import java.lang.reflect.Array;
+import java.sql.Date;
+import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "skt.db";
@@ -35,27 +43,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Activity table interactions
-    public long activityCreateNotification(DatabaseHelper databaseHelper, String message, String notified_on) {
-
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
-
+    public long activityCreateNotification(String message, String notified_on) {
+        sqLiteDatabase = this.getWritableDatabase();
         ContentValues activityValues = new ContentValues();
         activityValues.put(ActivityTable.COL_MESSAGE, message);
         activityValues.put(ActivityTable.COL_NOTIFIED_ON, notified_on);
         activityValues.put(ActivityTable.COL_HAS_READ, "false");
-
-        return sqLiteDatabase.insert("activities", null, activityValues);
+        return sqLiteDatabase.insert(ActivityTable.TABLE, null, activityValues);
     }
 
     public void activityUpdateNotification(DatabaseHelper databaseHelper, long id) {
-
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
-
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues activityValues = new ContentValues();
         activityValues.put(ActivityTable.COL_HAS_READ, "true");
-
         sqLiteDatabase.update(ActivityTable.TABLE, activityValues, "id = ?", new String[] {Long.toString(id)});
     }
+
+//    public ArrayList<Activity> activityFeedList () {
+//        SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+//        String[] projection = {
+//                ActivityTable.COL_ID,
+//                ActivityTable.COL_MESSAGE,
+//                ActivityTable.COL_HAS_READ,
+//                ActivityTable.COL_NOTIFIED_ON
+//        };
+//        String selection = ActivityTable.COL_HAS_READ + " = ?";
+//        String[] selectionArgs = {"false"};
+//        String sortOrder = ActivityTable.COL_NOTIFIED_ON + "DESC";
+//        Cursor cursor = sqLiteDatabase.query(
+//                ActivityTable.TABLE,
+//                projection,
+//                selection,
+//                selectionArgs,
+//                null,
+//                null,
+//                sortOrder
+//        );
+//        ArrayList<Activity> activity = new ArrayList<>();
+//        while(cursor.moveToNext()){
+//            final int id = Integer.parseInt(cursor.getString(0));
+//            final String message = cursor.getString(1);
+//            final Date notifiedOn = Date.valueOf(cursor.getString(2));
+//            final boolean hasRead = Boolean.parseBoolean(cursor.getString(3));
+//            activity.add(
+//                    new Activity(){{
+//                        setId(id);
+//                        setMessage(message);
+//                        setNotifiedOn(notifiedOn);
+//                        setHasRead(hasRead);
+//                    }}
+//            );
+//        }
+//        cursor.close();
+//        return activity;
+//    }
 
     // Tag table interactions
 
