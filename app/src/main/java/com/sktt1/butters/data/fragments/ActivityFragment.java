@@ -68,7 +68,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        databaseHelper = new DatabaseHelper(getContext());
+        databaseHelper = new DatabaseHelper(getActivity());
         databaseHelper.activityCreateNotification("OOPS NATANGAL","9/9/2019");
     }
 
