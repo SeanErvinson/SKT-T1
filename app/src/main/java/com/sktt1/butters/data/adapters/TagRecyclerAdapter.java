@@ -39,17 +39,19 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
         holder.bindTagName(tags.get(position).getName());
 
-        Location lastSeenLocation = tags.get(position).getLastSeenLocation();
-        if(lastSeenLocation != null){
-            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
-            holder.bindTagLocation(tagLocation);
-        }
-        if(lastSeenLocation != null){
-            Date lastSeenTime = tags.get(position).getLastSeenTime();
-            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
-            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
-            holder.bindTagTime(tagTime);
-        }
+        // help :^) haha
+
+//        Location lastSeenLocation = tags.get(position).getLastSeenLocation();
+//        if(lastSeenLocation != null){
+//            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
+//            holder.bindTagLocation(tagLocation);
+//        }
+//        if(lastSeenLocation != null){
+//            Date lastSeenTime = tags.get(position).getLastSeenTime();
+//            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
+//            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
+//            holder.bindTagTime(tagTime);
+//        }
     }
 
     @Override
