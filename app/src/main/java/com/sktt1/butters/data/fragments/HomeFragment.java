@@ -1,6 +1,7 @@
 package com.sktt1.butters.data.fragments;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,9 +18,14 @@ import android.view.ViewGroup;
 
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
+import com.sktt1.butters.data.database.DatabaseHelper;
+import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
     public  static final String TAG = "HomeFragment";
@@ -27,6 +33,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private OnFragmentInteractionListener mListener;
     private RecyclerView mTagsView;
     private ArrayList<Tag> tags;
+    private DatabaseHelper databaseHelper;
 
     public HomeFragment() {}
 
@@ -49,13 +56,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 //        }
         mTagsView = view.findViewById(R.id.rv_home_tag_list);
         mTagsView.setLayoutManager(linearLayoutManager);
-        tags = new ArrayList<Tag>();
-        tags.add(
-                new Tag(){{
-                    setId(1);
-                    setName("First Tag");
-                }}
-        );
+        fetchData();
         TagRecyclerAdapter tagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
         mTagsView.setAdapter(tagRecyclerAdapter);
     }
@@ -75,6 +76,42 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        databaseHelper = new DatabaseHelper(getActivity());
+//        databaseHelper.locationCreateRow("SKT ni emman", "11123", "1212");
+//        databaseHelper.tagCreateDevice("SKT ni emman", "somethingMacAddress", "0", "5/5/2021", false);
+
+
+    }
+
+    public void fetchData(){
+        final Cursor data = databaseHelper.tagFeedList();
+
+        tags = new ArrayList<>();
+        data.moveToFirst();
+        while(data.moveToNext()) {
+            tags.add(
+                    new Tag(){{
+                        Date date = new Date();
+                        try {
+                            date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        setId(data.getInt(data.getColumnIndex(TagTable.COL_ID)));
+                        setName(data.getString(data.getColumnIndex(TagTable.COL_NAME)));
+                        setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
+                        setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
+                        setLastSeenTime(date);
+                        setConnected(Boolean.parseBoolean(data.getString(data.getColumnIndex(TagTable.COL_IS_CONNECTED))));
+
+                    }}
+            );
+        }
     }
 
     @Override
