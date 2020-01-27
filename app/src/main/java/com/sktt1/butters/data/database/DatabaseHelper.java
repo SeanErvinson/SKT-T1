@@ -67,9 +67,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
-    public long tagCreateDevice(DatabaseHelper databaseHelper, String name, String mac_address, String last_send_location_id, String last_seen_time, boolean is_connected){
+    public long tagCreateDevice(String name, String mac_address, String last_send_location_id, String last_seen_time, boolean is_connected){
 
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues tagValues = new ContentValues();
 
@@ -84,9 +84,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Location table interactions
 
-    public long locationCreateRow(DatabaseHelper databaseHelper, String name, String longitude, String latitude) {
+    public long locationCreateRow(String name, String longitude, String latitude) {
 
-        sqLiteDatabase = databaseHelper.getWritableDatabase();
+        sqLiteDatabase = this.getWritableDatabase();
 
         ContentValues locationValues = new ContentValues();
         locationValues.put(LocationTable.COL_MESSAGE, name);
