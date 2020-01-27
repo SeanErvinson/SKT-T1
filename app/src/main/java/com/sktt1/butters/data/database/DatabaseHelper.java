@@ -101,6 +101,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         locationValues.put(LocationTable.COL_LONGITUDE, longitude);
         sqLiteDatabase.update(LocationTable.TABLE, locationValues, "id = ?", new String[] {Long.toString(locationId)});
     }
+
+    public void tagUpdateConnection(long id, boolean isConnected){
+
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues tagValues = new ContentValues();
+        tagValues.put(TagTable.COL_IS_CONNECTED, Boolean.toString(!isConnected));
+        sqLiteDatabase.update(TagTable.TABLE, tagValues,"id = ?", new String[] {Long.toString(id)});
+    }
     // Location table interactions
 
     public long locationCreateRow(String name, String longitude, String latitude) {
