@@ -13,6 +13,7 @@ import com.sktt1.butters.data.database.tables.ActivityTable;
 import com.sktt1.butters.data.database.tables.LocationTable;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Activity;
+import com.sktt1.butters.data.models.Location;
 import com.sktt1.butters.data.models.Tag;
 
 import java.lang.reflect.Array;
@@ -89,12 +90,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[] {Long.toString(id)});
     }
 
+    public void tagUpdateLocation(long tagId, long locationId, String lastSeenTime, String longitude, String latitude){
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues tagValues = new ContentValues();
+        tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
+        sqLiteDatabase.update(TagTable.TABLE,  tagValues, "id = ?", new String[] {Long.toString(tagId)});
+
+        ContentValues locationValues = new ContentValues();
+        locationValues.put(LocationTable.COL_LATITUDE, latitude);
+        locationValues.put(LocationTable.COL_LONGITUDE, longitude);
+        sqLiteDatabase.update(LocationTable.TABLE, locationValues, "id = ?", new String[] {Long.toString(locationId)});
+    }
     // Location table interactions
 
     public long locationCreateRow(String name, String longitude, String latitude) {
-
         sqLiteDatabase = this.getWritableDatabase();
-
         ContentValues locationValues = new ContentValues();
         locationValues.put(LocationTable.COL_MESSAGE, name);
         locationValues.put(LocationTable.COL_LONGITUDE, longitude);
