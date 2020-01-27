@@ -33,8 +33,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-//        sqLiteDatabase.execSQL(LocationTable.getCreateQuery());
-//        sqLiteDatabase.execSQL(TagTable.getCreateQuery());
+        sqLiteDatabase.execSQL(LocationTable.getCreateQuery());
+        sqLiteDatabase.execSQL(TagTable.getCreateQuery());
         sqLiteDatabase.execSQL(ActivityTable.getCreateQuery());
     }
 
@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor activityFeedList () {
         sqLiteDatabase = this.getReadableDatabase();
-        String query = String.format("SELECT * FROM %s ", ActivityTable.TABLE, "false");
+        String query = String.format("SELECT * FROM %s ", ActivityTable.TABLE);
         return sqLiteDatabase.rawQuery(query, null);
     }
 
@@ -108,6 +108,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues tagValues = new ContentValues();
         tagValues.put(TagTable.COL_IS_CONNECTED, Boolean.toString(!isConnected));
         sqLiteDatabase.update(TagTable.TABLE, tagValues,"id = ?", new String[] {Long.toString(id)});
+    }
+
+    public Cursor tagFeedList(){
+        sqLiteDatabase = this.getReadableDatabase();
+        String query = String.format("SELECT * FROM %s ", TagTable.TABLE);
+        return sqLiteDatabase.rawQuery(query, null);
     }
     // Location table interactions
 
