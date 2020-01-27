@@ -82,6 +82,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
     }
 
+    public void tagUpdateName(String name, long id){
+        sqLiteDatabase = this.getWritableDatabase();
+        ContentValues tagValues = new ContentValues();
+        tagValues.put(TagTable.COL_NAME, name);
+        sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[] {Long.toString(id)});
+    }
+
     // Location table interactions
 
     public long locationCreateRow(String name, String longitude, String latitude) {
