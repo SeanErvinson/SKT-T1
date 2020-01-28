@@ -7,4 +7,6 @@
     <color name="colorBoxBackground">#ffffff</color>
     <color name="colorBoxBorder">#565656</color>
     <color name="colorBoxText">#565656</color>
+    <color name="colorDeviceName">#262626</color>
+    <color name="colorSubtext">#5A5A5A</color>
 </resources>
