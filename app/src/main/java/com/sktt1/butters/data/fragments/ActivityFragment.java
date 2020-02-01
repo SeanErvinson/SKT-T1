@@ -2,6 +2,10 @@ package com.sktt1.butters.data.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,19 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.ActivityRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.ActivityTable;
 import com.sktt1.butters.data.models.Activity;
-import com.sktt1.butters.data.utilities.DateTimePattern;
-import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,12 +46,18 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mActivityView = view.findViewById(R.id.rv_activity_activity_list);
+        initializeWidget(view);
+
         mActivityView.setLayoutManager(linearLayoutManager);
         fetchData();
         activityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
         mActivityView.setAdapter(activityRecyclerAdapter);
     }
+
+    private void initializeWidget(View view){
+        mActivityView = view.findViewById(R.id.rv_activity_activity_list);
+    }
+
 
 
     @Override
