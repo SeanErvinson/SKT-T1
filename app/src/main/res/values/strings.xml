@@ -28,4 +28,5 @@
     <string name="bluetooth_finish_empty_message">No devices were found</string>
     <string name="bluetooth_finish_message">Scan complete!</string>
     <string name="bluetooth_not_supported_message">Bluetooth is not supported by the device</string>
+    <string name="google_maps_key">AIzaSyB6LNJ14Z9RiqrjV60Y4IR2wJHhOyNfoac</string>
 </resources>
