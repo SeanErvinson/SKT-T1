@@ -4,26 +4,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/xsSpacing"
     tools:context=".data.fragments.SettingsFragment">
+
     <LinearLayout
-        android:layout_weight="1"
+        android:layout_weight="0.4"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:background="@drawable/rectangle_button_border">
+
         <TextView
-            android:theme="@style/Title"
+            android:id="@+id/tv_settings_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_time_interval">
+            tools:text="Wayne Madla"
+            android:textSize="@dimen/lTextSize">
         </TextView>
+
         <TextView
-            android:theme="@style/SubTitle"
+            android:id="@+id/tv_settings_editProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/settings_time_interval_description">
+            tools:text="EDIT PROFILE"
+            android:textSize="@dimen/xsTextSize"
+            android:layout_marginBottom="@dimen/sSpacing">
         </TextView>
+
+        <TextView
+            android:id="@+id/tv_settings_nickName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Nickname: %l$s"
+            android:textSize="@dimen/xsTextSize">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_settings_numberDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Devices: %l$s"
+            android:textSize="@dimen/xsTextSize">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_settings_numberActiveDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Active Devices: %l$s"
+            android:textSize="@dimen/xsTextSize">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_settings_numberInactiveDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Inactive Devices: %l$s"
+            android:textSize="@dimen/xsTextSize">
+        </TextView>
+
+
     </LinearLayout>
     <LinearLayout
         android:layout_weight="1"
@@ -31,36 +68,11 @@
         android:orientation="vertical"
         android:gravity="center"
         android:layout_height="0dp">
-        <TextView
-            android:theme="@style/Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_alarm_sound">
-        </TextView>
-        <TextView
-            android:theme="@style/SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_alarm_sound_description">
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_height="0dp">
-        <TextView
-            android:theme="@style/Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_phone_alarm_sound">
-        </TextView>
-        <TextView
-            android:theme="@style/SubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/settings_phone_alarm_sound_description">
-        </TextView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_home_tag_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical">
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 </LinearLayout>
