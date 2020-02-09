@@ -13,6 +13,8 @@ public class TagTable {
 
     public static final String COL_LAST_SEEN_TIME = "last_seen_time";
 
+    public static final String COL_ALARM = "alarm";
+
     public static final String COL_IS_CONNECTED = "is_connected";
 
 
@@ -21,6 +23,7 @@ public class TagTable {
                 "(%s INTEGER PRIMARY KEY, %s TEXT NOT NULL, %s TEXT NOT NULL, " +
                 "%s INTEGER NOT NULL," +
                 "%s LONG NOT NULL, %s BOOLEAN NOT NULL, " +
-                " FOREIGN KEY(%s) REFERENCES %s (%s) ON DELETE SET NULL)", TABLE, COL_ID, COL_NAME, COL_MAC_ADDRESS, COL_LAST_SEEN_LOCATION_ID, COL_LAST_SEEN_TIME, COL_IS_CONNECTED, COL_LAST_SEEN_LOCATION_ID, LocationTable.TABLE, LocationTable.COL_ID);
+                "%s INTEGER NOT NULL," +
+                " FOREIGN KEY(%s) REFERENCES %s (%s) ON DELETE SET NULL)", TABLE, COL_ID, COL_NAME, COL_MAC_ADDRESS, COL_LAST_SEEN_LOCATION_ID, COL_LAST_SEEN_TIME, COL_IS_CONNECTED, COL_ALARM, COL_LAST_SEEN_LOCATION_ID, LocationTable.TABLE, LocationTable.COL_ID);
     }
 }
