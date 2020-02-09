@@ -11,6 +11,10 @@ public class SharedPreferenceHelper {
     private static final String INIT_LAUNCH = "initLaunch";
     private static final String PREFERENCE = "skt_pref";
 
+    // Shared Preferences
+    public static final String USER_NAME = "userName";
+    public static final String USER_NICKNAME = "userNickname";
+
     public SharedPreferenceHelper(Context context) {
         this.context = context;
         sharedPreferences = context.getSharedPreferences(PREFERENCE, Context.MODE_PRIVATE);
@@ -24,5 +28,20 @@ public class SharedPreferenceHelper {
 
     public boolean isInitialLaunch() {
         return sharedPreferences.getBoolean(INIT_LAUNCH, true);
+    }
+
+    public void editUser(String name, String nickname){
+        editor.putString(USER_NAME, name);
+        editor.putString(USER_NICKNAME, nickname);
+
+        editor.apply();
+    }
+
+    public String loadUser(){
+        StringBuilder userDetails = new StringBuilder();
+        userDetails.append(sharedPreferences.getString(USER_NAME, ""));
+        userDetails.append(",");
+        userDetails.append(sharedPreferences.getString(USER_NICKNAME, ""));
+        return userDetails.toString();
     }
 }
