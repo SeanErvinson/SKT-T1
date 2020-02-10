@@ -1,6 +1,7 @@
 package com.sktt1.butters.data.fragments;
 
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -19,7 +20,8 @@ public class TagConnectionFragment extends Fragment {
     private RecyclerView mScannedDevicesList;
     private FragmentListener mListener;
 
-    public TagConnectionFragment() {}
+    public TagConnectionFragment() {
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -34,24 +36,24 @@ public class TagConnectionFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_tag_connection, container, false);
     }
 
-    private void initializeWidget(View view){
+    private void initializeWidget(View view) {
         mScannedDevicesList = view.findViewById(R.id.rv_pair_tag_scanned_devices);
     }
 
-    private void initializeRecyclerView(){
+    private void initializeRecyclerView() {
 //        mScannedDevicesList.
     }
 
-    public interface FragmentListener{
-        void onSelectedDevice();
+    public interface FragmentListener {
+        void onSelectedDevice(BluetoothDevice selectedDevice);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof FragmentListener){
+        if (context instanceof FragmentListener) {
             mListener = (FragmentListener) context;
-        }else{
+        } else {
             throw new RuntimeException(context.toString()
                     + " must implement FragmentListener");
         }
