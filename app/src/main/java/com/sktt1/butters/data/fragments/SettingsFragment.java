@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sktt1.butters.R;
+import com.sktt1.butters.data.adapters.SettingsTagAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
@@ -47,10 +48,7 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        fetchData();
 
-        SettingsTagAdapter adapter = new SettingsTagAdapter(getContext(), tags);
-        mSettingsTagsView.setAdapter(adapter);
         return view;
     }
 
@@ -58,6 +56,10 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        fetchData();
+        initializeWidget(view);
+        SettingsTagAdapter adapter = new SettingsTagAdapter(getContext(), tags);
+        mSettingsTagsView.setAdapter(adapter);
 
 
     }
@@ -109,7 +111,7 @@ public class SettingsFragment extends Fragment {
                         setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
                         setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
                         setLastSeenTime(date);
-                        setConnected(Boolean.parseBoolean(data.getString(data.getColumnIndex(TagTable.COL_IS_CONNECTED))));
+                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
 
                     }}
             );
@@ -117,29 +119,5 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    class SettingsTagAdapter extends ArrayAdapter<Tag>{
-        Context context;
-        ArrayList<Tag> settingsTags;
 
-        SettingsTagAdapter (Context c, ArrayList<Tag> sTags){
-            super(c,R.layout.list_cell_settings_tag);
-            this.context = c;
-            this.settingsTags = sTags;
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)  {
-            LayoutInflater layoutInflater = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.list_cell_settings_tag, parent, false);
-            TextView tvTagName = row.findViewById(R.id.tv_settingsTag_cell_name);
-            TextView tvTagConnectivityStatus = row.findViewById(R.id.tv_settingsTag_cell_isConnected);
-            TextView tvTagSoundAlarm = row.findViewById(R.id.tv_settingsTag_cell_soundAlarm);
-
-            tvTagName.setText(settingsTags.get(position).getName());
-            tvTagConnectivityStatus.setText(Boolean.toString(settingsTags.get(position).isConnected()));
-            tvTagSoundAlarm.setText("yawits");
-            return row;
-        }
-    }
 }
