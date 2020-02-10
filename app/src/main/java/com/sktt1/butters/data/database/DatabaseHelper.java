@@ -68,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
-    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, String lastSeenTime, boolean isConnected){
+    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, String lastSeenTime, int soundAlarm){
 
         sqLiteDatabase = this.getWritableDatabase();
 
@@ -78,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
         tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
         tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
-        tagValues.put(TagTable.COL_IS_CONNECTED, Boolean.toString(isConnected));
+        tagValues.put(TagTable.COL_SOUND_ALARM, soundAlarm);
 
         return (int) sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
     }
@@ -102,11 +102,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(LocationTable.TABLE, locationValues, "id = ?", new String[] {Integer.toString(locationId)});
     }
 
-    public void tagUpdateConnection(int id, boolean isConnected){
+    public void tagUpdateSoundAlarm(int id, int soundAlarm){
 
         sqLiteDatabase = this.getWritableDatabase();
         ContentValues tagValues = new ContentValues();
-        tagValues.put(TagTable.COL_IS_CONNECTED, Boolean.toString(!isConnected));
+        tagValues.put(TagTable.COL_SOUND_ALARM, soundAlarm);
         sqLiteDatabase.update(TagTable.TABLE, tagValues,"id = ?", new String[] {Integer.toString(id)});
     }
 
