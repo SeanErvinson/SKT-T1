@@ -31,6 +31,8 @@ public class SettingsTagAdapter extends ArrayAdapter<Tag> implements View.OnClic
         this.mContext = context;
     }
 
+
+
     public View getView(int position, View convertView, ViewGroup parent) {
         Tag tag = getItem(position);
 
@@ -56,7 +58,7 @@ public class SettingsTagAdapter extends ArrayAdapter<Tag> implements View.OnClic
         lastPostion = position;
 
         viewHolder.tvTagName.setText(tag.getName());
-        viewHolder.tvTagConnectivityStatus.setText(Boolean.toString(tag.isConnected()));
+        viewHolder.tvTagConnectivityStatus.setText("INACTIVE");
         viewHolder.tvTagSoundAlarm.setText("hit the quan by wayne madla");
         return convertView;
     }
