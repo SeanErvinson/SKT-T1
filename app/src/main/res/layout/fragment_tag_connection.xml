@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".data.fragments.TagScanFragment">
+    tools:context=".data.fragments.TagConnectionFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_pair_tag_scanned_devices"
