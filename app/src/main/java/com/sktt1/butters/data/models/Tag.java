@@ -10,15 +10,14 @@ public class Tag {
     private String macAddress;
     private int lastSeenLocationId;
     private Date lastSeenTime;
-    private boolean isConnected;
+    private int soundAlarm;
 
-
-    public boolean isConnected() {
-        return isConnected;
+    public int getSoundAlarm() {
+        return soundAlarm;
     }
 
-    public void setConnected(boolean connected) {
-        isConnected = connected;
+    public void setSoundAlarm(int soundAlarm) {
+        this.soundAlarm = soundAlarm;
     }
 
     public int getLastSeenLocationId() {
