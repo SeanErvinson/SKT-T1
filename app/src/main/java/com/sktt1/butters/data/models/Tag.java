@@ -1,10 +1,13 @@
 package com.sktt1.butters.data.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import java.util.Date;
 
-public class Tag {
+public class Tag implements Parcelable {
     private int id;
     private String name;
     private String macAddress;
@@ -12,6 +15,28 @@ public class Tag {
     private Date lastSeenTime;
     private boolean isConnected;
 
+    public Tag() {
+    }
+
+    protected Tag(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        macAddress = in.readString();
+        lastSeenLocationId = in.readInt();
+        isConnected = in.readByte() != 0;
+    }
+
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+        @Override
+        public Tag createFromParcel(Parcel in) {
+            return new Tag(in);
+        }
+
+        @Override
+        public Tag[] newArray(int size) {
+            return new Tag[size];
+        }
+    };
 
     public boolean isConnected() {
         return isConnected;
@@ -67,4 +92,17 @@ public class Tag {
         return name;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(macAddress);
+        parcel.writeInt(lastSeenLocationId);
+        parcel.writeByte((byte) (isConnected ? 1 : 0));
+    }
 }
