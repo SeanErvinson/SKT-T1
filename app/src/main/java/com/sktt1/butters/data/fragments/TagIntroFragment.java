@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.sktt1.butters.R;
 
@@ -31,7 +30,7 @@ public class TagIntroFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(getArguments() != null)
-            mLayout = getArguments().getInt("layout", R.layout.add_tag_intro);
+            mLayout = getArguments().getInt("layout", R.layout.add_tag_instruction_1);
     }
 
     @Override
