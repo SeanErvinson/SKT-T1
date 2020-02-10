@@ -25,7 +25,7 @@ public class TagNameFragment extends Fragment {
     }
 
     private EditText mTagLabel;
-    private FragmentListener listener;
+    private FragmentListener mListener;
 
     public TagNameFragment() {
     }
@@ -59,7 +59,7 @@ public class TagNameFragment extends Fragment {
                     tagActivity.hideNavButton(false);
                 else
                     tagActivity.hideNavButton(true);
-                listener.inputChange(charSequence);
+                mListener.inputChange(charSequence);
             }
 
             @Override
@@ -73,16 +73,16 @@ public class TagNameFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof FragmentListener) {
-            listener = (FragmentListener) context;
+            mListener = (FragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement FragmentListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        listener = null;
+        mListener = null;
     }
 }
