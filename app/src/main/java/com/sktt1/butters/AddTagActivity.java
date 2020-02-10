@@ -17,11 +17,12 @@ import com.sktt1.butters.data.models.Tag;
 
 import java.util.ArrayList;
 
-public class AddTagActivity extends AppCompatActivity {
+public class AddTagActivity extends AppCompatActivity implements TagNameFragment.FragmentListener {
 
     private LockViewPager mViewPager;
-    private TagViewPagerAdapter tagViewPagerAdapter;
+    private TagViewPagerAdapter mTagViewPagerAdapter;
     private Button mNext;
+    private String mTagLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class AddTagActivity extends AppCompatActivity {
         initializeViewPager();
     }
 
-    private void initializeWidget(){
+    private void initializeWidget() {
         mViewPager = findViewById(R.id.lvp_add_tag);
         mViewPager.disableScroll(true);
         mNext = findViewById(R.id.btn_add_tag_next);
@@ -41,12 +42,13 @@ public class AddTagActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int current = getItem(+1);
-                if(current < tagViewPagerAdapter.getCount()){
+                if (current < mTagViewPagerAdapter.getCount()) {
                     mViewPager.setCurrentItem(current);
-                }else{
+                } else {
                     Intent resultIntent = new Intent();
-                    Tag newTag = new Tag(){{
-                        setName(""); //Whatever was passed
+
+                    Tag newTag = new Tag() {{
+                        setName(mTagLabel);
                         setMacAddress(""); //Whatever was passed
                     }};
                     resultIntent.putExtra("newTag", newTag);
@@ -62,14 +64,13 @@ public class AddTagActivity extends AppCompatActivity {
     }
 
 
-
-    private void initializeViewPager(){
-        ArrayList<Fragment> fragments  = new ArrayList<>();
+    private void initializeViewPager() {
+        ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(TagIntroFragment.newInstance(R.layout.add_tag_instruction_1));
         fragments.add(new TagNameFragment());
         fragments.add(TagIntroFragment.newInstance(R.layout.add_tag_instruction_1));
-        tagViewPagerAdapter = new TagViewPagerAdapter(getSupportFragmentManager(),fragments);
-        mViewPager.setAdapter(tagViewPagerAdapter);
+        mTagViewPagerAdapter = new TagViewPagerAdapter(getSupportFragmentManager(), fragments);
+        mViewPager.setAdapter(mTagViewPagerAdapter);
         mViewPager.addOnPageChangeListener(viewPagerPageChangeListener);
     }
 
@@ -81,10 +82,10 @@ public class AddTagActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            if(position == tagViewPagerAdapter.getCount() -1){
+            if (position == mTagViewPagerAdapter.getCount() - 1) {
                 mNext.setText(getResources().getString(R.string.done));
             }
-            if(position == tagViewPagerAdapter.getCount() - 2){
+            if (position == mTagViewPagerAdapter.getCount() - 2) {
                 mNext.setVisibility(View.INVISIBLE);
             }
         }
@@ -95,7 +96,12 @@ public class AddTagActivity extends AppCompatActivity {
         }
     };
 
-    public void hideNavButton(boolean state){
+    public void hideNavButton(boolean state) {
         mNext.setVisibility(state ? View.INVISIBLE : View.VISIBLE);
+    }
+
+    @Override
+    public void inputChange(CharSequence label) {
+        mTagLabel = label.toString();
     }
 }

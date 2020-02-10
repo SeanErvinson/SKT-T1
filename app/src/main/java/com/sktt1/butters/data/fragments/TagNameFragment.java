@@ -1,6 +1,7 @@
 package com.sktt1.butters.data.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,12 @@ import com.sktt1.butters.R;
 
 public class TagNameFragment extends Fragment {
 
+    public interface FragmentListener {
+        void inputChange(CharSequence label);
+    }
+
     private EditText mTagLabel;
+    private FragmentListener listener;
 
     public TagNameFragment() {
     }
@@ -36,7 +42,7 @@ public class TagNameFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_tag_name, container, false);
     }
 
-    private void initializeWidget(View view){
+    private void initializeWidget(View view) {
         mTagLabel = view.findViewById(R.id.et_add_tag_label);
 
         mTagLabel.addTextChangedListener(new TextWatcher() {
@@ -48,11 +54,12 @@ public class TagNameFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 AddTagActivity tagActivity = (AddTagActivity) getActivity();
-                if(tagActivity == null) return;
-                if(charSequence.length() > 0)
+                if (tagActivity == null) return;
+                if (charSequence.length() > 0)
                     tagActivity.hideNavButton(false);
                 else
                     tagActivity.hideNavButton(true);
+                listener.inputChange(charSequence);
             }
 
             @Override
@@ -60,5 +67,22 @@ public class TagNameFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentListener) {
+            listener = (FragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 }
