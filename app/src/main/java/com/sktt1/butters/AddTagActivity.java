@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,18 +12,21 @@ import android.widget.Button;
 
 import com.sktt1.butters.data.adapters.TagViewPagerAdapter;
 import com.sktt1.butters.data.extensions.LockViewPager;
+import com.sktt1.butters.data.fragments.TagConnectionFragment;
 import com.sktt1.butters.data.fragments.TagIntroFragment;
 import com.sktt1.butters.data.fragments.TagNameFragment;
 import com.sktt1.butters.data.models.Tag;
 
 import java.util.ArrayList;
 
-public class AddTagActivity extends AppCompatActivity implements TagNameFragment.FragmentListener {
+public class AddTagActivity extends AppCompatActivity implements TagNameFragment.FragmentListener, TagConnectionFragment.FragmentListener {
 
     private LockViewPager mViewPager;
     private TagViewPagerAdapter mTagViewPagerAdapter;
     private Button mNext;
     private String mTagLabel;
+    private BluetoothDevice mSelectedTagDevice;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +50,9 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
                     mViewPager.setCurrentItem(current);
                 } else {
                     Intent resultIntent = new Intent();
-
                     Tag newTag = new Tag() {{
                         setName(mTagLabel);
-                        setMacAddress(""); //Whatever was passed
+//                        setMacAddress(mSelectedTagDevice.getAddress());
                     }};
                     resultIntent.putExtra("newTag", newTag);
                     setResult(RESULT_OK, resultIntent);
@@ -103,5 +106,10 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
     @Override
     public void inputChange(CharSequence label) {
         mTagLabel = label.toString();
+    }
+
+    @Override
+    public void onSelectedDevice(BluetoothDevice selectedDevice) {
+        mSelectedTagDevice = selectedDevice;
     }
 }
