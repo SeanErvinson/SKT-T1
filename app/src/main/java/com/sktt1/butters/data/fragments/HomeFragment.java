@@ -1,8 +1,8 @@
 package com.sktt1.butters.data.fragments;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
     public  static final String TAG = "HomeFragment";
@@ -46,23 +47,35 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        initializeWidget(view);
-//        TODO: Check for all connected devices
-        //        if(bluetoothAdapter.isEnabled()){
-//            Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
-//            for (BluetoothDevice device: bluetoothDevices) {
-//                Log.d(TAG, "initializeBluetooth: "+ device.getName());
-//            }
-//        }
-        mTagsView.setLayoutManager(linearLayoutManager);
         fetchData();
-        TagRecyclerAdapter tagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
-        mTagsView.setAdapter(tagRecyclerAdapter);
+//        getDeviceStatus();
+        initializeWidget(view);
+        initializeRecyclerView();
     }
 
     private void initializeWidget(View view){
         mTagsView = view.findViewById(R.id.rv_home_tag_list);
+    }
+
+//    private void getDeviceStatus(){
+//    BluetoothAdapter.getDefaultAdapter()
+//        if(bluetoothAdapter.isEnabled()){
+//            Set<BluetoothDevice> connectedDevices = bluetoothAdapter.getBondedDevices();
+//            for(Tag tag: tags){
+//                for (BluetoothDevice device: connectedDevices) {
+//                    if(tag.getMacAddress().equals(device.getAddress())){
+//                        tag.setConnected(true);
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    private void initializeRecyclerView(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mTagsView.setLayoutManager(linearLayoutManager);
+        TagRecyclerAdapter tagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
+        mTagsView.setAdapter(tagRecyclerAdapter);
     }
 
     @Override
@@ -86,10 +99,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
-//        databaseHelper.locationCreateRow("SKT ni emman", "11123", "1212");
-//        databaseHelper.tagCreateDevice("SKT ni emman", "somethingMacAddress", "0", "5/5/2021", false);
-
-
     }
 
     public void fetchData(){
