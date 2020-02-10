@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                         setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
                         setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
                         setLastSeenTime(date);
-                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))))
+                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
 
                     }}
             );
