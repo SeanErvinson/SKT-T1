@@ -2,6 +2,7 @@ package com.sktt1.butters.data.fragments;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -16,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sktt1.butters.AddTagActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
@@ -28,11 +31,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
     public  static final String TAG = "HomeFragment";
 
+    private static final int ADD_TAG_REQUEST_CODE = 4144;
+
     private OnFragmentInteractionListener mListener;
     private RecyclerView mTagsView;
+    private FloatingActionButton mFab;
     private ArrayList<Tag> tags;
     private DatabaseHelper databaseHelper;
 
@@ -55,6 +64,32 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 
     private void initializeWidget(View view){
         mTagsView = view.findViewById(R.id.rv_home_tag_list);
+        mFab = view.findViewById(R.id.fab_add_tag);
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddTagActivity.class);
+                startActivityForResult(intent, ADD_TAG_REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == ADD_TAG_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                if(data != null){
+                    Tag tag = data.getParcelableExtra("newTag");
+                    tags.add(tag);
+//                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
+                }
+            }else if(resultCode == RESULT_CANCELED){
+//                Toast
+            }
+        }
     }
 
 //    private void getDeviceStatus(){
