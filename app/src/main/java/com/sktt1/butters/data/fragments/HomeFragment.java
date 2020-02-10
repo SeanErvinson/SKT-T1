@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sktt1.butters.AddTagActivity;
@@ -87,7 +88,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 //                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
                 }
             }else if(resultCode == RESULT_CANCELED){
-//                Toast
+                Toast.makeText(getContext(), "Operation was canceled", Toast.LENGTH_LONG).show();
             }
         }
     }
