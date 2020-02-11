@@ -30,8 +30,6 @@ public class SettingsFragment extends Fragment {
 
     private ListView mSettingsTagsView;
     private OnFragmentInteractionListener mListener;
-    private ArrayList<Tag> tags;
-    private DatabaseHelper databaseHelper;
 
     public SettingsFragment() {}
 
@@ -45,12 +43,10 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchData();
         initializeWidget(view);
     }
 
     private void initializeWidget(View view){
-        mSettingsTagsView = view.findViewById(R.id.lv_settings_tags_list);
     }
 
     @Override
@@ -73,35 +69,5 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        databaseHelper = new DatabaseHelper(getActivity());
     }
-
-    private void fetchData(){
-        final Cursor data = databaseHelper.tagFeedList();
-
-        tags = new ArrayList<>();
-        data.moveToFirst();
-        while(data.moveToNext()) {
-            tags.add(
-                    new Tag(){{
-                        Date date = new Date();
-                        try {
-                            date = DateUtility.getStringDate(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)), DateTimePattern.DATE);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        setId(data.getInt(data.getColumnIndex(TagTable.COL_ID)));
-                        setName(data.getString(data.getColumnIndex(TagTable.COL_NAME)));
-                        setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
-                        setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
-                        setLastSeenTime(date);
-                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
-
-                    }}
-            );
-        }
-    }
-
-
-
 }
