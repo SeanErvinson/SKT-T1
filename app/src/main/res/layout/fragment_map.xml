@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:id="@+id/fragment_googleMap">
 
         <fragment
@@ -19,7 +21,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
+        android:id="@+id/bs_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -29,7 +31,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/map_button_buzz"
+            android:id="@+id/btn_map_buzz"
             android:background="@drawable/rectangle_button_border"
             android:textColor="@color/colorBoxText"
             android:text="@string/map_button_label_buzz" />
@@ -37,9 +39,9 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/map_button_sit"
+            android:id="@+id/btn_map_sit"
             android:background="@drawable/rectangle_button_border"
             android:textColor="@color/colorBoxText"
             android:text="@string/map_button_label_sit" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

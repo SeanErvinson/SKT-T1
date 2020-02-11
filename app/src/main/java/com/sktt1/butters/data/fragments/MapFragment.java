@@ -118,8 +118,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void initializeWidget(View view) {
-        mBuzz = view.findViewById(R.id.map_button_buzz);
-        mSit = view.findViewById(R.id.map_button_sit);
+        mBuzz = view.findViewById(R.id.btn_map_buzz);
+        mSit = view.findViewById(R.id.btn_map_sit);
     }
 
 
