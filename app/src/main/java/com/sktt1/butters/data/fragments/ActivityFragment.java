@@ -26,15 +26,16 @@ import java.util.Date;
 
 
 public class ActivityFragment extends Fragment implements ActivityRecyclerAdapter.OnActivityListener {
-    public  static final String TAG = "ActivityFragment";
+    public static final String TAG = "ActivityFragment";
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mActivityView;
     private ArrayList<Activity> activities;
-    private ActivityRecyclerAdapter activityRecyclerAdapter;
+    private ActivityRecyclerAdapter mActivityRecyclerAdapter;
     private DatabaseHelper databaseHelper;
 
-    public ActivityFragment() {}
+    public ActivityFragment() {
+    }
 
 
     @Override
@@ -45,19 +46,22 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        initializeWidget(view);
-
-        mActivityView.setLayoutManager(linearLayoutManager);
         fetchData();
-        activityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
-        mActivityView.setAdapter(activityRecyclerAdapter);
+        initializeWidget(view);
+        initializeRecyclerView();
+
     }
 
-    private void initializeWidget(View view){
+    private void initializeWidget(View view) {
         mActivityView = view.findViewById(R.id.rv_activity_activity_list);
     }
 
+    private void initializeRecyclerView() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mActivityView.setLayoutManager(linearLayoutManager);
+        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
+        mActivityView.setAdapter(mActivityRecyclerAdapter);
+    }
 
 
     @Override
@@ -78,13 +82,13 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         super.onDestroy();
     }
 
-    public void fetchData(){
+    private void fetchData() {
         final Cursor data = databaseHelper.activityFeedList();
 
         activities = new ArrayList<>();
         data.moveToFirst();
-        while(data.moveToNext()){
-            if(data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false"));
+        while (data.moveToNext()) {
+            if (data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false")) ;
             {
                 activities.add(
                         new Activity() {{
