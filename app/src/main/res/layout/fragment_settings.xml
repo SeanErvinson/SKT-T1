@@ -7,7 +7,8 @@
     tools:context=".data.fragments.SettingsFragment">
 
     <LinearLayout
-        android:layout_weight="0.4"
+        android:id="@+id/ll_settings_userData"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="center"
@@ -35,42 +36,56 @@
             android:id="@+id/tv_settings_nickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Nickname: %l$s"
+            tools:text="Nickname: %1$s"
+            android:textSize="@dimen/xsTextSize">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_settings_findMyPhoneAlarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Find my phone alarm: %1$s"
             android:textSize="@dimen/xsTextSize">
         </TextView>
         <TextView
             android:id="@+id/tv_settings_numberDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Devices: %l$s"
+            tools:text="Devices: %1$s"
             android:textSize="@dimen/xsTextSize">
         </TextView>
         <TextView
             android:id="@+id/tv_settings_numberActiveDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Active Devices: %l$s"
+            tools:text="Active Devices: %1$s"
             android:textSize="@dimen/xsTextSize">
         </TextView>
         <TextView
             android:id="@+id/tv_settings_numberInactiveDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Inactive Devices: %l$s"
+            tools:text="Inactive Devices: %1$s"
             android:textSize="@dimen/xsTextSize">
         </TextView>
 
 
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/ll_settings_findMyPhoneAlarm"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:gravity="center"
         android:layout_height="0dp">
-        <ListView
+        <TextView
+            tools:text="Find my Phone Alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lv_settings_tags_list"/>
+            android:textSize="@dimen/mTextSize"/>
+        <TextView
+            tools:text="Set the sound this smartphone plays when alerted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/xsTextSize"/>
     </LinearLayout>
 </LinearLayout>
