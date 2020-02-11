@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -33,8 +34,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.models.Tag;
 
@@ -44,13 +47,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private OnFragmentInteractionListener mListener;
     private Button mBuzz, mSit;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private LinearLayout mBottonSheet;
+
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private CameraPosition mainCamera;
     private Location currentLocation;
 
     private LocationRequest locationRequest;
-    private LocationCallback locationCallback;
 
     public MapFragment() {
     }
@@ -59,15 +64,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeWidget(view);
-
-        mSit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addTag(new Tag() {{
-                    setName("Hello");
-                }});
-            }
-        });
     }
 
     @Override
@@ -79,36 +75,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(20 * 1000);
 
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
-                for (Location location : locationResult.getLocations()) {
-                    if (location != null) {
-                        currentLocation = location;
-                        Log.d(TAG, "Location " + location.getLongitude() + "----" + location.getLatitude());
-                        if(mMap != null)
-                            mMap.clear();
-                            mMap.addCircle(new CircleOptions()
-                                    .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                                    .radius(70)
-                                    .fillColor(Color.argb(25, 240, 0, 0))
-                                    .strokeColor(Color.argb(30, 240, 0, 0))
-                                    .strokeWidth(1));
-                    }
-                }
-            }
-        };
-
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 Log.d(TAG, "Success");
                 currentLocation = location;
                 SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-                if(mapFragment != null)
+                if (mapFragment != null)
                     mapFragment.getMapAsync(MapFragment.this);
             }
         });
@@ -120,22 +93,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initializeWidget(View view) {
         mBuzz = view.findViewById(R.id.btn_map_buzz);
         mSit = view.findViewById(R.id.btn_map_sit);
+        mBottonSheet = view.findViewById(R.id.bs_map_action);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottonSheet);
+        mBottomSheetBehavior.setPeekHeight(0);
     }
 
 
-    public void addTag(Tag tag) {
+    public MarkerOptions addTagMarker(Tag tag) {
         MarkerOptions m = new MarkerOptions()
-                .position(new LatLng(37.4219999, -122.0862462))
+                .position(new LatLng(14.6097465, 120.9924238))
                 .title(tag.getName())
                 .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_person_24px));
         if (tag.getLastSeenLocationId() != 0) {
             m.snippet(String.valueOf(tag.getId()));
         }
-        mMap.addMarker(m);
+        return m;
     }
 
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        if (context == null) return null;
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -164,6 +141,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    marker.setAlpha(0.5f);
+                    marker.setTitle("Hello World");
+                } else {
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    marker.setAlpha(1f);
+                }
+                return true;
+            }
+        });
+
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         googleMap.setMinZoomPreference(15);
         googleMap.setMyLocationEnabled(true);
@@ -178,4 +170,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
     }
+
+    private LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            if (locationResult == null) {
+                return;
+            }
+            for (Location location : locationResult.getLocations()) {
+                if (location != null) {
+                    currentLocation = location;
+                    Log.d(TAG, "Location " + location.getLongitude() + "----" + location.getLatitude());
+                    if (mMap != null) {
+                        mMap.clear();
+                        mMap.addMarker(addTagMarker(new Tag() {{
+                            setName("Hello World");
+                        }}));
+                        mMap.addCircle(new CircleOptions()
+                                .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                .radius(70)
+                                .fillColor(Color.argb(25, 240, 0, 0))
+                                .strokeColor(Color.argb(30, 240, 0, 0))
+                                .strokeWidth(1));
+                    }
+                }
+            }
+        }
+    };
 }
+
