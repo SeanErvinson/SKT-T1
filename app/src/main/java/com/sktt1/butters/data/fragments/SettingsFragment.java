@@ -1,12 +1,16 @@
 package com.sktt1.butters.data.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +20,7 @@ import com.sktt1.butters.R;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.preference.SharedPreferenceHelper;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
@@ -24,14 +29,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "SettingsFragment";
 
-
-    private ListView mSettingsTagsView;
     private OnFragmentInteractionListener mListener;
+    private SharedPreferenceHelper sharedPreferencesHelper;
 
-    public SettingsFragment() {}
+    LinearLayout llSettingsUserData, llSettingsFindMyPhoneAlarm;
+    TextView tvSettingsUsername, tvSettingsUserNickname, tvSettingsFindMyPhoneAlarm, tvSettingsNumberDevices,
+            tvSettingsNumberActiveDevices, tvSettingsNumberInactiveDevices;
+
+    public SettingsFragment() {
+    }
 
 
     @Override
@@ -46,12 +55,26 @@ public class SettingsFragment extends Fragment {
         initializeWidget(view);
     }
 
-    private void initializeWidget(View view){
+    private void initializeWidget(View view) {
+        llSettingsUserData = view.findViewById(R.id.ll_settings_userData);
+        llSettingsFindMyPhoneAlarm = view.findViewById(R.id.ll_settings_findMyPhoneAlarm);
+        tvSettingsUsername = view.findViewById(R.id.tv_settings_username);
+        tvSettingsUserNickname = view.findViewById(R.id.tv_settings_nickName);
+        tvSettingsFindMyPhoneAlarm = view.findViewById(R.id.tv_settings_findMyPhoneAlarm);
+        tvSettingsNumberDevices = view.findViewById(R.id.tv_settings_numberDevices);
+        tvSettingsNumberActiveDevices = view.findViewById(R.id.tv_settings_numberActiveDevices);
+        tvSettingsNumberInactiveDevices = view.findViewById(R.id.tv_settings_numberInactiveDevices);
+
+        llSettingsUserData.setOnClickListener(this);
+        llSettingsFindMyPhoneAlarm.setOnClickListener(this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        sharedPreferencesHelper = new SharedPreferenceHelper(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -69,5 +92,18 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.ll_settings_userData:
+                Toast.makeText(getContext(), "clicked user data", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.ll_settings_findMyPhoneAlarm:
+                Toast.makeText(getContext(), "clicked find my phone", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
