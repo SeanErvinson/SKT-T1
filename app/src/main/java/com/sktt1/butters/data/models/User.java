@@ -6,6 +6,15 @@ public class User {
     private int totalDevices;
     private int activeDevices;
     private int inactiveDevices;
+    private int findMyPhoneAlarm;
+
+    public int getFindMyPhoneAlarm() {
+        return findMyPhoneAlarm;
+    }
+
+    public void setFindMyPhoneAlarm(int findMyPhoneAlarm) {
+        this.findMyPhoneAlarm = findMyPhoneAlarm;
+    }
 
     public String getName() {
         return name;
