@@ -12,8 +12,8 @@ public class SharedPreferenceHelper {
     private static final String PREFERENCE = "skt_pref";
 
     // Shared Preferences
-    public static final String USER_NAME = "userName";
-    public static final String USER_NICKNAME = "userNickname";
+    private static final String USER_NAME = "userName";
+    private static final String USER_NICKNAME = "userNickname";
 
     public SharedPreferenceHelper(Context context) {
         this.context = context;
