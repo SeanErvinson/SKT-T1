@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private Fragment mHomeFragment, mMapFragment, mSettingsFragment, mActivityFragment;
     private ImageView mAccountProfile, mActivity;
     private Fragment currentFragment;
-    private FragmentManager fragmentManager;
+    private FragmentManager mFragmentManager;
 
 
     @Override
@@ -63,8 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         mActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentFragment = new ActivityFragment();
-                fragmentManager.beginTransaction().replace(R.id.fl_main_container, currentFragment).commit();
+                changeFragment(new ActivityFragment(), ActivityFragment.class.getSimpleName());
             }
         });
     }
@@ -75,9 +75,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     private void initializeFragments() {
-        fragmentManager = getSupportFragmentManager();
-        currentFragment = new HomeFragment();
-        fragmentManager.beginTransaction().replace(R.id.fl_main_container, currentFragment).commit();
+        mFragmentManager = getSupportFragmentManager();
+        changeFragment(new HomeFragment(), HomeFragment.class.getSimpleName());
     }
 
 
@@ -90,16 +89,34 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                currentFragment = new HomeFragment();
+                changeFragment(new HomeFragment(), HomeFragment.class.getSimpleName());
                 break;
             case R.id.navigation_map:
-                currentFragment = new MapFragment();
+                changeFragment(new MapFragment(), MapFragment.class.getSimpleName());
                 break;
             case R.id.navigation_settings:
-                currentFragment = new SettingsFragment();
+                changeFragment(new SettingsFragment(), SettingsFragment.class.getSimpleName());
                 break;
         }
-        fragmentManager.beginTransaction().replace(R.id.fl_main_container, currentFragment).commit();
         return true;
+    }
+
+    public void changeFragment(Fragment fragment, String tagFragmentName) {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+
+        Fragment currentFragment = mFragmentManager.getPrimaryNavigationFragment();
+        if (currentFragment != null) {
+            fragmentTransaction.hide(currentFragment);
+        }
+        Fragment fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName);
+        if (fragmentTemp == null) {
+            fragmentTemp = fragment;
+            fragmentTransaction.add(R.id.fl_main_container, fragmentTemp, tagFragmentName);
+        } else {
+            fragmentTransaction.show(fragmentTemp);
+        }
+        fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
+        fragmentTransaction.setReorderingAllowed(true);
+        fragmentTransaction.commitNowAllowingStateLoss();
     }
 }
