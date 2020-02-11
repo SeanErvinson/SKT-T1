@@ -14,6 +14,7 @@ public class SharedPreferenceHelper {
     // Shared Preferences
     private static final String USER_NAME = "userName";
     private static final String USER_NICKNAME = "userNickname";
+    private static final String USER_FIND_MY_PHONE_ALARM = "userFindMyPhoneAlarm";
 
     public SharedPreferenceHelper(Context context) {
         this.context = context;
@@ -30,18 +31,26 @@ public class SharedPreferenceHelper {
         return sharedPreferences.getBoolean(INIT_LAUNCH, true);
     }
 
-    public void editUser(String name, String nickname){
+    public void setUser(String name, String nickname){
         editor.putString(USER_NAME, name);
         editor.putString(USER_NICKNAME, nickname);
-
         editor.apply();
     }
 
-    public String loadUser(){
-        StringBuilder userDetails = new StringBuilder();
-        userDetails.append(sharedPreferences.getString(USER_NAME, ""));
-        userDetails.append(",");
-        userDetails.append(sharedPreferences.getString(USER_NICKNAME, ""));
-        return userDetails.toString();
+    public void setUserFindMyPhoneAlarm(int findMyPhoneAlarm){
+        editor.putInt(USER_FIND_MY_PHONE_ALARM, findMyPhoneAlarm);
+        editor.apply();
+    }
+
+    public String getUserName(){
+        return sharedPreferences.getString(USER_NAME, "");
+    }
+
+    public String getUserNickname(){
+        return sharedPreferences.getString(USER_NICKNAME, "");
+    }
+
+    public int getUserFindMyPhoneAlarm(){
+        return sharedPreferences.getInt(USER_FIND_MY_PHONE_ALARM, 0);
     }
 }
