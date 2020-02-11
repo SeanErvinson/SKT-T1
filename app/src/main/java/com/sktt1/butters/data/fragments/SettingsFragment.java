@@ -16,6 +16,8 @@ import com.sktt1.butters.R;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +86,7 @@ public class SettingsFragment extends Fragment {
                     new Tag(){{
                         Date date = new Date();
                         try {
-                            date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+                            date = DateUtility.getStringDate(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)), DateTimePattern.DATE);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
