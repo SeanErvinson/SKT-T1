@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    >
 
     <FrameLayout
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:id="@+id/fragment_googleMap">
 
         <fragment
@@ -17,11 +18,11 @@
             android:layout_gravity="center"
             android:layout_height="match_parent"
             />
-
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/bs_map"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:id="@+id/bs_map_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -44,4 +45,4 @@
             android:textColor="@color/colorBoxText"
             android:text="@string/map_button_label_sit" />
     </LinearLayout>
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
