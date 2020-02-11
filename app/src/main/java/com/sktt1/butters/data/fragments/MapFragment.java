@@ -1,6 +1,10 @@
 package com.sktt1.butters.data.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,12 +17,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -44,6 +48,7 @@ import com.sktt1.butters.data.models.Tag;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "MapFragment";
+    private final static int LOCATION_ENABLE_REQUEST = 1002;
 
     private OnFragmentInteractionListener mListener;
     private Button mBuzz, mSit;
@@ -54,6 +59,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private CameraPosition mainCamera;
     private Location currentLocation;
+    private boolean isLocationUpdate;
+    private LocationCallback locationCallback;
 
     private LocationRequest locationRequest;
 
@@ -64,30 +71,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeWidget(view);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+        isLocationUpdate = false;
+        initializeLocationCallback();
+        initializeLocationRequest();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_map, container, false);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(20 * 1000);
-
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                Log.d(TAG, "Success");
-                currentLocation = location;
-                SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-                if (mapFragment != null)
-                    mapFragment.getMapAsync(MapFragment.this);
-            }
-        });
-
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-        return rootView;
+        return inflater.inflate(R.layout.fragment_map, container, false);
     }
 
     private void initializeWidget(View view) {
@@ -98,10 +90,77 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mBottomSheetBehavior.setPeekHeight(0);
     }
 
+    private void initializeLocationRequest() {
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(20 * 1000);
+    }
+
+    private void initializeLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    return;
+                }
+                for (Location location : locationResult.getLocations()) {
+                    if (location != null) {
+                        currentLocation = location;
+                        if (mMap != null) {
+                            mMap.clear();
+                            mMap.addMarker(addTagMarker(new Tag() {{
+                                setName("Hello World");
+                            }}));
+                            mMap.addCircle(new CircleOptions()
+                                    .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                    .radius(40)
+                                    .fillColor(Color.argb(25, 240, 0, 0))
+                                    .strokeColor(Color.argb(30, 240, 0, 0))
+                                    .strokeWidth(1));
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+
+    private void startLocationUpdate() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                isLocationUpdate = true;
+                currentLocation = location;
+                SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+                if (mapFragment != null)
+                    mapFragment.getMapAsync(MapFragment.this);
+            }
+        });
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+
+    private void stopLocationUpdate() {
+        isLocationUpdate = false;
+        if (fusedLocationProviderClient != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                        PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_ENABLE_REQUEST);
+        } else {
+            startLocationUpdate();
+        }
+    }
 
     public MarkerOptions addTagMarker(Tag tag) {
         MarkerOptions m = new MarkerOptions()
-                .position(new LatLng(14.6097465, 120.9924238))
+                .position(new LatLng(14.6229344, 120.9913965))
                 .title(tag.getName())
                 .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_person_24px));
         if (tag.getLastSeenLocationId() != 0) {
@@ -109,7 +168,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
         return m;
     }
-
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         if (context == null) return null;
@@ -119,23 +177,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -157,7 +198,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.setMinZoomPreference(15);
+        googleMap.setMinZoomPreference(18);
         googleMap.setMyLocationEnabled(true);
 
         googleMap.clear();
@@ -171,31 +212,59 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
     }
 
-    private LocationCallback locationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            if (locationResult == null) {
-                return;
-            }
-            for (Location location : locationResult.getLocations()) {
-                if (location != null) {
-                    currentLocation = location;
-                    Log.d(TAG, "Location " + location.getLongitude() + "----" + location.getLatitude());
-                    if (mMap != null) {
-                        mMap.clear();
-                        mMap.addMarker(addTagMarker(new Tag() {{
-                            setName("Hello World");
-                        }}));
-                        mMap.addCircle(new CircleOptions()
-                                .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                                .radius(70)
-                                .fillColor(Color.argb(25, 240, 0, 0))
-                                .strokeColor(Color.argb(30, 240, 0, 0))
-                                .strokeWidth(1));
-                    }
-                }
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopLocationUpdate();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isLocationUpdate) {
+            checkPermissions();
+        }
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+        stopLocationUpdate();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_ENABLE_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startLocationUpdate();
+            } else {
+                Toast.makeText(getContext(), getString(R.string.location_error_message), Toast.LENGTH_LONG).show();
             }
         }
-    };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == LOCATION_ENABLE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                isLocationUpdate = true;
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+            }
+        }
+    }
 }
 
