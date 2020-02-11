@@ -1,31 +1,22 @@
 package com.sktt1.butters.data.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.sktt1.butters.R;
-import com.sktt1.butters.data.adapters.SettingsTagAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,27 +37,18 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
-
-        return view;
+        return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         fetchData();
         initializeWidget(view);
-        SettingsTagAdapter adapter = new SettingsTagAdapter(getContext(), tags);
-        mSettingsTagsView.setAdapter(adapter);
-
-
     }
 
     private void initializeWidget(View view){
         mSettingsTagsView = view.findViewById(R.id.lv_settings_tags_list);
-
     }
 
     @Override
@@ -92,7 +74,7 @@ public class SettingsFragment extends Fragment {
         databaseHelper = new DatabaseHelper(getActivity());
     }
 
-    public void fetchData(){
+    private void fetchData(){
         final Cursor data = databaseHelper.tagFeedList();
 
         tags = new ArrayList<>();
