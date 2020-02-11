@@ -1,6 +1,5 @@
 package com.sktt1.butters.data.fragments;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,28 +24,31 @@ import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
-    public  static final String TAG = "HomeFragment";
+    public static final String TAG = "HomeFragment";
 
     private static final int ADD_TAG_REQUEST_CODE = 4144;
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mTagsView;
     private FloatingActionButton mFab;
+    private TagRecyclerAdapter mTagRecyclerAdapter;
+
     private ArrayList<Tag> tags;
     private DatabaseHelper databaseHelper;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +65,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         initializeRecyclerView();
     }
 
-    private void initializeWidget(View view){
+    private void initializeWidget(View view) {
         mTagsView = view.findViewById(R.id.rv_home_tag_list);
         mFab = view.findViewById(R.id.fab_add_tag);
 
@@ -80,14 +82,14 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_TAG_REQUEST_CODE){
-            if(resultCode == RESULT_OK){
-                if(data != null){
+        if (requestCode == ADD_TAG_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
                     Tag tag = data.getParcelableExtra("newTag");
                     tags.add(tag);
 //                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
                 }
-            }else if(resultCode == RESULT_CANCELED){
+            } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(getContext(), "Operation was canceled", Toast.LENGTH_LONG).show();
             }
         }
@@ -107,11 +109,11 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 //        }
 //    }
 
-    private void initializeRecyclerView(){
+    private void initializeRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mTagsView.setLayoutManager(linearLayoutManager);
-        TagRecyclerAdapter tagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
-        mTagsView.setAdapter(tagRecyclerAdapter);
+        mTagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
+        mTagsView.setAdapter(mTagRecyclerAdapter);
     }
 
     @Override
@@ -137,17 +139,18 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         databaseHelper = new DatabaseHelper(getActivity());
     }
 
-    public void fetchData(){
+    private void fetchData() {
         final Cursor data = databaseHelper.tagFeedList();
 
         tags = new ArrayList<>();
         data.moveToFirst();
-        while(data.moveToNext()) {
+        while (data.moveToNext()) {
             tags.add(
-                    new Tag(){{
-                        Date date = new Date();
+                    new Tag() {{
+                        Date date = null;
+                        String dateValue = data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME));
                         try {
-                            date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+                            date = DateUtility.getStringDate(dateValue, DateTimePattern.DATE);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -157,7 +160,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                         setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
                         setLastSeenTime(date);
                         setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
-
                     }}
             );
         }
