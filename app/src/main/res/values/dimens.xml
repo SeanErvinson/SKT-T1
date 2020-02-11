@@ -9,8 +9,8 @@
     <dimen name="lSize">32dp</dimen>
     <dimen name="xlSize">40dp</dimen>
     <dimen name="xxlSize">48dp</dimen>
-    <dimen name="xxxlSize">80dp</dimen>
-    <dimen name="hSize">96dp</dimen>
+    <dimen name="hSize">64dp</dimen>
+    <dimen name="xhSize">80dp</dimen>
 
 
     <!--  Margins & Padding  -->

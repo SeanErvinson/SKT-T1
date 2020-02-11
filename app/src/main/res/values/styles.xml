@@ -1,11 +1,17 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryInvert</item>
         <item name="colorAccent">@color/colorSecondary</item>
         <item name="android:fontFamily">@font/roboto</item>
+        <item name="actionBarTheme">@style/AppTheme.ActionBar</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="android:height">@dimen/xlSize</item>
+        <item name="height">@dimen/xlSize</item>
     </style>
 
     <style name="RectangleButtonTheme" parent="Widget.AppCompat.Button">
