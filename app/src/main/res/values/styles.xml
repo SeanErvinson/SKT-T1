@@ -15,9 +15,11 @@
     </style>
 
     <style name="RectangleButtonTheme" parent="Widget.AppCompat.Button">
-        <item name="android:color">@color/colorSecondary</item>
         <item name="android:background">@drawable/rectangle_button_border</item>
-        <item name="android:textSize">@dimen/mTextSize</item>
+        <item name="android:textSize">@dimen/sTextSize</item>
+        <item name="android:paddingStart">@dimen/lSpacing</item>
+        <item name="android:paddingEnd">@dimen/lSpacing</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="EditTextTheme">
