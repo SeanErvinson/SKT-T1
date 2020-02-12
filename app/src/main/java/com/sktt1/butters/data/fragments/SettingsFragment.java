@@ -1,8 +1,10 @@
 package com.sktt1.butters.data.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.Ringtone;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.sktt1.butters.EditUserDetailsActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
@@ -35,8 +38,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private SharedPreferenceHelper sharedPreferencesHelper;
 
-    LinearLayout llSettingsUserData, llSettingsFindMyPhoneAlarm;
-    TextView tvSettingsUsername, tvSettingsUserNickname, tvSettingsFindMyPhoneAlarm, tvSettingsNumberDevices,
+    private LinearLayout llSettingsUserData, llSettingsFindMyPhoneAlarm;
+    private TextView tvSettingsUsername, tvSettingsUserNickname, tvSettingsFindMyPhoneAlarm, tvSettingsNumberDevices,
             tvSettingsNumberActiveDevices, tvSettingsNumberInactiveDevices;
 
     public SettingsFragment() {
@@ -53,6 +56,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeWidget(view);
+        updateUserDetails();
+
+
     }
 
     private void initializeWidget(View view) {
@@ -95,15 +101,27 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateUserDetails();
+    }
+
+    @Override
     public void onClick(View view) {
 
         switch (view.getId()) {
             case R.id.ll_settings_userData:
-                Toast.makeText(getContext(), "clicked user data", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), EditUserDetailsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.ll_settings_findMyPhoneAlarm:
                 Toast.makeText(getContext(), "clicked find my phone", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    public void updateUserDetails(){
+        tvSettingsUsername.setText(sharedPreferencesHelper.getUserName());
+        tvSettingsUserNickname.setText(sharedPreferencesHelper.getUserNickname());
     }
 }
