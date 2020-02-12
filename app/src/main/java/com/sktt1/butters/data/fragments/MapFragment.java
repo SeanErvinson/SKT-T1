@@ -69,7 +69,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private Location currentLocation;
     private boolean isLocationUpdate;
     private LocationCallback locationCallback;
-    private Map<Marker, Tag> mTagMarkers = new HashMap<>();
 
     private LocationRequest locationRequest;
 
@@ -125,7 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                 setLastSeenTime(new Date());
                             }};
                             Marker newMarker = mMap.addMarker(addTagMarker(newTag));
-                            mTagMarkers.put(newMarker, newTag);
+                            newMarker.setTag(newTag);
                             mMap.addCircle(new CircleOptions()
                                     .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                                     .radius(40)
@@ -215,7 +214,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void setBottomSheetInformation(Marker selectedMarker){
-        final Tag selectedTag = mTagMarkers.get(selectedMarker);
+        final Tag selectedTag = (Tag) selectedMarker.getTag();
         if(selectedTag == null || selectedMarker == null){
             return;
         }
