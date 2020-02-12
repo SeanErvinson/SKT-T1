@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,9 +45,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     public static final String TAG = "MapFragment";
     private final static int LOCATION_ENABLE_REQUEST = 1002;
 
@@ -54,6 +61,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Button mBuzz, mSit;
     private BottomSheetBehavior mBottomSheetBehavior;
     private LinearLayout mBottonSheet;
+    private TextView mMapTagName, mMapTagLastLocation, mMapTagTime;
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -61,6 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private boolean isLocationUpdate;
     private LocationCallback locationCallback;
+    private Map<Marker, Tag> mTagMarkers = new HashMap<>();
 
     private LocationRequest locationRequest;
 
@@ -85,6 +94,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void initializeWidget(View view) {
         mBuzz = view.findViewById(R.id.btn_map_buzz);
         mSit = view.findViewById(R.id.btn_map_sit);
+        mMapTagName = view.findViewById(R.id.tv_map_tag_name);
+        mMapTagLastLocation = view.findViewById(R.id.tv_map_tag_last_location);
+        mMapTagTime = view.findViewById(R.id.tv_map_tag_time);
         mBottonSheet = view.findViewById(R.id.bs_map_action);
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottonSheet);
         mBottomSheetBehavior.setPeekHeight(0);
@@ -108,9 +120,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         currentLocation = location;
                         if (mMap != null) {
                             mMap.clear();
-                            mMap.addMarker(addTagMarker(new Tag() {{
+                            Tag newTag = new Tag() {{
                                 setName("Hello World");
-                            }}));
+                                setLastSeenTime(new Date());
+                            }};
+                            Marker newMarker = mMap.addMarker(addTagMarker(newTag));
+                            mTagMarkers.put(newMarker, newTag);
                             mMap.addCircle(new CircleOptions()
                                     .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                                     .radius(40)
@@ -148,6 +163,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
     private void checkPermissions() {
+        if(getContext() == null) return;
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -162,7 +178,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         MarkerOptions m = new MarkerOptions()
                 .position(new LatLng(14.6229344, 120.9913965))
                 .title(tag.getName())
-                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_person_24px));
+                .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot));
         if (tag.getLastSeenLocationId() != 0) {
             m.snippet(String.valueOf(tag.getId()));
         }
@@ -182,26 +198,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    marker.setAlpha(0.5f);
-                    marker.setTitle("Hello World");
-                } else {
-                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    marker.setAlpha(1f);
-                }
-                return true;
-            }
-        });
+        mMap.setOnMarkerClickListener(this);
+        mMap.setMyLocationEnabled(false);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMinZoomPreference(18);
 
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.setMinZoomPreference(18);
-        googleMap.setMyLocationEnabled(true);
-
-        googleMap.clear();
+        mMap.clear();
 
         mainCamera = CameraPosition.builder()
                 .target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
@@ -209,7 +211,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .bearing(0)
                 .build();
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
+    }
+
+    private void setBottomSheetInformation(Marker selectedMarker){
+        final Tag selectedTag = mTagMarkers.get(selectedMarker);
+        if(selectedTag == null || selectedMarker == null){
+            return;
+        }
+        mMapTagName.setText(selectedTag.getName());
+        String time = DateUtility.getFormattedDate(selectedTag.getLastSeenTime(), DateTimePattern.TIME);
+        mMapTagTime.setText(getString(R.string.time_recorded, time));
+//        String location = selectedTag.getLastSeenLocationId();
+        mMapTagLastLocation.setText(getString(R.string.last_seen_location, "UST"));
+        mBuzz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Buzz "+selectedTag.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        mSit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "Sit "+selectedTag.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void resetBottomSheetInformation(){
+        mMapTagName.setText(null);
+        mMapTagTime.setText(null);
+        mMapTagLastLocation.setText(null);
+        mSit.setOnClickListener(null);
+        mBuzz.setOnClickListener(null);
     }
 
     @Override
@@ -265,6 +299,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             }
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            marker.setIcon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot_selected));
+            setBottomSheetInformation(marker);
+        } else {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            marker.setIcon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot));
+            resetBottomSheetInformation();
+        }
+        return true;
     }
 }
 
