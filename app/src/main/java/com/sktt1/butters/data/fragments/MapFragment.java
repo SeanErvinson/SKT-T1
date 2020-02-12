@@ -49,9 +49,6 @@ import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     public static final String TAG = "MapFragment";
@@ -173,7 +170,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    public MarkerOptions addTagMarker(Tag tag) {
+    private MarkerOptions addTagMarker(Tag tag) {
         MarkerOptions m = new MarkerOptions()
                 .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                 .title(tag.getName())
@@ -214,10 +211,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
 
     private void setBottomSheetInformation(Marker selectedMarker){
+        if(selectedMarker == null) return;
         final Tag selectedTag = (Tag) selectedMarker.getTag();
-        if(selectedTag == null || selectedMarker == null){
-            return;
-        }
+        if(selectedTag == null) return;
         mMapTagName.setText(selectedTag.getName());
         String time = DateUtility.getFormattedDate(selectedTag.getLastSeenTime(), DateTimePattern.TIME);
         mMapTagTime.setText(getString(R.string.time_recorded, time));
