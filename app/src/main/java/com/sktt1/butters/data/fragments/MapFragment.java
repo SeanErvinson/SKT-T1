@@ -176,7 +176,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     public MarkerOptions addTagMarker(Tag tag) {
         MarkerOptions m = new MarkerOptions()
-                .position(new LatLng(14.6229344, 120.9913965))
+                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                 .title(tag.getName())
                 .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot));
         if (tag.getLastSeenLocationId() != 0) {
