@@ -70,8 +70,8 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
     private void initializeViewPager() {
         ArrayList<Fragment> fragments = new ArrayList<>();
         fragments.add(TagIntroFragment.newInstance(R.layout.add_tag_instruction_1));
+        fragments.add(new TagConnectionFragment());
         fragments.add(new TagNameFragment());
-        fragments.add(TagIntroFragment.newInstance(R.layout.add_tag_instruction_1));
         mTagViewPagerAdapter = new TagViewPagerAdapter(getSupportFragmentManager(), fragments);
         mViewPager.setAdapter(mTagViewPagerAdapter);
         mViewPager.addOnPageChangeListener(viewPagerPageChangeListener);
