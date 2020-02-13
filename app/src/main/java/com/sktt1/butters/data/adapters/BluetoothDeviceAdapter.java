@@ -1,6 +1,7 @@
 package com.sktt1.butters.data.adapters;
 
 import android.bluetooth.BluetoothDevice;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
     private ArrayList<BluetoothDevice> mLeDevices;
     private final OnDeviceListener onDeviceListener;
+    public int selectedPosition = 0;
 
     public BluetoothDeviceAdapter(OnDeviceListener onDeviceListener) {
         this.mLeDevices = new ArrayList<>();
@@ -34,6 +36,11 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     @Override
     public void onBindViewHolder(@NonNull BluetoothDeviceViewHolder holder, int position) {
         holder.bindName(mLeDevices.get(position).getName());
+        if(selectedPosition == position){
+            holder.itemView.setBackgroundColor(Color.parseColor("#e6e6e6"));
+        }else{
+            holder.itemView.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
     }
 
     @Override
