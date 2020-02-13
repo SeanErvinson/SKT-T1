@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,7 @@ public class TagConnectionFragment extends Fragment implements BluetoothDeviceAd
 
     public TagConnectionFragment() {
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -128,10 +128,16 @@ public class TagConnectionFragment extends Fragment implements BluetoothDeviceAd
     @Override
     public void onClick(int index) {
         BluetoothDevice device = mBluetoothDeviceAdapter.getDevice(index);
-
+        mBluetoothDeviceAdapter.selectedPosition = index;
         AddTagActivity tagActivity = (AddTagActivity) getActivity();
-        tagActivity.hideNavButton(false);
-        mListener.onSelectedDevice(device);
+        if(device == null) return;
+        if(device.getName().equals("SKT-T1")){
+            mListener.onSelectedDevice(device);
+            tagActivity.hideNavButton(false);
+        }else{
+            Toast.makeText(getContext(), "Not a compatible device.", Toast.LENGTH_SHORT).show();
+            tagActivity.hideNavButton(true);
+        }
     }
 
     public interface FragmentListener {
