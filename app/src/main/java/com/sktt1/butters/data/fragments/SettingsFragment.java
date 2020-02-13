@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.sktt1.butters.EditFindMyPhoneAlarmActivity;
 import com.sktt1.butters.EditUserDetailsActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.database.DatabaseHelper;
@@ -109,18 +110,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
+        Intent intent;
+
         switch (view.getId()) {
             case R.id.ll_settings_userData:
-                Intent intent = new Intent(getActivity(), EditUserDetailsActivity.class);
+                intent = new Intent(getActivity(), EditUserDetailsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.ll_settings_findMyPhoneAlarm:
-                Toast.makeText(getContext(), "clicked find my phone", Toast.LENGTH_SHORT).show();
+                intent = new Intent(getActivity(), EditFindMyPhoneAlarmActivity.class);
+                startActivity(intent);
                 break;
         }
     }
 
-    public void updateUserDetails(){
+    public void updateUserDetails() {
         tvSettingsUsername.setText(sharedPreferencesHelper.getUserName());
         tvSettingsUserNickname.setText(sharedPreferencesHelper.getUserNickname());
     }

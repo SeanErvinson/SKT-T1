@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:orientation="horizontal"
+    android:padding="@dimen/smSpacing"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_ringtone_cell"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_ringtone_cell_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ringtone 1"
+            android:textSize="@dimen/sTextSize" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_ringtone_cell_check"
+        android:layout_width="@dimen/lSize"
+        android:layout_height="@dimen/lSize"
+        android:layout_gravity="end"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_check_black_24dp"
+        android:visibility="invisible"
+        />
+</LinearLayout>

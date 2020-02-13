@@ -31,26 +31,26 @@ public class SharedPreferenceHelper {
         return sharedPreferences.getBoolean(INIT_LAUNCH, true);
     }
 
-    public void setUser(String name, String nickname){
+    public void setUser(String name, String nickname) {
         editor.putString(USER_NAME, name);
         editor.putString(USER_NICKNAME, nickname);
         editor.apply();
     }
 
-    public void setUserFindMyPhoneAlarm(int findMyPhoneAlarm){
-        editor.putInt(USER_FIND_MY_PHONE_ALARM, findMyPhoneAlarm);
+    public void setUserFindMyPhoneAlarm(String findMyPhoneAlarm) {
+        editor.putString(USER_FIND_MY_PHONE_ALARM, findMyPhoneAlarm);
         editor.apply();
     }
 
-    public String getUserName(){
+    public String getUserName() {
         return sharedPreferences.getString(USER_NAME, "");
     }
 
-    public String getUserNickname(){
+    public String getUserNickname() {
         return sharedPreferences.getString(USER_NICKNAME, "");
     }
 
-    public int getUserFindMyPhoneAlarm(){
-        return sharedPreferences.getInt(USER_FIND_MY_PHONE_ALARM, 0);
+    public String getUserFindMyPhoneAlarm() {
+        return sharedPreferences.getString(USER_FIND_MY_PHONE_ALARM, "");
     }
 }
