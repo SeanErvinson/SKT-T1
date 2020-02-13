@@ -52,7 +52,7 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
                     Intent resultIntent = new Intent();
                     Tag newTag = new Tag() {{
                         setName(mTagLabel);
-//                        setMacAddress(mSelectedTagDevice.getAddress());
+                        setMacAddress(mSelectedTagDevice.getAddress());
                     }};
                     resultIntent.putExtra("newTag", newTag);
                     setResult(RESULT_OK, resultIntent);
