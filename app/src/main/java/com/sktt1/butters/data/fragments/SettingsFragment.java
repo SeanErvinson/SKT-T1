@@ -66,11 +66,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         llSettingsUserData = view.findViewById(R.id.ll_settings_userData);
         llSettingsFindMyPhoneAlarm = view.findViewById(R.id.ll_settings_findMyPhoneAlarm);
         tvSettingsUsername = view.findViewById(R.id.tv_settings_username);
-        tvSettingsUserNickname = view.findViewById(R.id.tv_settings_nickName);
-        tvSettingsFindMyPhoneAlarm = view.findViewById(R.id.tv_settings_findMyPhoneAlarm);
-        tvSettingsNumberDevices = view.findViewById(R.id.tv_settings_numberDevices);
-        tvSettingsNumberActiveDevices = view.findViewById(R.id.tv_settings_numberActiveDevices);
-        tvSettingsNumberInactiveDevices = view.findViewById(R.id.tv_settings_numberInactiveDevices);
+        tvSettingsUserNickname = view.findViewById(R.id.tv_settings_nickname);
+        tvSettingsNumberDevices = view.findViewById(R.id.tv_settings_number_devices);
+        tvSettingsNumberInactiveDevices = view.findViewById(R.id.tv_settings_number_inactive_devices);
 
         llSettingsUserData.setOnClickListener(this);
         llSettingsFindMyPhoneAlarm.setOnClickListener(this);
