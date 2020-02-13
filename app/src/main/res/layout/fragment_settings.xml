@@ -24,50 +24,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/lTextSize"
-                android:text="Wayne Madla"></TextView>
+                android:text="Wayne Madla"/>
 
             <TextView
-                android:id="@+id/tv_settings_editProfile"
+                android:id="@+id/tv_settings_edit_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/sSpacing"
                 android:textSize="@dimen/xsTextSize"
-                android:text="EDIT PROFILE"></TextView>
+                android:text="EDIT PROFILE"/>
 
             <TextView
-                android:id="@+id/tv_settings_nickName"
+                android:id="@+id/tv_settings_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Nickname: %1$s"></TextView>
+                android:text="Nickname: %1$s"/>
 
             <TextView
-                android:id="@+id/tv_settings_findMyPhoneAlarm"
+                android:id="@+id/tv_settings_number_devices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Find my phone alarm: %1$s"></TextView>
+                android:text="Devices: %1$s"/>
 
             <TextView
-                android:id="@+id/tv_settings_numberDevices"
+                android:id="@+id/tv_settings_number_inactive_devices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Devices: %1$s"></TextView>
-
-            <TextView
-                android:id="@+id/tv_settings_numberActiveDevices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/xsTextSize"
-                android:text="Active Devices: %1$s"></TextView>
-
-            <TextView
-                android:id="@+id/tv_settings_numberInactiveDevices"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/xsTextSize"
-                android:text="Inactive Devices: %1$s"></TextView>
+                android:text="Inactive Devices: %1$s"/>
 
 
         </LinearLayout>
@@ -92,6 +78,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
                 android:text="Set the sound this smartphone plays when alerted" />
+
+            <TextView
+                android:id="@+id/tv_settings_find_my_phone_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%1$s"/>
         </LinearLayout>
     </LinearLayout>
 
