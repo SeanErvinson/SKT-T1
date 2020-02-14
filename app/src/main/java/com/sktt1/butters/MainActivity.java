@@ -45,6 +45,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         registerReceiver(mTagBroadcastReceiver, createTagIntentFilter());
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mTagBroadcastReceiver);
+    }
+
     private static IntentFilter createTagIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
