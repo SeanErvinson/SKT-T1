@@ -2,8 +2,11 @@ package com.sktt1.butters.data.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +41,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -45,10 +50,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     public static final String TAG = "MapFragment";
@@ -66,6 +72,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private Location currentLocation;
     private boolean isLocationUpdate;
     private LocationCallback locationCallback;
+    private BroadcastReceiver mBroadcastReceiver;
+    private ArrayList<Marker> mMarkers = new ArrayList<>();
+    private Circle mTagRange;
 
     private LocationRequest locationRequest;
 
@@ -75,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initializeBroadcastReceiver();
         initializeWidget(view);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         isLocationUpdate = false;
@@ -85,6 +95,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_map, container, false);
+    }
+
+    private void initializeBroadcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                if (TagBroadcastReceiver.ACTION_DATA_AVAILABLE.equals(action)) {
+                    // <Tag, GPS>
+//                    updateMarker();
+                } else if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
+                    BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+                    Log.d(TAG, "Connected from Map Fragment " + device.getName() + " -- " + device.getAddress());
+//                    Marker marker = mMap.addMarker(createTagMarker(location));
+//                    marker.setTag(device);
+                } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
+                    BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+                    Log.d(TAG, "Disconnected from Map Fragment " + device.getName() + " -- " + device.getAddress());
+//                    while(mMarkers.iterator().hasNext()){
+//                        Marker marker = mMarkers.iterator().next();
+//                        Tag currentTag = (Tag)marker.getTag();
+//                        if(currentTag.getMacAddress().equals(device.getAddress())){
+//                            mMarkers.iterator().remove();
+//                        }
+//                    }
+                }
+            }
+        };
     }
 
     private void initializeWidget(View view) {
@@ -114,25 +152,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
                         currentLocation = location;
+                        if (mTagRange == null) {
+                            initializeTagRange();
+                        }
                         if (mMap != null) {
-                            mMap.clear();
-                            Tag newTag = new Tag() {{
-                                setName("Hello World");
-                                setLastSeenTime(new Date());
-                            }};
-                            Marker newMarker = mMap.addMarker(addTagMarker(newTag));
-                            newMarker.setTag(newTag);
-                            mMap.addCircle(new CircleOptions()
-                                    .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                                    .radius(40)
-                                    .fillColor(Color.argb(25, 240, 0, 0))
-                                    .strokeColor(Color.argb(30, 240, 0, 0))
-                                    .strokeWidth(1));
+                            updateTagRange();
                         }
                     }
                 }
             }
         };
+    }
+
+    private void initializeTagRange() {
+        mTagRange = mMap.addCircle(new CircleOptions()
+                .center(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                .radius(40)
+                .fillColor(Color.argb(25, 240, 0, 0))
+                .strokeColor(Color.argb(30, 240, 0, 0))
+                .strokeWidth(1));
+    }
+
+    private void updateMarker(Tag tag, Location location) {
+        if (mMap == null) return;
+        for (Marker marker : mMarkers) {
+            Tag currentTag = (Tag) marker.getTag();
+            if (currentTag == null) return;
+            if (currentTag.getMacAddress().equals(tag.getMacAddress())) {
+                marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                return;
+            }
+        }
+        mMap.addMarker(createTagMarker(location));
+    }
+
+    private void updateTagRange() {
+        mTagRange.setCenter(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
     }
 
 
@@ -159,7 +214,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
 
     private void checkPermissions() {
-        if(getContext() == null) return;
+        if (getContext() == null) return;
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
@@ -170,15 +225,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private MarkerOptions addTagMarker(Tag tag) {
-        MarkerOptions m = new MarkerOptions()
-                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                .title(tag.getName())
+    private MarkerOptions createTagMarker(Location location) {
+        return new MarkerOptions()
+                .position(new LatLng(location.getLatitude(), location.getLongitude()))
                 .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot));
-        if (tag.getLastSeenLocationId() != 0) {
-            m.snippet(String.valueOf(tag.getId()));
-        }
-        return m;
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
@@ -210,10 +260,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
     }
 
-    private void setBottomSheetInformation(Marker selectedMarker){
-        if(selectedMarker == null) return;
+    private void setBottomSheetInformation(Marker selectedMarker) {
+        if (selectedMarker == null) return;
         final Tag selectedTag = (Tag) selectedMarker.getTag();
-        if(selectedTag == null) return;
+        if (selectedTag == null) return;
         mMapTagName.setText(selectedTag.getName());
         String time = DateUtility.getFormattedDate(selectedTag.getLastSeenTime(), DateTimePattern.TIME);
         mMapTagTime.setText(getString(R.string.time_recorded, time));
@@ -222,18 +272,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mBuzz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Buzz "+selectedTag.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Buzz " + selectedTag.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         mSit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Sit "+selectedTag.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Sit " + selectedTag.getName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void resetBottomSheetInformation(){
+    private void resetBottomSheetInformation() {
         mMapTagName.setText(null);
         mMapTagTime.setText(null);
         mMapTagLastLocation.setText(null);
@@ -245,6 +295,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onPause() {
         super.onPause();
         stopLocationUpdate();
+        if (getContext() != null)
+            getContext().unregisterReceiver(mBroadcastReceiver);
     }
 
 
@@ -254,8 +306,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if (!isLocationUpdate) {
             checkPermissions();
         }
+        if (getContext() != null)
+            getContext().registerReceiver(mBroadcastReceiver, createTagIntentFilter());
     }
 
+    private static IntentFilter createTagIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
+        return intentFilter;
+    }
 
     @Override
     public void onAttach(Context context) {
