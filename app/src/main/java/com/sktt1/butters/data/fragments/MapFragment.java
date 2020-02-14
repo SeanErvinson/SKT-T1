@@ -207,6 +207,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private void stopLocationUpdate() {
         isLocationUpdate = false;
+        mTagRange = null;
         if (fusedLocationProviderClient != null) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
@@ -245,7 +246,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mMap.setMyLocationEnabled(false);
+        mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setMinZoomPreference(18);
 
