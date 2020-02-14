@@ -1,7 +1,10 @@
 package com.sktt1.butters.data.fragments;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -24,6 +27,7 @@ import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
@@ -45,7 +49,9 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private TagRecyclerAdapter mTagRecyclerAdapter;
 
     private ArrayList<Tag> tags;
+    private ArrayList<BluetoothDevice> mConnectedDevices;
     private DatabaseHelper databaseHelper;
+    private BroadcastReceiver mTagBluetoothBroadcastReceiver;
 
     public HomeFragment() {
     }
@@ -60,9 +66,29 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fetchData();
+        initializeBroadcastReceiver();
 //        getDeviceStatus();
         initializeWidget(view);
         initializeRecyclerView();
+    }
+
+    private void initializeBroadcastReceiver() {
+        mTagBluetoothBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final String action = intent.getAction();
+                if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
+                    mConnectedDevices.add((BluetoothDevice) intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA));
+                } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
+                    BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+                    for (int i = 0; i < mConnectedDevices.size(); i++) {
+                        if (mConnectedDevices.get(i).getAddress().equals(disconnectedDevice.getAddress())) {
+                            mConnectedDevices.remove(mConnectedDevices.get(i));
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private void initializeWidget(View view) {
@@ -116,6 +142,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         mTagsView.setAdapter(mTagRecyclerAdapter);
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -163,6 +190,27 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                     }}
             );
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getContext() != null)
+            getContext().registerReceiver(mTagBluetoothBroadcastReceiver, createTagIntentFilter());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getContext() != null)
+            getContext().unregisterReceiver(mTagBluetoothBroadcastReceiver);
+    }
+
+    private static IntentFilter createTagIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
+        return intentFilter;
     }
 
     @Override
