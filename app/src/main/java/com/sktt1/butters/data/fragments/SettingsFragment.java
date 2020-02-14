@@ -41,7 +41,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private LinearLayout llSettingsUserData, llSettingsFindMyPhoneAlarm;
     private TextView tvSettingsUsername, tvSettingsUserNickname, tvSettingsFindMyPhoneAlarm, tvSettingsNumberDevices,
-            tvSettingsNumberActiveDevices, tvSettingsNumberInactiveDevices;
+            tvSettingsNumberInactiveDevices;
 
     public SettingsFragment() {
     }
@@ -64,7 +64,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private void initializeWidget(View view) {
         llSettingsUserData = view.findViewById(R.id.ll_settings_userData);
-        llSettingsFindMyPhoneAlarm = view.findViewById(R.id.ll_settings_findMyPhoneAlarm);
+        llSettingsFindMyPhoneAlarm = view.findViewById(R.id.ll_settings_find_my_phone_alarm);
+        tvSettingsFindMyPhoneAlarm = view.findViewById(R.id.tv_settings_find_my_phone_alarm);
         tvSettingsUsername = view.findViewById(R.id.tv_settings_username);
         tvSettingsUserNickname = view.findViewById(R.id.tv_settings_nickname);
         tvSettingsNumberDevices = view.findViewById(R.id.tv_settings_number_devices);
@@ -115,7 +116,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 intent = new Intent(getActivity(), EditUserDetailsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.ll_settings_findMyPhoneAlarm:
+            case R.id.ll_settings_find_my_phone_alarm:
                 intent = new Intent(getActivity(), EditFindMyPhoneAlarmActivity.class);
                 startActivity(intent);
                 break;
@@ -125,5 +126,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     public void updateUserDetails() {
         tvSettingsUsername.setText(sharedPreferencesHelper.getUserName());
         tvSettingsUserNickname.setText(sharedPreferencesHelper.getUserNickname());
+        tvSettingsFindMyPhoneAlarm.setText(sharedPreferencesHelper.getUserFindMyPhoneAlarm());
+
     }
 }
