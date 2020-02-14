@@ -39,21 +39,21 @@ public class EditUserDetailsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.main_action_bar);
+        getSupportActionBar().setCustomView(R.layout.main_action_bar_back);
         View view = getSupportActionBar().getCustomView();
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-//        rlAppBar = view.findViewById(R.id.rl_app_bar);
-        mActivity = view.findViewById(R.id.iv_action_bar_notification);
-        mAccountProfile = view.findViewById(R.id.iv_action_bar_account);
+        mActivity = view.findViewById(R.id.iv_action_bar__back_notification);
+        mAccountProfile = view.findViewById(R.id.iv_action_bar_back_account);
+        mBack = view.findViewById(R.id.iv_action_bar_back_button);
 
-//        mBack = new ImageView(this);
-//        mBack.setImageResource(R.drawable.ic_chevron_left_black_24dp);
-//        mBack.setId(0);
-//
-//        rlAppBar.addView(mBack);
-//        rlAppBar.bringChildToFront(mBack);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         mActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
