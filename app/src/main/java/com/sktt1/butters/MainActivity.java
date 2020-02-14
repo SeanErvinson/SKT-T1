@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,6 +21,7 @@ import com.sktt1.butters.data.fragments.HomeFragment;
 import com.sktt1.butters.data.fragments.MapFragment;
 import com.sktt1.butters.data.fragments.OnFragmentInteractionListener;
 import com.sktt1.butters.data.fragments.SettingsFragment;
+import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
@@ -29,15 +31,31 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private ImageView mAccountProfile, mActivity;
     private Fragment currentFragment;
     private FragmentManager mFragmentManager;
+    private TagBroadcastReceiver mTagBroadcastReceiver;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializeBroadcastReceivers();
         initializeActionBar();
         initializeWidget();
         initializeFragments();
+        registerReceiver(mTagBroadcastReceiver, createTagIntentFilter());
+    }
+
+    private static IntentFilter createTagIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
+        return intentFilter;
+    }
+
+    private void initializeBroadcastReceivers() {
+        mTagBroadcastReceiver = new TagBroadcastReceiver();
     }
 
     @Override
