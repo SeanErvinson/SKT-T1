@@ -54,12 +54,6 @@ public class EditUserDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
-        mActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     private void initializeWidget() {
