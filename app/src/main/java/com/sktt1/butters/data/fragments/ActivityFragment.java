@@ -46,7 +46,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        fetchData();
+        activities = databaseHelper.fetchActivityData();
         initializeWidget(view);
         initializeRecyclerView();
 
@@ -81,30 +81,4 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
         databaseHelper.close();
         super.onDestroy();
     }
-
-    private void fetchData() {
-        final Cursor data = databaseHelper.activityFeedList();
-
-        activities = new ArrayList<>();
-        data.moveToFirst();
-        while (data.moveToNext()) {
-            if (data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false")) ;
-            {
-                activities.add(
-                        new Activity() {{
-                            Date date = new Date();
-                            setId(data.getInt(data.getColumnIndex(ActivityTable.COL_ID)));
-                            setMessage(data.getString(data.getColumnIndex(ActivityTable.COL_MESSAGE)));
-                            try {
-                                date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                            setNotifiedOn(date);
-                        }}
-                );
-            }
-        }
-    }
-
 }

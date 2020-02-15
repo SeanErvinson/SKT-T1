@@ -69,12 +69,6 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
                 finish();
             }
         });
-        mActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
     }
 
     private void initializeAdapter() {

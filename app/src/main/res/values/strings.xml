@@ -35,4 +35,12 @@
     <string name="skt_t1_logo">SKT-T1 logo</string>
     <string name="location_error_message">Location permission is required.</string>
     <string name="time_recorded">Time Recorded: %1$s</string>
+    <string name="settings_username">%1$s</string>
+    <string name="edit_profile">EDIT PROFILE</string>
+    <string name="settings_nickname"><b>Nickname:</b> %1$s</string>
+    <string name="settings_number_devices"><b>Devices:</b> %1$s</string>
+    <string name="settings_number_inactive_devices"><b>Inactive Devices:</b> %1$s</string>
+    <string name="find_my_phone_alarm">Find my Phone Alarm</string>
+    <string name="set_the_sound_this_smartphone_plays_when_alerted">Set the sound this smartphone plays when alerted</string>
+    <string name="settings_find_my_phone_alarm">%1$s</string>
 </resources>

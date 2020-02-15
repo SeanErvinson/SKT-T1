@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fetchData();
+        tags = databaseHelper.fetchTagData();
         initializeBroadcastReceiver();
 //        getDeviceStatus();
         initializeWidget(view);
@@ -164,32 +164,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
-    }
-
-    private void fetchData() {
-        final Cursor data = databaseHelper.tagFeedList();
-
-        tags = new ArrayList<>();
-        data.moveToFirst();
-        while (data.moveToNext()) {
-            tags.add(
-                    new Tag() {{
-                        Date date = null;
-                        String dateValue = data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME));
-                        try {
-                            date = DateUtility.getStringDate(dateValue, DateTimePattern.DATE);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        setId(data.getInt(data.getColumnIndex(TagTable.COL_ID)));
-                        setName(data.getString(data.getColumnIndex(TagTable.COL_NAME)));
-                        setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
-                        setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
-                        setLastSeenTime(date);
-                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
-                    }}
-            );
-        }
     }
 
     @Override
