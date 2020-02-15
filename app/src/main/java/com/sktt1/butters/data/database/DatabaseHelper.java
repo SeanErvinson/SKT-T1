@@ -15,10 +15,13 @@ import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Activity;
 import com.sktt1.butters.data.models.Location;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.lang.reflect.Array;
-import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DB_NAME = "skt.db";
@@ -153,5 +156,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return location;
+    }
+
+    public ArrayList<Tag> fetchTagData() {
+        final Cursor data = tagFeedList();
+
+        ArrayList<Tag> tags = new ArrayList<>();
+        data.moveToFirst();
+        while (data.moveToNext()) {
+            tags.add(
+                    new Tag() {{
+                        Date date = null;
+                        String dateValue = data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME));
+                        try {
+                            date = DateUtility.getStringDate(dateValue, DateTimePattern.DATE);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        setId(data.getInt(data.getColumnIndex(TagTable.COL_ID)));
+                        setName(data.getString(data.getColumnIndex(TagTable.COL_NAME)));
+                        setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
+                        setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
+                        setLastSeenTime(date);
+                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
+                    }}
+            );
+        }
+
+        return tags;
     }
 }
