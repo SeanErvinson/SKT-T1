@@ -20,6 +20,7 @@ import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.lang.reflect.Array;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -184,5 +185,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return tags;
+    }
+
+    public ArrayList<Activity> fetchActivityData() {
+        final Cursor data = activityFeedList();
+
+        ArrayList<Activity> activities = new ArrayList<>();
+        data.moveToFirst();
+        while (data.moveToNext()) {
+            if (data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false")) ;
+            {
+                activities.add(
+                        new Activity() {{
+                            Date date = new Date();
+                            setId(data.getInt(data.getColumnIndex(ActivityTable.COL_ID)));
+                            setMessage(data.getString(data.getColumnIndex(ActivityTable.COL_MESSAGE)));
+                            try {
+                                date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            setNotifiedOn(date);
+                        }}
+                );
+            }
+        }
+        return activities;
     }
 }
