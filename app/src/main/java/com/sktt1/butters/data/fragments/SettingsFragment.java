@@ -43,6 +43,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private TextView tvSettingsUsername, tvSettingsUserNickname, tvSettingsFindMyPhoneAlarm, tvSettingsNumberDevices,
             tvSettingsNumberInactiveDevices;
 
+    private ArrayList<Tag> tags;
+
     public SettingsFragment() {
     }
 
@@ -124,9 +126,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     public void updateUserDetails() {
-        tvSettingsUsername.setText(sharedPreferencesHelper.getUserName());
-        tvSettingsUserNickname.setText(sharedPreferencesHelper.getUserNickname());
-        tvSettingsFindMyPhoneAlarm.setText(sharedPreferencesHelper.getUserFindMyPhoneAlarm());
 
+        tvSettingsUsername.setText(getString(R.string.settings_username,sharedPreferencesHelper.getUserName()));
+        tvSettingsUserNickname.setText(getString(R.string.settings_nickname,sharedPreferencesHelper.getUserNickname()));
+        tvSettingsFindMyPhoneAlarm.setText(getString(R.string.settings_find_my_phone_alarm,sharedPreferencesHelper.getUserFindMyPhoneAlarm()));
+    }
+
+    public void setNumberOfDevices(){
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+        tags = databaseHelper.fetchTagData();
+
+//        for (Tag tag : tags) {
+//            count tags connected
+//        }
     }
 }

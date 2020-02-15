@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/lTextSize"
-                android:text="Wayne Madla"/>
+                android:text="@string/settings_username"/>
 
             <TextView
                 android:id="@+id/tv_settings_edit_profile"
@@ -31,28 +31,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/sSpacing"
                 android:textSize="@dimen/xsTextSize"
-                android:text="EDIT PROFILE"/>
+                android:text="@string/edit_profile"/>
 
             <TextView
                 android:id="@+id/tv_settings_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Nickname: %1$s"/>
+                android:text="@string/settings_nickname"/>
 
             <TextView
                 android:id="@+id/tv_settings_number_devices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Devices: %1$s"/>
+                android:text="@string/settings_number_devices"/>
 
             <TextView
                 android:id="@+id/tv_settings_number_inactive_devices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Inactive Devices: %1$s"/>
+                android:text="@string/settings_number_inactive_devices"/>
 
 
         </LinearLayout>
@@ -74,19 +74,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/mTextSize"
-                android:text="Find my Phone Alarm" />
+                android:text="@string/find_my_phone_alarm" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/xsTextSize"
-                android:text="Set the sound this smartphone plays when alerted" />
+                android:text="@string/set_the_sound_this_smartphone_plays_when_alerted" />
 
             <TextView
                 android:id="@+id/tv_settings_find_my_phone_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="%1$s"/>
+                android:text="@string/settings_find_my_phone_alarm"/>
         </LinearLayout>
     </LinearLayout>
 
