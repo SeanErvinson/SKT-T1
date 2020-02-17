@@ -87,6 +87,7 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
         public void onPageSelected(int position) {
             if (position == mTagViewPagerAdapter.getCount() - 1) {
                 mNext.setText(getResources().getString(R.string.done));
+                mNext.setVisibility(View.INVISIBLE);
             }
             if (position == mTagViewPagerAdapter.getCount() - 2) {
                 mNext.setVisibility(View.INVISIBLE);
