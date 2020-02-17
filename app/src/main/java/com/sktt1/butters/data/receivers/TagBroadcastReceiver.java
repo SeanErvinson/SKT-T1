@@ -3,6 +3,7 @@ package com.sktt1.butters.data.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class TagBroadcastReceiver extends BroadcastReceiver {
 
@@ -12,6 +13,8 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
     public final static String ACTION_DATA_AVAILABLE = "com.sktt1.butters.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA = "com.sktt1.butters.EXTRA_DATA";
     public static final String ACTION_PHONE_ALERTED= "com.sktt1.butters.FMP_DATA";
+    public static final String GPS_LAT_DATA = "com.sktt1.butters.GPS_LAT_DATA";
+    public static final String GPS_LNG_DATA = "com.sktt1.butters.GPS_LNG_DATA";
 
     @Override
     public void onReceive(Context context, Intent intent) {

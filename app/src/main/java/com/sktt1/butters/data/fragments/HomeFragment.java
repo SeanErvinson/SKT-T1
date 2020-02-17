@@ -1,11 +1,12 @@
 package com.sktt1.butters.data.fragments;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,15 +26,10 @@ import com.sktt1.butters.AddTagActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
-import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
-import com.sktt1.butters.data.utilities.DateTimePattern;
-import com.sktt1.butters.data.utilities.DateUtility;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -43,17 +39,22 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 
     private static final int ADD_TAG_REQUEST_CODE = 4144;
 
-    private OnFragmentInteractionListener mListener;
     private RecyclerView mTagsView;
     private FloatingActionButton mFab;
     private TagRecyclerAdapter mTagRecyclerAdapter;
 
     private ArrayList<Tag> tags;
-    private ArrayList<BluetoothDevice> mConnectedDevices;
+    private ArrayList<BluetoothDevice> mConnectedDevices = new ArrayList<>();
+    private ArrayList<BluetoothGatt> mConnectedBluetoothGatt = new ArrayList<>();
     private DatabaseHelper databaseHelper;
     private BroadcastReceiver mTagBluetoothBroadcastReceiver;
+    private FragmentListener mListener;
 
     public HomeFragment() {
+    }
+
+    public interface FragmentListener {
+        void onConnectDevice(String address);
     }
 
     @Override
@@ -72,6 +73,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         initializeRecyclerView();
     }
 
+
     private void initializeBroadcastReceiver() {
         mTagBluetoothBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -85,6 +87,10 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                         if (mConnectedDevices.get(i).getAddress().equals(disconnectedDevice.getAddress())) {
                             mConnectedDevices.remove(mConnectedDevices.get(i));
                         }
+                    }
+                } else if(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED.equals(action)){
+                    for(BluetoothGattService service : mConnectedBluetoothGatt.get(0).getServices()){
+                        Log.d(TAG, "onReceive: "+service.getUuid());
                     }
                 }
             }
@@ -112,28 +118,15 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Tag tag = data.getParcelableExtra("newTag");
-                    tags.add(tag);
 //                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
+                    tags.add(tag);
+                    mListener.onConnectDevice(tag.getMacAddress());
                 }
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(getContext(), "Operation was canceled", Toast.LENGTH_LONG).show();
             }
         }
     }
-
-//    private void getDeviceStatus(){
-//    BluetoothAdapter.getDefaultAdapter()
-//        if(bluetoothAdapter.isEnabled()){
-//            Set<BluetoothDevice> connectedDevices = bluetoothAdapter.getBondedDevices();
-//            for(Tag tag: tags){
-//                for (BluetoothDevice device: connectedDevices) {
-//                    if(tag.getMacAddress().equals(device.getAddress())){
-//                        tag.setConnected(true);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     private void initializeRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -146,11 +139,11 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof FragmentListener) {
+            mListener = (FragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement FragmentListener");
         }
     }
 
@@ -184,6 +177,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
 
