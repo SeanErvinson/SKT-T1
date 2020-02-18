@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,15 +24,10 @@ import com.sktt1.butters.AddTagActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
-import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
-import com.sktt1.butters.data.utilities.DateTimePattern;
-import com.sktt1.butters.data.utilities.DateUtility;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -48,7 +42,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private FloatingActionButton mFab;
     private TagRecyclerAdapter mTagRecyclerAdapter;
 
-    private ArrayList<Tag> tags;
     private ArrayList<BluetoothDevice> mConnectedDevices;
     private DatabaseHelper databaseHelper;
     private BroadcastReceiver mTagBluetoothBroadcastReceiver;
@@ -65,7 +58,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tags = databaseHelper.fetchTagData();
         initializeBroadcastReceiver();
 //        getDeviceStatus();
         initializeWidget(view);
@@ -112,7 +104,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Tag tag = data.getParcelableExtra("newTag");
-                    tags.add(tag);
+                    mTagRecyclerAdapter.addTag(tag);
 //                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
                 }
             } else if (resultCode == RESULT_CANCELED) {
@@ -138,8 +130,9 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private void initializeRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mTagsView.setLayoutManager(linearLayoutManager);
-        mTagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
+        mTagRecyclerAdapter = new TagRecyclerAdapter(this);
         mTagsView.setAdapter(mTagRecyclerAdapter);
+        mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
     }
 
 
@@ -189,6 +182,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 
     @Override
     public void onClick(int index) {
-        Log.d("TAG", tags.get(index).toString());
+        Log.d("TAG", mTagRecyclerAdapter.getTag(index).toString());
     }
 }
