@@ -25,7 +25,7 @@ import java.util.UUID;
 public class BluetoothLEService extends Service {
     private final static String TAG = BluetoothLEService.class.getSimpleName();
 
-    public final static UUID UUID_GPS_SERVICE= UUID.fromString("0000DD00-0000-1000-8000-00805f9b34fb");
+    public final static UUID UUID_GPS_SERVICE = UUID.fromString("0000DD00-0000-1000-8000-00805f9b34fb");
     public final static UUID UUID_LAT_CHAR = UUID.fromString("0000DD01-0000-1000-8000-00805f9b34fb");
     public final static UUID UUID_LNG_CHAR = UUID.fromString("0000DD02-0000-1000-8000-00805f9b34fb");
 
@@ -128,30 +128,38 @@ public class BluetoothLEService extends Service {
         }
     };
 
-    public BluetoothGatt getBluetoothGatt(String macAddress){
-        for(BluetoothGatt bluetoothGatt : mBluetoothGatts){
-            if(bluetoothGatt.getDevice().getAddress().equals(macAddress))
+    public BluetoothGatt getBluetoothGatt(String macAddress) {
+        for (BluetoothGatt bluetoothGatt : mBluetoothGatts) {
+            if (bluetoothGatt.getDevice().getAddress().equals(macAddress))
                 return bluetoothGatt;
         }
         return null;
     }
 
-    public void removeBluetoothGatt(String macAddress){
-        for (int i =0 ; i < mBluetoothGatts.size(); i++){
-            if(mBluetoothGatts.get(i).getDevice().getAddress().equals(macAddress)){
+    public void removeBluetoothGatt(String macAddress) {
+        for (int i = 0; i < mBluetoothGatts.size(); i++) {
+            if (mBluetoothGatts.get(i).getDevice().getAddress().equals(macAddress)) {
                 mBluetoothGatts.remove(i);
             }
         }
     }
 
-    public void disconnect(String macAddress){
-        if(mBluetoothAdapter == null || mBluetoothGatts == null) return;
+    public void disconnect(String macAddress) {
+        if (mBluetoothAdapter == null || mBluetoothGatts == null) return;
         BluetoothGatt bluetoothGatt = getBluetoothGatt(macAddress);
-        if(bluetoothGatt != null) bluetoothGatt.disconnect();
+        if (bluetoothGatt != null) bluetoothGatt.disconnect();
     }
 
     public boolean connect(String macAddress) {
         if (mBluetoothAdapter == null || macAddress == null) {
+            return false;
+        }
+
+        BluetoothGatt bluetoothGatt = getBluetoothGatt(macAddress);
+        if (bluetoothGatt != null) {
+            if (bluetoothGatt.connect()) {
+                return true;
+            }
             return false;
         }
 
@@ -160,8 +168,8 @@ public class BluetoothLEService extends Service {
             return false;
         }
 
-        BluetoothGatt bluetoothGatt = device.connectGatt(this, true, mGattCallback);
-        if(bluetoothGatt == null){
+        bluetoothGatt = device.connectGatt(this, true, mGattCallback);
+        if (bluetoothGatt == null) {
             Log.d(TAG, "Was not able to connect");
             return false;
         }
@@ -223,8 +231,8 @@ public class BluetoothLEService extends Service {
         bluetoothGatt.readCharacteristic(characteristic);
     }
 
-    public void writeCharacteristic(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic){
-        if(mBluetoothAdapter == null || bluetoothGatt == null){
+    public void writeCharacteristic(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic) {
+        if (mBluetoothAdapter == null || bluetoothGatt == null) {
             return;
         }
         bluetoothGatt.writeCharacteristic(characteristic);
