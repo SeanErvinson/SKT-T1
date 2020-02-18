@@ -19,6 +19,7 @@ import com.sktt1.butters.AddTagActivity;
 import com.sktt1.butters.R;
 
 public class TagNameFragment extends Fragment {
+    private static final String TAG = TagNameFragment.class.getSimpleName();
 
     public interface FragmentListener {
         void inputChange(CharSequence label);

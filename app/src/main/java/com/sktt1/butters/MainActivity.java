@@ -30,7 +30,7 @@ import com.sktt1.butters.data.services.BluetoothLEService;
 
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener{
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();;
 
     private BottomNavigationView mBottomNavigationView;
     private Fragment mHomeFragment, mMapFragment, mSettingsFragment, mActivityFragment;

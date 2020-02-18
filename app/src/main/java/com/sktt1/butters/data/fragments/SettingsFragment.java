@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
-    public static final String TAG = "SettingsFragment";
+    public static final String TAG = SettingsFragment.class.getSimpleName();
 
     private OnFragmentInteractionListener mListener;
     private SharedPreferenceHelper sharedPreferencesHelper;

@@ -26,7 +26,7 @@ import java.util.Date;
 
 
 public class ActivityFragment extends Fragment implements ActivityRecyclerAdapter.OnActivityListener {
-    public static final String TAG = "ActivityFragment";
+    public static final String TAG = ActivityFragment.class.getSimpleName();
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mActivityView;

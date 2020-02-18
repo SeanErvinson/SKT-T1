@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.sktt1.butters.R;
 
 public class TagIntroFragment extends Fragment {
-
+    private static final String TAG = TagIntroFragment.class.getSimpleName();
     private int mLayout;
 
     public TagIntroFragment() {}

@@ -36,7 +36,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
-    public static final String TAG = "HomeFragment";
+    public static final String TAG = HomeFragment.class.getSimpleName();
 
     private static final int ADD_TAG_REQUEST_CODE = 4144;
 

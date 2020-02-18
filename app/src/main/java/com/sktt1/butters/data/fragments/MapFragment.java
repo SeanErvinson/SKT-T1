@@ -57,7 +57,7 @@ import com.sktt1.butters.data.utilities.DateUtility;
 import java.util.ArrayList;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-    public static final String TAG = "MapFragment";
+    public static final String TAG = MapFragment.class.getSimpleName();
     private final static int LOCATION_ENABLE_REQUEST = 1002;
 
     private OnFragmentInteractionListener mListener;

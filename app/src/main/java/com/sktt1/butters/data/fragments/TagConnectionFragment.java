@@ -26,6 +26,8 @@ import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.BluetoothDeviceAdapter;
 
 public class TagConnectionFragment extends Fragment implements BluetoothDeviceAdapter.OnDeviceListener {
+    private static final String TAG = TagConnectionFragment.class.getSimpleName();
+
     private final static int BLUETOOTH_ENABLE_REQUEST = 1001;
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
