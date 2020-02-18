@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.bluetooth.BluetoothGatt;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,9 +28,8 @@ import com.sktt1.butters.data.fragments.SettingsFragment;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.services.BluetoothLEService;
 
-import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener, HomeFragment.FragmentListener {
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener{
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView mBottomNavigationView;
@@ -40,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private Fragment currentFragment;
     private FragmentManager mFragmentManager;
     private TagBroadcastReceiver mTagBroadcastReceiver;
-    private BluetoothLEService mBluetoothLeService;
-    private ArrayList<BluetoothGatt> mConnectedBluetoothGatt = new ArrayList<>();
+    public BluetoothLEService mBluetoothLeService;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -171,11 +168,5 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         fragmentTransaction.setPrimaryNavigationFragment(fragmentTemp);
         fragmentTransaction.setReorderingAllowed(true);
         fragmentTransaction.commitNowAllowingStateLoss();
-    }
-
-    @Override
-    public void onConnectDevice(String address) {
-        BluetoothGatt gatt = mBluetoothLeService.connect(address);
-        if (gatt != null) mConnectedBluetoothGatt.add(gatt);
     }
 }
