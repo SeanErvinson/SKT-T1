@@ -43,7 +43,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private FloatingActionButton mFab;
     private TagRecyclerAdapter mTagRecyclerAdapter;
 
-    private ArrayList<Tag> tags;
     private ArrayList<BluetoothDevice> mConnectedDevices = new ArrayList<>();
     private ArrayList<BluetoothGatt> mConnectedBluetoothGatt = new ArrayList<>();
     private DatabaseHelper databaseHelper;
@@ -66,7 +65,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tags = databaseHelper.fetchTagData();
         initializeBroadcastReceiver();
 //        getDeviceStatus();
         initializeWidget(view);
@@ -118,8 +116,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Tag tag = data.getParcelableExtra("newTag");
+                    mTagRecyclerAdapter.addTag(tag);
 //                    databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress(), tag.isConnected());
-                    tags.add(tag);
                     mListener.onConnectDevice(tag.getMacAddress());
                 }
             } else if (resultCode == RESULT_CANCELED) {
@@ -131,8 +129,9 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private void initializeRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mTagsView.setLayoutManager(linearLayoutManager);
-        mTagRecyclerAdapter = new TagRecyclerAdapter(tags, this);
+        mTagRecyclerAdapter = new TagRecyclerAdapter(this);
         mTagsView.setAdapter(mTagRecyclerAdapter);
+        mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
     }
 
 
@@ -184,6 +183,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
 
     @Override
     public void onClick(int index) {
-        Log.d("TAG", tags.get(index).toString());
+        Log.d("TAG", mTagRecyclerAdapter.getTag(index).toString());
     }
 }
