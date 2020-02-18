@@ -55,7 +55,6 @@ import com.sktt1.butters.MainActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
-import com.sktt1.butters.data.services.BluetoothLEService;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
@@ -88,6 +87,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        //TODO Initialize marker from database and it's last seen location
+        // This will be shown in the map
         super.onViewCreated(view, savedInstanceState);
         initializeBroadcastReceiver();
         initializeWidget(view);
@@ -115,16 +116,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     Log.d(TAG, "Connected from Map Fragment " + device.getName() + " -- " + device.getAddress());
 //                    Marker marker = mMap.addMarker(createTagMarker(location));
 //                    marker.setTag(device);
-                } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
-                    BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    Log.d(TAG, "Disconnected from Map Fragment " + device.getName() + " -- " + device.getAddress());
-//                    while(mMarkers.iterator().hasNext()){
-//                        Marker marker = mMarkers.iterator().next();
-//                        Tag currentTag = (Tag)marker.getTag();
-//                        if(currentTag.getMacAddress().equals(device.getAddress())){
-//                            mMarkers.iterator().remove();
-//                        }
-//                    }
                 }
             }
         };
@@ -324,7 +315,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
         return intentFilter;
     }
 
