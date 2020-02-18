@@ -15,7 +15,6 @@ import com.sktt1.butters.data.extensions.LockViewPager;
 import com.sktt1.butters.data.fragments.TagConnectionFragment;
 import com.sktt1.butters.data.fragments.TagIntroFragment;
 import com.sktt1.butters.data.fragments.TagNameFragment;
-import com.sktt1.butters.data.models.Tag;
 
 import java.util.ArrayList;
 
@@ -50,11 +49,8 @@ public class AddTagActivity extends AppCompatActivity implements TagNameFragment
                     mViewPager.setCurrentItem(current);
                 } else {
                     Intent resultIntent = new Intent();
-                    Tag newTag = new Tag() {{
-                        setName(mTagLabel);
-                        setMacAddress(mSelectedTagDevice.getAddress());
-                    }};
-                    resultIntent.putExtra("newTag", newTag);
+                    resultIntent.putExtra("tagAddress", mSelectedTagDevice.getAddress());
+                    resultIntent.putExtra("tagName", mTagLabel);
                     setResult(RESULT_OK, resultIntent);
                     finish();
                 }
