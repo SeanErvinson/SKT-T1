@@ -170,12 +170,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         Tag tag = mTagRecyclerAdapter.getTag(index);
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
-            BluetoothGattService bluetoothGattService = gatt.getService(BluetoothLEService.UUID_ALERT_SERVICE);
-            if(bluetoothGattService != null){
-                BluetoothGattCharacteristic characteristic = bluetoothGattService.getCharacteristic(BluetoothLEService.UUID_ALERT_CHAR);
-                characteristic.setValue(new byte[]{3});
-                ((MainActivity) getActivity()).mBluetoothLeService.writeCharacteristic(gatt, characteristic);
-            }else{
+            boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, 2);
+            if(!status){
                 Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
             }
         }

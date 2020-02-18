@@ -3,6 +3,9 @@ package com.sktt1.butters.data.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,9 +51,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.sktt1.butters.MainActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
+import com.sktt1.butters.data.services.BluetoothLEService;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
@@ -60,7 +65,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static final String TAG = MapFragment.class.getSimpleName();
     private final static int LOCATION_ENABLE_REQUEST = 1002;
 
-    private OnFragmentInteractionListener mListener;
     private Button mBuzz, mSit;
     private BottomSheetBehavior mBottomSheetBehavior;
     private LinearLayout mBottonSheet;
@@ -80,6 +84,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     public MapFragment() {
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -273,7 +278,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mBuzz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Buzz " + selectedTag.getName(), Toast.LENGTH_SHORT).show();
+                BluetoothGatt bluetoothGatt = ((MainActivity)getActivity()).mBluetoothLeService.getBluetoothGatt(selectedTag.getMacAddress());
+                boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(bluetoothGatt, selectedTag.getSoundAlarm());
+                if(!status){
+                    Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         mSit.setOnClickListener(new View.OnClickListener() {
@@ -319,21 +328,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return intentFilter;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void addMapMarker(BluetoothGatt device){
+//        Marker marker = mMap.addMarker(createTagMarker(location));
+//        marker.setTag(device);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
         stopLocationUpdate();
     }
 
