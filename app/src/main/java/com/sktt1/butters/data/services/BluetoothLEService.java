@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
@@ -231,11 +232,23 @@ public class BluetoothLEService extends Service {
         bluetoothGatt.readCharacteristic(characteristic);
     }
 
-    public void writeCharacteristic(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic) {
+    private void writeCharacteristic(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic) {
         if (mBluetoothAdapter == null || bluetoothGatt == null) {
             return;
         }
         bluetoothGatt.writeCharacteristic(characteristic);
+    }
+
+    public boolean writeLocateCharacteristic(BluetoothGatt bluetoothGatt, int soundAlarm){
+        BluetoothGattService bluetoothGattService = bluetoothGatt.getService(BluetoothLEService.UUID_ALERT_SERVICE);
+        if(bluetoothGattService != null) {
+            BluetoothGattCharacteristic characteristic = bluetoothGattService.getCharacteristic(BluetoothLEService.UUID_ALERT_CHAR);
+            characteristic.setValue(new byte[]{(byte) soundAlarm});
+            writeCharacteristic(bluetoothGatt, characteristic);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public void setCharacteristicNotification(BluetoothGatt bluetoothGatt, BluetoothGattCharacteristic characteristic,
