@@ -9,9 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sktt1.butters.R;
+import com.sktt1.butters.data.database.DatabaseHelper;
+import com.sktt1.butters.data.models.Location;
 import com.sktt1.butters.data.models.Tag;
+import com.sktt1.butters.data.utilities.DateTimePattern;
+import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.TagViewHolder> {
 
@@ -35,19 +40,21 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
         holder.bindTagName(mTags.get(position).getName());
 
-        // help :^) haha
-
-//        Location lastSeenLocation = mTags.get(position).getLastSeenLocation();
-//        if(lastSeenLocation != null){
-//            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
-//            holder.bindTagLocation(tagLocation);
-//        }
-//        if(lastSeenLocation != null){
-//            Date lastSeenTime = mTags.get(position).getLastSeenTime();
-//            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
-//            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
-//            holder.bindTagTime(tagTime);
-//        }
+        DatabaseHelper databaseHelper = new DatabaseHelper(holder.tagName.getContext());
+        Location lastSeenLocation = databaseHelper.getLocationById(mTags.get(position).getLastSeenLocationId());
+        if(lastSeenLocation != null){
+            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
+            holder.bindTagLocation(tagLocation);
+        }
+        if(lastSeenLocation != null){
+            Date lastSeenTime = mTags.get(position).getLastSeenTime();
+            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
+            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
+            holder.bindTagTime(tagTime);
+        }
+        if(lastSeenLocation != null){
+            holder.bindTagLocate(mTags.get(position).isConnected());
+        }
     }
 
     public void loadTags(ArrayList<Tag> tags){
@@ -98,12 +105,28 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
             tagName.setText(content);
         }
 
+        void bindTagLocate(boolean isConnected){
+            if (!isConnected){
+                tagLocate.setEnabled(false);
+            } else {
+                tagLocate.setEnabled(true);
+            }
+        }
+
         void bindTagLocation(String content) {
-            tagLocation.setText(content);
+            if(content.length() <= 0){
+                tagLocation.setVisibility(View.GONE);
+            } else {
+                tagLocation.setText(content);
+            }
         }
 
         void bindTagTime(String content) {
-            tagTime.setText(content);
+            if(content.length() <= 0) {
+                tagTime.setVisibility(View.GONE);
+            } else {
+                tagTime.setText(content);
+            }
         }
 
         @Override
