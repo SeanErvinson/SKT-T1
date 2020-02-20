@@ -2,8 +2,6 @@ package com.sktt1.butters.data.fragments;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +28,6 @@ import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
-import com.sktt1.butters.data.services.BluetoothLEService;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -170,11 +167,12 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         Tag tag = mTagRecyclerAdapter.getTag(index);
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
+            if(gatt == null) return;
+//            boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getSoundAlarm());
             boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, 2);
             if(!status){
                 Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
             }
         }
-
     }
 }
