@@ -48,9 +48,11 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
         if(lastSeenLocation != null){
             Date lastSeenTime = mTags.get(position).getLastSeenTime();
-            String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
-            String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
-            holder.bindTagTime(tagTime);
+            if(lastSeenTime != null){
+                String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
+                String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
+                holder.bindTagTime(tagTime);
+            }
         }
         if(lastSeenLocation != null){
             holder.bindTagLocate(mTags.get(position).isConnected());
