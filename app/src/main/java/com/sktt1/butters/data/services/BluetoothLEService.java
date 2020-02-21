@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -24,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
@@ -178,7 +178,6 @@ public class BluetoothLEService extends Service {
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
             if(status == BluetoothGatt.GATT_SUCCESS){
-                Log.d("TEST123", "Written");
                 if(descriptors.size() > 0){
                     requestWriteDescriptor(gatt);
                 }
@@ -199,9 +198,12 @@ public class BluetoothLEService extends Service {
     }
 
     public void removeBluetoothGatt(String macAddress) {
-        for (int i = 0; i < mBluetoothGatts.size(); i++) {
-            if (mBluetoothGatts.get(i).getDevice().getAddress().equals(macAddress)) {
-                mBluetoothGatts.remove(i);
+        Iterator<BluetoothGatt> iterator = mBluetoothGatts.iterator();
+        while(iterator.hasNext()){
+            BluetoothGatt gatt = iterator.next();
+            if(gatt.getDevice().getAddress().equals(macAddress)){
+                gatt.disconnect();
+                iterator.remove();
             }
         }
     }
