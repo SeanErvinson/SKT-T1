@@ -14,11 +14,7 @@ import com.sktt1.butters.data.database.tables.TagTable;
 import com.sktt1.butters.data.models.Activity;
 import com.sktt1.butters.data.models.Location;
 import com.sktt1.butters.data.models.Tag;
-import com.sktt1.butters.data.utilities.DateTimePattern;
-import com.sktt1.butters.data.utilities.DateUtility;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -48,12 +44,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Activity table interactions
     public int activityCreateNotification(String message) {
-        sqLiteDatabase = this.getWritableDatabase();
-        ContentValues activityValues = new ContentValues();
-        activityValues.put(ActivityTable.COL_MESSAGE, message);
-        activityValues.put(ActivityTable.COL_NOTIFIED_ON, new Date().getTime());
-        activityValues.put(ActivityTable.COL_HAS_READ, false);
-        return (int) sqLiteDatabase.insert(ActivityTable.TABLE, null, activityValues);
+        try {
+            sqLiteDatabase = this.getWritableDatabase();
+            ContentValues activityValues = new ContentValues();
+            activityValues.put(ActivityTable.COL_MESSAGE, message);
+            activityValues.put(ActivityTable.COL_NOTIFIED_ON, new Date().getTime());
+            activityValues.put(ActivityTable.COL_HAS_READ, false);
+            return (int) sqLiteDatabase.insert(ActivityTable.TABLE, null, activityValues);
+        } finally {
+            sqLiteDatabase.close();
+        }
+
     }
 
     public void activityUpdateNotification(int id) {
@@ -61,29 +62,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues activityValues = new ContentValues();
         activityValues.put(ActivityTable.COL_HAS_READ, "true");
         sqLiteDatabase.update(ActivityTable.TABLE, activityValues, "id = ?", new String[]{Long.toString(id)});
+
+        sqLiteDatabase.close();
     }
 
     public Cursor activityFeedList() {
-        sqLiteDatabase = this.getReadableDatabase();
-        String query = String.format("SELECT * FROM %s ", ActivityTable.TABLE);
-        return sqLiteDatabase.rawQuery(query, null);
+        try {
+            sqLiteDatabase = this.getReadableDatabase();
+            String query = String.format("SELECT * FROM %s ", ActivityTable.TABLE);
+            return sqLiteDatabase.rawQuery(query, null);
+        } finally {
+            sqLiteDatabase.close();
+        }
     }
 
     // Tag table interactions
 
     public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, Date datetime) {
 
-        sqLiteDatabase = this.getWritableDatabase();
+        try {
+            sqLiteDatabase = this.getWritableDatabase();
 
-        ContentValues tagValues = new ContentValues();
+            ContentValues tagValues = new ContentValues();
 
-        tagValues.put(TagTable.COL_NAME, name);
-        tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
-        tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
-        tagValues.put(TagTable.COL_LAST_SEEN_TIME, datetime.getTime());
-        tagValues.put(TagTable.COL_ALARM, 1);
+            tagValues.put(TagTable.COL_NAME, name);
+            tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
+            tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
+            tagValues.put(TagTable.COL_LAST_SEEN_TIME, datetime.getTime());
+            tagValues.put(TagTable.COL_ALARM, 1);
 
-        return (int) sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
+            return (int) sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
+        } finally {
+            sqLiteDatabase.close();
+        }
+
     }
 
     public void tagUpdateName(String name, int id) {
@@ -91,6 +103,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues tagValues = new ContentValues();
         tagValues.put(TagTable.COL_NAME, name);
         sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(id)});
+
+        sqLiteDatabase.close();
     }
 
     public void tagUpdateLocation(int tagId, int locationId, String lastSeenTime, String longitude, String latitude) {
@@ -103,6 +117,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         locationValues.put(LocationTable.COL_LATITUDE, latitude);
         locationValues.put(LocationTable.COL_LONGITUDE, longitude);
         sqLiteDatabase.update(LocationTable.TABLE, locationValues, "id = ?", new String[]{Integer.toString(locationId)});
+
+        sqLiteDatabase.close();
     }
 
     public void tagUpdateSoundAlarm(int id, int alarm) {
@@ -111,26 +127,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues tagValues = new ContentValues();
         tagValues.put(TagTable.COL_ALARM, alarm);
         sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(id)});
+
+        sqLiteDatabase.close();
+
     }
 
     public Cursor tagFeedList() {
-        sqLiteDatabase = this.getReadableDatabase();
-        String query = String.format("SELECT * FROM %s ", TagTable.TABLE);
-        return sqLiteDatabase.rawQuery(query, null);
+        try {
+            sqLiteDatabase = this.getReadableDatabase();
+            String query = String.format("SELECT * FROM %s ", TagTable.TABLE);
+
+            return sqLiteDatabase.rawQuery(query, null);
+        } finally {
+            sqLiteDatabase.close();
+        }
+
     }
     // Location table interactions
 
-    public long locationCreateRow(String name, String longitude, String latitude) {
-        sqLiteDatabase = this.getWritableDatabase();
-        ContentValues locationValues = new ContentValues();
-        locationValues.put(LocationTable.COL_MESSAGE, name);
-        locationValues.put(LocationTable.COL_LONGITUDE, longitude);
-        locationValues.put(LocationTable.COL_LATITUDE, latitude);
+    public int locationCreateRow(String name, String longitude, String latitude) {
+        try {
+            sqLiteDatabase = this.getWritableDatabase();
+            ContentValues locationValues = new ContentValues();
+            locationValues.put(LocationTable.COL_MESSAGE, name);
+            locationValues.put(LocationTable.COL_LONGITUDE, longitude);
+            locationValues.put(LocationTable.COL_LATITUDE, latitude);
 
-        return sqLiteDatabase.insert(LocationTable.TABLE, null, locationValues);
+            return (int) sqLiteDatabase.insert(LocationTable.TABLE, null, locationValues);
+        } finally {
+            sqLiteDatabase.close();
+        }
+
     }
 
-    public Tag getTagByMacAddress(String macAddress){
+    public Tag getTagByMacAddress(String macAddress) {
         sqLiteDatabase = this.getReadableDatabase();
         String columnTitle = TagTable.COL_MAC_ADDRESS + " = ?";
         String[] columnValue = {macAddress};
@@ -144,18 +174,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 null
         );
-        Tag tag = new Tag();
 
         if (cursor.moveToNext()) {
+            Tag tag = new Tag();
             Date date = new Date(cursor.getLong(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+
             tag.setId(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ID)));
             tag.setAlarm(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ALARM)));
             tag.setName(cursor.getString(cursor.getColumnIndex(TagTable.COL_NAME)));
             tag.setLastSeenTime(date);
             tag.setMacAddress(cursor.getString(cursor.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
+
+            cursor.close();
+            return tag;
+        } else {
+            cursor.close();
+            return null;
         }
-        return tag;
     }
+
     public Location getLocationById(int lastSeenLocationId) {
         sqLiteDatabase = this.getReadableDatabase();
         String columnTitle = LocationTable.COL_ID + " = ?";
@@ -171,6 +208,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null
         );
 
+        sqLiteDatabase.close();
+
         Location location = new Location();
 
         if (cursor.moveToNext()) {
@@ -178,9 +217,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             location.setName(cursor.getString(cursor.getColumnIndex(LocationTable.COL_MESSAGE)));
             location.setLatitude(cursor.getColumnName(cursor.getColumnIndex(LocationTable.COL_LATITUDE)));
             location.setLongtitude(cursor.getColumnName(cursor.getColumnIndex(LocationTable.COL_LONGITUDE)));
+
+            cursor.close();
+            return location;
+        } else {
+            cursor.close();
+            return null;
         }
 
-        return location;
+
     }
 
     public ArrayList<Tag> fetchTagData() {
@@ -203,6 +248,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             );
         }
 
+        if (!data.isClosed()) {
+            data.close();
+        }
         return tags;
     }
 
@@ -212,8 +260,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Activity> activities = new ArrayList<>();
         data.moveToFirst();
         while (data.moveToNext()) {
-            if (data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)).equals("false")) ;
-            {
+            boolean isNotified = Boolean.parseBoolean(data.getString(data.getColumnIndex(ActivityTable.COL_HAS_READ)));
+            if (isNotified) {
                 activities.add(
                         new Activity() {{
                             Date date = new Date(data.getLong(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
@@ -225,6 +273,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
             }
         }
+
+        if (!data.isClosed()) {
+            data.close();
+        }
+
         return activities;
     }
 }
