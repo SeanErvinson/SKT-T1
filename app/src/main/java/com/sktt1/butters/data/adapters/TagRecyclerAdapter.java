@@ -72,6 +72,13 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         return mTags.get(position);
     }
 
+    public Tag getTagByAddress(String address){
+        for (Tag tag: mTags) {
+            if(tag.getMacAddress().equals(address)) return tag;
+        }
+        return null;
+    }
+
     public void clear() {
         mTags.clear();
     }
