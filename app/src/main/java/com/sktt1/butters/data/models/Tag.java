@@ -14,7 +14,16 @@ public class Tag implements Parcelable {
     private int lastSeenLocationId;
     private Date lastSeenTime;
     private boolean isConnected;
-    private int soundAlarm;
+    private int alarm;
+
+    public int getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(int alarm) {
+        this.alarm = alarm;
+    }
+
 
     public Tag() {
     }
@@ -39,13 +48,6 @@ public class Tag implements Parcelable {
         }
     };
 
-    public int getSoundAlarm() {
-        return soundAlarm;
-    }
-
-    public void setSoundAlarm(int soundAlarm) {
-        this.soundAlarm = soundAlarm;
-    }
 
     public boolean isConnected() {
         return isConnected;

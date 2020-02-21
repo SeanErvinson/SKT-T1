@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                     }};
                     mBluetoothName = null;
                     mTagRecyclerAdapter.addTag(newTag);
-//                        databaseHelper.tagCreateDevice(tag.getName(), tag.getMacAddress(), tag.getLastSeenLocationId(), tag.getMacAddress());
+                    databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime().toString());
 
                 } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
                     BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);

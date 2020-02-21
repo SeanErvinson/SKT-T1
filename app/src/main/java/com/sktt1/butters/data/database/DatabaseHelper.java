@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 
 import androidx.annotation.Nullable;
 
@@ -18,7 +17,6 @@ import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+
         sqLiteDatabase.execSQL(LocationTable.getCreateQuery());
         sqLiteDatabase.execSQL(TagTable.getCreateQuery());
         sqLiteDatabase.execSQL(ActivityTable.getCreateQuery());
@@ -72,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
-    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, String lastSeenTime, int soundAlarm) {
+    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, String lastSeenTime) {
 
         sqLiteDatabase = this.getWritableDatabase();
 
@@ -82,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
         tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
         tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
-        tagValues.put(TagTable.COL_SOUND_ALARM, soundAlarm);
+        tagValues.put(TagTable.COL_ALARM, 1);
 
         return (int) sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
     }
@@ -106,11 +105,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.update(LocationTable.TABLE, locationValues, "id = ?", new String[]{Integer.toString(locationId)});
     }
 
-    public void tagUpdateSoundAlarm(int id, int soundAlarm) {
+    public void tagUpdateSoundAlarm(int id, int alarm) {
 
         sqLiteDatabase = this.getWritableDatabase();
         ContentValues tagValues = new ContentValues();
-        tagValues.put(TagTable.COL_SOUND_ALARM, soundAlarm);
+        tagValues.put(TagTable.COL_ALARM, alarm);
         sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(id)});
     }
 
@@ -133,7 +132,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Location getLocationById(int lastSeenLocationId) {
         sqLiteDatabase = this.getReadableDatabase();
-
         String columnTitle = LocationTable.COL_ID + " = ?";
         String[] columnValue = {Integer.toString(lastSeenLocationId)};
 
@@ -179,7 +177,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
                         setLastSeenLocationId(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
                         setLastSeenTime(date);
-                        setSoundAlarm(Integer.parseInt((data.getString(data.getColumnIndex(TagTable.COL_SOUND_ALARM)))));
+                        setAlarm(Integer.parseInt(data.getString(data.getColumnIndex(TagTable.COL_ALARM))));
                     }}
             );
         }
