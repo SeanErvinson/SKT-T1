@@ -29,6 +29,8 @@ import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 
+import java.util.Date;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -70,21 +72,29 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             public void onReceive(Context context, Intent intent) {
                 final String action = intent.getAction();
                 if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
-                    if(mBluetoothName == null) return;
                     final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    Tag newTag = new Tag(){{
-                        setName(mBluetoothName);
-                        setMacAddress(bluetoothDevice.getAddress());
-                    }};
-                    mBluetoothName = null;
-                    mTagRecyclerAdapter.addTag(newTag);
-                    databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime().toString());
-
+//                    databaseHelper.get
+                    if(bluetoothDevice != null){}
+//                    tag.setConnected(true);
+//                    mTagRecyclerAdapter.notifyDataSetChanged();
+                    else{
+                        if(mBluetoothName == null) return;
+                        Tag newTag = new Tag(){{
+                            setName(mBluetoothName);
+                            setMacAddress(bluetoothDevice.getAddress());
+                            setLastSeenTime(new Date());
+                            setConnected(true);
+                        }};
+                        mBluetoothName = null;
+                        mTagRecyclerAdapter.addTag(newTag);
+                        databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime().toString());
+                    }
                 } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
                     BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+                    Tag tag = mTagRecyclerAdapter.getTagByAddress(disconnectedDevice.getAddress());
+                    tag.setConnected(false);
+                    mTagRecyclerAdapter.notifyDataSetChanged();
                     ((MainActivity)getActivity()).mBluetoothLeService.removeBluetoothGatt(disconnectedDevice.getAddress());
-                } else if (TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-                    Log.d(TAG, "Services discovered");
                 }
             }
         };
@@ -157,8 +167,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_CONNECTED);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED);
-        intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
 
