@@ -71,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
-    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, long lastSeenTime) {
+    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, Date datetime) {
 
         sqLiteDatabase = this.getWritableDatabase();
 
@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         tagValues.put(TagTable.COL_NAME, name);
         tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
         tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
-        tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
+        tagValues.put(TagTable.COL_LAST_SEEN_TIME, datetime.getTime());
         tagValues.put(TagTable.COL_ALARM, 1);
 
         return (int) sqLiteDatabase.insert(TagTable.TABLE, null, tagValues);
