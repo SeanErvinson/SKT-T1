@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,13 +72,13 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                 final String action = intent.getAction();
                 if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
                     final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-//                    databaseHelper.get
-                    if(bluetoothDevice != null){}
-//                    tag.setConnected(true);
-//                    mTagRecyclerAdapter.notifyDataSetChanged();
-                    else{
-                        if(mBluetoothName == null) return;
-                        Tag newTag = new Tag(){{
+                    Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
+                    if (tag != null) {
+                        tag.setConnected(true);
+                        mTagRecyclerAdapter.notifyDataSetChanged();
+                    } else {
+                        if (mBluetoothName == null) return;
+                        Tag newTag = new Tag() {{
                             setName(mBluetoothName);
                             setMacAddress(bluetoothDevice.getAddress());
                             setLastSeenTime(new Date());
@@ -87,14 +86,14 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                         }};
                         mBluetoothName = null;
                         mTagRecyclerAdapter.addTag(newTag);
-                        databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime().toString());
+                        databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime());
                     }
                 } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
                     BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
                     Tag tag = mTagRecyclerAdapter.getTagByAddress(disconnectedDevice.getAddress());
                     tag.setConnected(false);
                     mTagRecyclerAdapter.notifyDataSetChanged();
-                    ((MainActivity)getActivity()).mBluetoothLeService.removeBluetoothGatt(disconnectedDevice.getAddress());
+                    ((MainActivity) getActivity()).mBluetoothLeService.removeBluetoothGatt(disconnectedDevice.getAddress());
                 }
             }
         };
@@ -124,7 +123,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                     String tagName = data.getStringExtra("tagName");
                     if (((MainActivity) getActivity()).mBluetoothLeService.connect(tagAddress)) {
                         mBluetoothName = tagName;
-                    }else{
+                    } else {
                         Toast.makeText(getContext(), "Unable to connect to device", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -175,10 +174,10 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         Tag tag = mTagRecyclerAdapter.getTag(index);
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
-            if(gatt == null) return;
+            if (gatt == null) return;
 //            boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getSoundAlarm());
-            boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, 2);
-            if(!status){
+            boolean status = ((MainActivity) getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, 2);
+            if (!status) {
                 Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
             }
         }
