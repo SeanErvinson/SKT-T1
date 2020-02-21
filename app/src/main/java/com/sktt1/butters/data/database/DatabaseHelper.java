@@ -47,12 +47,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Activity table interactions
-    public int activityCreateNotification(String message, String notifiedOn) {
+    public int activityCreateNotification(String message) {
         sqLiteDatabase = this.getWritableDatabase();
         ContentValues activityValues = new ContentValues();
         activityValues.put(ActivityTable.COL_MESSAGE, message);
-        activityValues.put(ActivityTable.COL_NOTIFIED_ON, notifiedOn);
-        activityValues.put(ActivityTable.COL_HAS_READ, "false");
+        activityValues.put(ActivityTable.COL_NOTIFIED_ON, new Date().getTime());
+        activityValues.put(ActivityTable.COL_HAS_READ, false);
         return (int) sqLiteDatabase.insert(ActivityTable.TABLE, null, activityValues);
     }
 
@@ -71,7 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Tag table interactions
 
-    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, String lastSeenTime) {
+    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, long lastSeenTime) {
 
         sqLiteDatabase = this.getWritableDatabase();
 
@@ -130,6 +130,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return sqLiteDatabase.insert(LocationTable.TABLE, null, locationValues);
     }
 
+    public Tag getTagByMacAddress(String macAddress){
+        sqLiteDatabase = this.getReadableDatabase();
+        String columnTitle = TagTable.COL_MAC_ADDRESS + " = ?";
+        String[] columnValue = {macAddress};
+
+        Cursor cursor = sqLiteDatabase.query(
+                TagTable.TABLE,
+                null,
+                columnTitle,
+                columnValue,
+                null,
+                null,
+                null
+        );
+        Tag tag = new Tag();
+
+        if (cursor.moveToNext()) {
+            Date date = new Date(cursor.getLong(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+            tag.setId(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ID)));
+            tag.setAlarm(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ALARM)));
+            tag.setName(cursor.getString(cursor.getColumnIndex(TagTable.COL_NAME)));
+            tag.setLastSeenTime(date);
+            tag.setMacAddress(cursor.getString(cursor.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
+        }
+        return tag;
+    }
     public Location getLocationById(int lastSeenLocationId) {
         sqLiteDatabase = this.getReadableDatabase();
         String columnTitle = LocationTable.COL_ID + " = ?";
@@ -165,13 +191,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         while (data.moveToNext()) {
             tags.add(
                     new Tag() {{
-                        Date date = null;
-                        String dateValue = data.getString(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME));
-                        try {
-                            date = DateUtility.getStringDate(dateValue, DateTimePattern.DATE);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        Date date = new Date(data.getLong(data.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+
                         setId(data.getInt(data.getColumnIndex(TagTable.COL_ID)));
                         setName(data.getString(data.getColumnIndex(TagTable.COL_NAME)));
                         setMacAddress(data.getString(data.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
@@ -195,14 +216,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             {
                 activities.add(
                         new Activity() {{
-                            Date date = new Date();
+                            Date date = new Date(data.getLong(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+
                             setId(data.getInt(data.getColumnIndex(ActivityTable.COL_ID)));
                             setMessage(data.getString(data.getColumnIndex(ActivityTable.COL_MESSAGE)));
-                            try {
-                                date = new SimpleDateFormat("dd/MM/yyyy").parse(data.getString(data.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
                             setNotifiedOn(date);
                         }}
                 );
