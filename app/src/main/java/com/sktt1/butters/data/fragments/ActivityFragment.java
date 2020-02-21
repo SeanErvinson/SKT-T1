@@ -1,6 +1,5 @@
 package com.sktt1.butters.data.fragments;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,13 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.ActivityRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
-import com.sktt1.butters.data.database.tables.ActivityTable;
-import com.sktt1.butters.data.models.Activity;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 
 public class ActivityFragment extends Fragment implements ActivityRecyclerAdapter.OnActivityListener {
@@ -30,7 +22,6 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mActivityView;
-    private ArrayList<Activity> activities;
     private ActivityRecyclerAdapter mActivityRecyclerAdapter;
     private DatabaseHelper databaseHelper;
 
@@ -46,10 +37,8 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        activities = databaseHelper.fetchActivityData();
         initializeWidget(view);
         initializeRecyclerView();
-
     }
 
     private void initializeWidget(View view) {
@@ -59,14 +48,13 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     private void initializeRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mActivityView.setLayoutManager(linearLayoutManager);
-        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(activities, this);
         mActivityView.setAdapter(mActivityRecyclerAdapter);
     }
 
 
     @Override
     public void onClick(int index) {
-        Log.d("TAG", activities.get(index).toString());
+        Log.d("TAG", mActivityRecyclerAdapter.getActivity(index).toString());
     }
 
 
@@ -74,6 +62,8 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
+        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(this);
+        mActivityRecyclerAdapter.loadActivities(databaseHelper.fetchActivityData());
     }
 
     @Override

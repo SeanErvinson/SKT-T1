@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.fragments.ActivityFragment;
 import com.sktt1.butters.data.fragments.HomeFragment;
 import com.sktt1.butters.data.fragments.MapFragment;
@@ -29,13 +30,12 @@ import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.services.BluetoothLEService;
 
 
-public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener{
-    private static final String TAG = MainActivity.class.getSimpleName();;
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private BottomNavigationView mBottomNavigationView;
     private Fragment mHomeFragment, mMapFragment, mSettingsFragment, mActivityFragment;
     private ImageView mAccountProfile, mActivity;
-    private Fragment currentFragment;
     private FragmentManager mFragmentManager;
     private TagBroadcastReceiver mTagBroadcastReceiver;
     public BluetoothLEService mBluetoothLeService;
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     private void initializeBroadcastReceivers() {
-        mTagBroadcastReceiver = new TagBroadcastReceiver();
+        mTagBroadcastReceiver = new TagBroadcastReceiver(new DatabaseHelper(this));
     }
 
     @Override
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         mActivity = view.findViewById(R.id.iv_action_bar_notification);
         mAccountProfile = view.findViewById(R.id.iv_action_bar_account);
-
         mActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,10 +152,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     public void changeFragment(Fragment fragment, String tagFragmentName) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-
         Fragment currentFragment = mFragmentManager.getPrimaryNavigationFragment();
         if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment);
+            if (currentFragment.getTag().equals(ActivityFragment.class.getSimpleName())) {
+                fragmentTransaction.remove(currentFragment);
+            } else {
+                fragmentTransaction.hide(currentFragment);
+            }
         }
         Fragment fragmentTemp = mFragmentManager.findFragmentByTag(tagFragmentName);
         if (fragmentTemp == null) {

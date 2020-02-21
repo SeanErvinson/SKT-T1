@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecyclerAdapter.ActivityViewHolder>{
 
-    private final ArrayList<Activity> activities;
+    private ArrayList<Activity> mActivities;
     private final OnActivityListener onActivityListener;
 
-    public ActivityRecyclerAdapter(ArrayList<Activity> activities, OnActivityListener onActivityListener) {
-        this.activities = activities;
+    public ActivityRecyclerAdapter(OnActivityListener onActivityListener) {
+        this.mActivities = new ArrayList<>();
         this.onActivityListener = onActivityListener;
     }
 
@@ -34,18 +34,26 @@ public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
-        holder.bindMessage(activities.get(position).getMessage());
-        if(activities.get(position).getNotifiedOn() == null){
+        holder.bindMessage(mActivities.get(position).getMessage());
+        if(mActivities.get(position).getNotifiedOn() == null){
             return;
         }
-        String formattedDate = DateUtility.getFormattedDate(activities.get(position).getNotifiedOn(), DateTimePattern.DATE);
-        String formattedTime= DateUtility.getFormattedDate(activities.get(position).getNotifiedOn(), DateTimePattern.TIME);
+        String formattedDate = DateUtility.getFormattedDate(mActivities.get(position).getNotifiedOn(), DateTimePattern.DATE);
+        String formattedTime= DateUtility.getFormattedDate(mActivities.get(position).getNotifiedOn(), DateTimePattern.TIME);
         holder.bindDateTimeInfo(String.format("%s at %s", formattedDate, formattedTime));
+    }
+
+    public void loadActivities(ArrayList<Activity> activities){
+        mActivities = activities;
     }
 
     @Override
     public int getItemCount() {
-        return activities != null ? activities.size() : 0;
+        return mActivities != null ? mActivities.size() : 0;
+    }
+
+    public Activity getActivity(int position) {
+        return mActivities.get(position);
     }
 
     static class ActivityViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
