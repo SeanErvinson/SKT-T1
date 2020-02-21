@@ -270,7 +270,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(View view) {
                 BluetoothGatt bluetoothGatt = ((MainActivity)getActivity()).mBluetoothLeService.getBluetoothGatt(selectedTag.getMacAddress());
-                boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(bluetoothGatt, selectedTag.getSoundAlarm());
+                boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(bluetoothGatt, selectedTag.getAlarm());
                 if(!status){
                     Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
                 }
