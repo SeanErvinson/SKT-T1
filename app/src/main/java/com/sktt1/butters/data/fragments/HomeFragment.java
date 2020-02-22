@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -139,6 +140,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         mTagsView.setLayoutManager(linearLayoutManager);
         mTagRecyclerAdapter = new TagRecyclerAdapter(this);
         mTagsView.setAdapter(mTagRecyclerAdapter);
+        mTagsView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
     }
 
