@@ -37,29 +37,28 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull TagViewHolder holder, int position) {
-
-        holder.bindTagName(mTags.get(position).getName());
+        String tagLocation = null;
+        String tagTime = null;
 
         DatabaseHelper databaseHelper = new DatabaseHelper(holder.tagName.getContext());
         Location lastSeenLocation = databaseHelper.getLocationById(mTags.get(position).getLastSeenLocationId());
-        if(lastSeenLocation != null){
-            String tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
-            holder.bindTagLocation(tagLocation);
+        if (lastSeenLocation != null) {
+            tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
         }
-        if(lastSeenLocation != null){
+        if (lastSeenLocation != null) {
             Date lastSeenTime = mTags.get(position).getLastSeenTime();
-            if(lastSeenTime != null){
+            if (lastSeenTime != null) {
                 String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
-                String tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
-                holder.bindTagTime(tagTime);
+                tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
             }
         }
-        if(lastSeenLocation != null){
-            holder.bindTagLocate(mTags.get(position).isConnected());
-        }
+        holder.bindTagName(mTags.get(position).getName());
+        holder.bindTagLocation(tagLocation);
+        holder.bindTagTime(tagTime);
+        holder.bindTagLocate(mTags.get(position).isConnected());
     }
 
-    public void loadTags(ArrayList<Tag> tags){
+    public void loadTags(ArrayList<Tag> tags) {
         mTags = tags;
     }
 
@@ -72,9 +71,9 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         return mTags.get(position);
     }
 
-    public Tag getTagByAddress(String address){
-        for (Tag tag: mTags) {
-            if(tag.getMacAddress().equals(address)) return tag;
+    public Tag getTagByAddress(String address) {
+        for (Tag tag : mTags) {
+            if (tag.getMacAddress().equals(address)) return tag;
         }
         return null;
     }
@@ -84,21 +83,21 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
     }
 
     public void addTag(Tag tag) {
-        if(!mTags.contains(tag)) {
-            if(tag.getName() == null) return;
+        if (!mTags.contains(tag)) {
+            if (tag.getName() == null) return;
             mTags.add(tag);
             notifyDataSetChanged();
         }
     }
 
-    public void setTagConnected(String macAddress, boolean state){
+    public void setTagConnected(String macAddress, boolean state) {
         Tag selectedTag = getTagByAddress(macAddress);
-        if(selectedTag == null)  return;
+        if (selectedTag == null) return;
         selectedTag.setConnected(state);
         notifyDataSetChanged();
     }
 
-    static class TagViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
+    static class TagViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tagName;
         private TextView tagLocation;
@@ -121,8 +120,8 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
             tagName.setText(content);
         }
 
-        void bindTagLocate(boolean isConnected){
-            if (!isConnected){
+        void bindTagLocate(boolean isConnected) {
+            if (!isConnected) {
                 tagLocate.setEnabled(false);
             } else {
                 tagLocate.setEnabled(true);
@@ -130,17 +129,19 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
 
         void bindTagLocation(String content) {
-            if(content.length() <= 0){
+            if (content == null) {
                 tagLocation.setVisibility(View.GONE);
             } else {
+                tagLocation.setVisibility(View.VISIBLE);
                 tagLocation.setText(content);
             }
         }
 
         void bindTagTime(String content) {
-            if(content.length() <= 0) {
+            if (content == null) {
                 tagTime.setVisibility(View.GONE);
             } else {
+                tagLocation.setVisibility(View.VISIBLE);
                 tagTime.setText(content);
             }
         }
@@ -151,7 +152,7 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
     }
 
-    public interface OnTagListener{
+    public interface OnTagListener {
         void onClick(int index);
     }
 }
