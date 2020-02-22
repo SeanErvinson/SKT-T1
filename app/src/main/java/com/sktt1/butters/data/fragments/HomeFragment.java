@@ -34,7 +34,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
-    public static final String TAG = HomeFragment.class.getSimpleName();
+    private static final String TAG = HomeFragment.class.getSimpleName();
 
     private static final int ADD_TAG_REQUEST_CODE = 4144;
 
@@ -72,28 +72,29 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                 final String action = intent.getAction();
                 if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
                     final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
-                    if (tag != null) {
-                        tag.setConnected(true);
-                        mTagRecyclerAdapter.notifyDataSetChanged();
-                    } else {
-                        if (mBluetoothName == null) return;
-                        Tag newTag = new Tag() {{
-                            setName(mBluetoothName);
-                            setMacAddress(bluetoothDevice.getAddress());
-                            setLastSeenTime(new Date());
-                            setConnected(true);
-                        }};
-                        mBluetoothName = null;
-                        mTagRecyclerAdapter.addTag(newTag);
-                        databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime());
-                    }
+                    createUpdateConnectedDevice(bluetoothDevice);
                 } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
                     BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    Tag tag = mTagRecyclerAdapter.getTagByAddress(disconnectedDevice.getAddress());
-                    tag.setConnected(false);
-                    mTagRecyclerAdapter.notifyDataSetChanged();
+                    mTagRecyclerAdapter.setTagConnected(disconnectedDevice.getAddress(), false);
                     ((MainActivity) getActivity()).mBluetoothLeService.removeBluetoothGatt(disconnectedDevice.getAddress());
+                }
+            }
+
+            private void createUpdateConnectedDevice(final BluetoothDevice bluetoothDevice) {
+                Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
+                if (tag != null) {
+                    mTagRecyclerAdapter.setTagConnected(tag.getMacAddress(), false);
+                } else {
+                    if (mBluetoothName == null) return;
+                    Tag newTag = new Tag() {{
+                        setName(mBluetoothName);
+                        setMacAddress(bluetoothDevice.getAddress());
+                        setLastSeenTime(new Date());
+                        setConnected(true);
+                    }};
+                    mBluetoothName = null;
+                    mTagRecyclerAdapter.addTag(newTag);
+                    databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime());
                 }
             }
         };
