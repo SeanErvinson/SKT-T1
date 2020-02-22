@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private BottomNavigationView mBottomNavigationView;
     private Fragment mHomeFragment, mMapFragment, mSettingsFragment, mActivityFragment;
-    private ImageView mAccountProfile, mActivity;
+    private ImageView mActivity;
     private FragmentManager mFragmentManager;
     private TagBroadcastReceiver mTagBroadcastReceiver;
     public BluetoothLEService mBluetoothLeService;
@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         parent.setContentInsetsAbsolute(0, 0);
 
         mActivity = view.findViewById(R.id.iv_action_bar_notification);
-        mAccountProfile = view.findViewById(R.id.iv_action_bar_account);
         mActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
