@@ -15,7 +15,6 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,8 +26,11 @@ import com.sktt1.butters.data.fragments.HomeFragment;
 import com.sktt1.butters.data.fragments.MapFragment;
 import com.sktt1.butters.data.fragments.OnFragmentInteractionListener;
 import com.sktt1.butters.data.fragments.SettingsFragment;
+import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.services.BluetoothLEService;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private FragmentManager mFragmentManager;
     private TagBroadcastReceiver mTagBroadcastReceiver;
     public BluetoothLEService mBluetoothLeService;
+    private DatabaseHelper databaseHelper;
+    private ArrayList<Tag> tags;
 
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
@@ -48,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if (!mBluetoothLeService.initialize()) {
                 finish();
             }
-            mBluetoothLeService.connect("FF:BD:90:2C:38:41", true);
+            for(Tag tag: tags){
+                mBluetoothLeService.connect(tag.getMacAddress(), true);
+            }
         }
 
         @Override
@@ -62,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        databaseHelper = new DatabaseHelper(this);
+        initializeTags();
         initializeActionBar();
         initializeBroadcastReceivers();
         initializeWidget();
@@ -69,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
         initializeFragments();
         registerReceiver(mTagBroadcastReceiver, createTagIntentFilter());
+    }
+
+    private void initializeTags() {
+        tags = databaseHelper.fetchTagData();
     }
 
 
