@@ -1,5 +1,6 @@
 package com.sktt1.butters.data.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,18 @@ import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecyclerAdapter.ActivityViewHolder>{
+public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecyclerAdapter.ActivityViewHolder> {
 
     private ArrayList<Activity> mActivities;
     private final OnActivityListener onActivityListener;
+    private Context context;
 
-    public ActivityRecyclerAdapter(OnActivityListener onActivityListener) {
+    public ActivityRecyclerAdapter(Context context, OnActivityListener onActivityListener) {
         this.mActivities = new ArrayList<>();
         this.onActivityListener = onActivityListener;
+        this.context = context;
     }
 
     @NonNull
@@ -34,16 +38,15 @@ public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecycl
 
     @Override
     public void onBindViewHolder(@NonNull ActivityViewHolder holder, int position) {
+        if (mActivities.get(position).getNotifiedOn() == null) return;
+        Date notifiedOn = mActivities.get(position).getNotifiedOn();
+        String formattedDate = DateUtility.getFormattedDate(notifiedOn, DateTimePattern.DATE);
+        String formattedTime = DateUtility.getFormattedDate(notifiedOn, DateTimePattern.TIME);
         holder.bindMessage(mActivities.get(position).getMessage());
-        if(mActivities.get(position).getNotifiedOn() == null){
-            return;
-        }
-        String formattedDate = DateUtility.getFormattedDate(mActivities.get(position).getNotifiedOn(), DateTimePattern.DATE);
-        String formattedTime= DateUtility.getFormattedDate(mActivities.get(position).getNotifiedOn(), DateTimePattern.TIME);
-        holder.bindDateTimeInfo(String.format("%s at %s", formattedDate, formattedTime));
+        holder.bindDateTimeInfo(context.getString(R.string.activity_date_time_info, formattedDate, formattedTime));
     }
 
-    public void loadActivities(ArrayList<Activity> activities){
+    public void loadActivities(ArrayList<Activity> activities) {
         mActivities = activities;
     }
 
@@ -56,21 +59,26 @@ public class ActivityRecyclerAdapter extends RecyclerView.Adapter<ActivityRecycl
         return mActivities.get(position);
     }
 
-    static class ActivityViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
+    static class ActivityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView message;
         private TextView dateTimeInfo;
         private OnActivityListener onActivityListener;
 
-        public ActivityViewHolder(@NonNull View itemView, OnActivityListener onActivityListener) {
+        ActivityViewHolder(@NonNull View itemView, OnActivityListener onActivityListener) {
             super(itemView);
             message = itemView.findViewById(R.id.tv_activity_cell_message);
             dateTimeInfo = itemView.findViewById(R.id.tv_activity_cell_date_time_info);
             this.onActivityListener = onActivityListener;
         }
 
-        public void bindMessage(String content){message.setText(content);}
-        public void bindDateTimeInfo(String content){dateTimeInfo.setText(content);}
+        void bindMessage(String content) {
+            message.setText(content);
+        }
+
+        void bindDateTimeInfo(String content) {
+            dateTimeInfo.setText(content);
+        }
 
         @Override
         public void onClick(View view) {

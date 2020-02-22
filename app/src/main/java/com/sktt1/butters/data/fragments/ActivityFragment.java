@@ -56,7 +56,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
 
     @Override
     public void onClick(int index) {
-        Log.d("TAG", mActivityRecyclerAdapter.getActivity(index).toString());
+        Log.d("TAG", mActivityRecyclerAdapter.getActivity(index).getMessage());
     }
 
 
@@ -64,7 +64,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
-        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(this);
+        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(getContext(),this);
         mActivityRecyclerAdapter.loadActivities(databaseHelper.fetchActivityData());
     }
 
