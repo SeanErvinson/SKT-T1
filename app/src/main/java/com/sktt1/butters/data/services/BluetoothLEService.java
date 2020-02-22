@@ -202,7 +202,6 @@ public class BluetoothLEService extends Service {
         while(iterator.hasNext()){
             BluetoothGatt gatt = iterator.next();
             if(gatt.getDevice().getAddress().equals(macAddress)){
-                gatt.disconnect();
                 iterator.remove();
             }
         }
@@ -214,7 +213,7 @@ public class BluetoothLEService extends Service {
         if (bluetoothGatt != null) bluetoothGatt.disconnect();
     }
 
-    public boolean connect(String macAddress) {
+    public boolean connect(String macAddress, boolean autoConnect) {
         if (mBluetoothAdapter == null || macAddress == null) {
             return false;
         }
@@ -232,7 +231,7 @@ public class BluetoothLEService extends Service {
             return false;
         }
 
-        bluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        bluetoothGatt = device.connectGatt(this, autoConnect, mGattCallback);
         if (bluetoothGatt == null) {
             return false;
         }

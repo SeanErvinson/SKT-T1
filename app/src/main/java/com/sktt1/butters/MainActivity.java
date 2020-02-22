@@ -15,6 +15,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if (!mBluetoothLeService.initialize()) {
                 finish();
             }
+            mBluetoothLeService.connect("FF:BD:90:2C:38:41", true);
         }
 
         @Override

@@ -77,14 +77,13 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                 } else if (TagBroadcastReceiver.ACTION_GATT_DISCONNECTED.equals(action)) {
                     BluetoothDevice disconnectedDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
                     mTagRecyclerAdapter.setTagConnected(disconnectedDevice.getAddress(), false);
-                    ((MainActivity) getActivity()).mBluetoothLeService.removeBluetoothGatt(disconnectedDevice.getAddress());
                 }
             }
 
             private void createUpdateConnectedDevice(final BluetoothDevice bluetoothDevice) {
                 Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
                 if (tag != null) {
-                    mTagRecyclerAdapter.setTagConnected(tag.getMacAddress(), false);
+                    mTagRecyclerAdapter.setTagConnected(tag.getMacAddress(), true);
                 } else {
                     if (mBluetoothName == null) return;
                     Tag newTag = new Tag() {{
@@ -123,7 +122,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                 if (data != null) {
                     String tagAddress = data.getStringExtra("tagAddress");
                     String tagName = data.getStringExtra("tagName");
-                    if (((MainActivity) getActivity()).mBluetoothLeService.connect(tagAddress)) {
+                    if (((MainActivity) getActivity()).mBluetoothLeService.connect(tagAddress, false)) {
                         mBluetoothName = tagName;
                     } else {
                         Toast.makeText(getContext(), "Unable to connect to device", Toast.LENGTH_SHORT).show();
