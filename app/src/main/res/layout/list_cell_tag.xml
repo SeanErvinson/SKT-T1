@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="144dp"
-    android:padding="@dimen/mSpacing">
+    android:layout_height="112dp"
+    android:paddingStart="@dimen/mSpacing"
+    android:paddingTop="@dimen/xsSpacing"
+    android:paddingBottom="@dimen/xsSpacing"
+    android:paddingEnd="@dimen/mSpacing">
 
     <LinearLayout
         android:layout_gravity="center"
