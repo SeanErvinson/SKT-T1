@@ -19,8 +19,7 @@ public class EditUserDetailsActivity extends AppCompatActivity {
     private EditText etEditName, etEditNickname;
     private Button btSaveUserDetails;
     private SharedPreferenceHelper sharedPreferenceHelper;
-    private RelativeLayout rlAppBar;
-    private ImageView mAccountProfile, mActivity, mBack;
+    private ImageView mBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +43,6 @@ public class EditUserDetailsActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        mActivity = view.findViewById(R.id.iv_action_bar__back_notification);
-        mAccountProfile = view.findViewById(R.id.iv_action_bar_back_account);
         mBack = view.findViewById(R.id.iv_action_bar_back_button);
 
         mBack.setOnClickListener(new View.OnClickListener() {
