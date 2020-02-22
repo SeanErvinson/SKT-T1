@@ -43,4 +43,6 @@
     <string name="find_my_phone_alarm">Find my Phone Alarm</string>
     <string name="set_the_sound_this_smartphone_plays_when_alerted">Set the sound this smartphone plays when alerted</string>
     <string name="settings_find_my_phone_alarm">%1$s</string>
+    <string name="activity_connected">A device has been connected.</string>
+    <string name="activity_disconnected">%1$s has been disconnected.</string>
 </resources>
