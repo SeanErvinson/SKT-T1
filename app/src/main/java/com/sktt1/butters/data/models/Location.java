@@ -3,8 +3,8 @@ package com.sktt1.butters.data.models;
 public class Location {
     private int id;
     private String name;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
 
     public int getId() {
         return id;
@@ -22,19 +22,19 @@ public class Location {
         this.name = name;
     }
 
-    public String getLongtitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongtitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void tagUpdateLocation(int tagId, int locationId, String lastSeenTime, String longitude, String latitude) {
+    public void tagUpdateLocation(int tagId, int locationId, String lastSeenTime, double longitude, double latitude) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
@@ -100,7 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int locationCreateRow(String name, String longitude, String latitude) {
+    public int locationCreateRow(String name, double longitude, double latitude) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues locationValues = new ContentValues();
             locationValues.put(LocationTable.COL_MESSAGE, name);
@@ -156,8 +156,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     Location location = new Location();
                     location.setId(cursor.getInt(cursor.getColumnIndex(LocationTable.COL_ID)));
                     location.setName(cursor.getString(cursor.getColumnIndex(LocationTable.COL_MESSAGE)));
-                    location.setLatitude(cursor.getColumnName(cursor.getColumnIndex(LocationTable.COL_LATITUDE)));
-                    location.setLongtitude(cursor.getColumnName(cursor.getColumnIndex(LocationTable.COL_LONGITUDE)));
+                    location.setLatitude(cursor.getDouble(cursor.getColumnIndex(LocationTable.COL_LATITUDE)));
+                    location.setLongitude(cursor.getDouble(cursor.getColumnIndex(LocationTable.COL_LONGITUDE)));
                     return location;
                 }
                 return null;
