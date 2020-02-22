@@ -132,15 +132,15 @@ public class BluetoothLEService extends Service {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 broadcastUpdate(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED);
                 BluetoothGattService gpsService = gatt.getService(UUID_GPS_SERVICE);
-                if(gpsService != null){
+                if (gpsService != null) {
                     BluetoothGattCharacteristic latCharacteristic = gpsService.getCharacteristic(UUID_LAT_CHAR);
                     BluetoothGattCharacteristic lngCharacteristic = gpsService.getCharacteristic(UUID_LNG_CHAR);
-                    if(latCharacteristic != null && lngCharacteristic != null){
+                    if (latCharacteristic != null && lngCharacteristic != null) {
                         gatt.setCharacteristicNotification(latCharacteristic, true);
                         gatt.setCharacteristicNotification(lngCharacteristic, true);
                         BluetoothGattDescriptor latDescriptor = latCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
                         BluetoothGattDescriptor lngDescriptor = lngCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-                        if(latDescriptor != null && lngDescriptor != null){
+                        if (latDescriptor != null && lngDescriptor != null) {
                             lngDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                             latDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                             descriptors.add(lngDescriptor);
@@ -149,12 +149,12 @@ public class BluetoothLEService extends Service {
                     }
                 }
                 BluetoothGattService fmpService = gatt.getService(UUID_FMP_SERVICE);
-                if(fmpService != null){
+                if (fmpService != null) {
                     BluetoothGattCharacteristic fmpCharacteristic = fmpService.getCharacteristic(UUID_FMP_CHAR);
-                    if(fmpCharacteristic != null){
+                    if (fmpCharacteristic != null) {
                         gatt.setCharacteristicNotification(fmpCharacteristic, true);
                         BluetoothGattDescriptor fmpDescriptor = fmpCharacteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
-                        if(fmpDescriptor != null){
+                        if (fmpDescriptor != null) {
                             fmpDescriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                             descriptors.add(fmpDescriptor);
                             gatt.writeDescriptor(descriptors.poll());
@@ -167,9 +167,9 @@ public class BluetoothLEService extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                broadcastUpdate(TagBroadcastReceiver.ACTION_DATA_AVAILABLE, characteristic);
+                broadcastUpdate(gatt.getDevice().getAddress(), TagBroadcastReceiver.ACTION_DATA_AVAILABLE, characteristic);
             }
-            if(gattChars.get(gatt.getDevice().getAddress()).size() > 0){
+            if (gattChars.get(gatt.getDevice().getAddress()).size() > 0) {
                 requestCharacteristics(gatt);
             }
         }
@@ -177,8 +177,8 @@ public class BluetoothLEService extends Service {
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
-            if(status == BluetoothGatt.GATT_SUCCESS){
-                if(descriptors.size() > 0){
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (descriptors.size() > 0) {
                     requestWriteDescriptor(gatt);
                 }
             }
@@ -186,9 +186,14 @@ public class BluetoothLEService extends Service {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            broadcastUpdate(TagBroadcastReceiver.ACTION_DATA_AVAILABLE, characteristic);
+            String defaultIntent = TagBroadcastReceiver.ACTION_DATA_AVAILABLE;
+            if (UUID_FMP_CHAR.equals(characteristic.getUuid())) {
+                defaultIntent = TagBroadcastReceiver.ACTION_PHONE_ALERTED;
+            }
+            broadcastUpdate(gatt.getDevice().getAddress(), defaultIntent, characteristic);
         }
     };
+
     public BluetoothGatt getBluetoothGatt(String macAddress) {
         for (BluetoothGatt bluetoothGatt : mBluetoothGatts) {
             if (bluetoothGatt.getDevice().getAddress().equals(macAddress))
@@ -199,9 +204,9 @@ public class BluetoothLEService extends Service {
 
     public void removeBluetoothGatt(String macAddress) {
         Iterator<BluetoothGatt> iterator = mBluetoothGatts.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             BluetoothGatt gatt = iterator.next();
-            if(gatt.getDevice().getAddress().equals(macAddress)){
+            if (gatt.getDevice().getAddress().equals(macAddress)) {
                 iterator.remove();
             }
         }
@@ -250,18 +255,19 @@ public class BluetoothLEService extends Service {
         sendBroadcast(intent);
     }
 
-    private void broadcastUpdate(String intentAction, BluetoothGattCharacteristic characteristic) {
+    private void broadcastUpdate(String address, String intentAction, BluetoothGattCharacteristic characteristic) {
         Intent intent = new Intent(intentAction);
         if (UUID_LAT_CHAR.equals(characteristic.getUuid())) {
             final float latitude = parseFloatCharacteristic(characteristic);
             intent.putExtra(TagBroadcastReceiver.GPS_LAT_DATA, latitude);
         } else if (UUID_LNG_CHAR.equals(characteristic.getUuid())) {
             final float longitude = parseFloatCharacteristic(characteristic);
-            intent.putExtra(TagBroadcastReceiver.GPS_LNG_DATA, longitude );
+            intent.putExtra(TagBroadcastReceiver.GPS_LNG_DATA, longitude);
         } else if (UUID_FMP_CHAR.equals(characteristic.getUuid())) {
             final int fmp = parseIntCharacteristic(characteristic);
-            intent.putExtra(TagBroadcastReceiver.ACTION_PHONE_ALERTED, fmp);
+            intent.putExtra(TagBroadcastReceiver.FMP_DATA, fmp);
         }
+        intent.putExtra(TagBroadcastReceiver.TAG_DATA, address);
         sendBroadcast(intent);
     }
 
@@ -279,9 +285,9 @@ public class BluetoothLEService extends Service {
         if (mBluetoothAdapter == null || bluetoothGatt == null) {
             return false;
         }
-        if(characteristic.getUuid().equals(BluetoothLEService.UUID_GPS_SERVICE)){
+        if (characteristic.getUuid().equals(BluetoothLEService.UUID_GPS_SERVICE)) {
             BluetoothGattService bluetoothGattService = bluetoothGatt.getService(BluetoothLEService.UUID_GPS_SERVICE);
-            if(bluetoothGattService != null) {
+            if (bluetoothGattService != null) {
                 BluetoothGattCharacteristic latCharacteristic = bluetoothGattService.getCharacteristic(BluetoothLEService.UUID_LAT_CHAR);
                 BluetoothGattCharacteristic lngCharacteristic = bluetoothGattService.getCharacteristic(BluetoothLEService.UUID_LNG_CHAR);
                 Queue<BluetoothGattCharacteristic> characteristics = new LinkedList<>();
@@ -302,15 +308,15 @@ public class BluetoothLEService extends Service {
         bluetoothGatt.writeCharacteristic(characteristic);
     }
 
-    public boolean writeLocateCharacteristic(BluetoothGatt bluetoothGatt, int soundAlarm){
-        if(bluetoothGatt == null) return false;
+    public boolean writeLocateCharacteristic(BluetoothGatt bluetoothGatt, int soundAlarm) {
+        if (bluetoothGatt == null) return false;
         BluetoothGattService bluetoothGattService = bluetoothGatt.getService(BluetoothLEService.UUID_ALERT_SERVICE);
-        if(bluetoothGattService != null) {
+        if (bluetoothGattService != null) {
             BluetoothGattCharacteristic characteristic = bluetoothGattService.getCharacteristic(BluetoothLEService.UUID_ALERT_CHAR);
             characteristic.setValue(new byte[]{(byte) soundAlarm});
             writeCharacteristic(bluetoothGatt, characteristic);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
