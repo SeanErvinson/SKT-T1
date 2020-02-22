@@ -91,6 +91,13 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
     }
 
+    public void setTagConnected(String macAddress, boolean state){
+        Tag selectedTag = getTagByAddress(macAddress);
+        if(selectedTag == null)  return;
+        selectedTag.setConnected(state);
+        notifyDataSetChanged();
+    }
+
     static class TagViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener {
 
         private TextView tagName;
