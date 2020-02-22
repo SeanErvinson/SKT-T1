@@ -40,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int activityCreateNotification(String message) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues activityValues = new ContentValues();
             activityValues.put(ActivityTable.COL_MESSAGE, message);
             activityValues.put(ActivityTable.COL_NOTIFIED_ON, new Date().getTime());
@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void activityUpdateNotification(int id) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues activityValues = new ContentValues();
             activityValues.put(ActivityTable.COL_HAS_READ, true);
             sqLiteDatabase.update(ActivityTable.TABLE, activityValues, "id = ?", new String[]{Long.toString(id)});
@@ -58,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, Date datetime) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
 
             tagValues.put(TagTable.COL_NAME, name);
@@ -72,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void tagUpdateName(String name, int id) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_NAME, name);
             sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(id)});
@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void tagUpdateLocation(int tagId, int locationId, String lastSeenTime, String longitude, String latitude) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
             sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(tagId)});
@@ -93,7 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void tagUpdateSoundAlarm(int id, int alarm) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_ALARM, alarm);
             sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(id)});
@@ -101,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int locationCreateRow(String name, String longitude, String latitude) {
-        try(SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()){
+        try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues locationValues = new ContentValues();
             locationValues.put(LocationTable.COL_MESSAGE, name);
             locationValues.put(LocationTable.COL_LONGITUDE, longitude);
@@ -171,19 +171,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String query = String.format("SELECT * FROM %s ", TagTable.TABLE);
             try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
                 cursor.moveToFirst();
-                while (cursor.moveToNext()) {
-                    tags.add(
-                            new Tag() {{
-                                Date date = new Date(cursor.getLong(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
+                while (!cursor.isAfterLast()) {
+                    Tag newTag = new Tag();
+                    Date date = new Date(cursor.getLong(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_TIME)));
 
-                                setId(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ID)));
-                                setName(cursor.getString(cursor.getColumnIndex(TagTable.COL_NAME)));
-                                setMacAddress(cursor.getString(cursor.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
-                                setLastSeenLocationId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
-                                setLastSeenTime(date);
-                                setAlarm(Integer.parseInt(cursor.getString(cursor.getColumnIndex(TagTable.COL_ALARM))));
-                            }}
-                    );
+                    newTag.setId(cursor.getInt(cursor.getColumnIndex(TagTable.COL_ID)));
+                    newTag.setName(cursor.getString(cursor.getColumnIndex(TagTable.COL_NAME)));
+                    newTag.setMacAddress(cursor.getString(cursor.getColumnIndex(TagTable.COL_MAC_ADDRESS)));
+                    newTag.setLastSeenLocationId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(TagTable.COL_LAST_SEEN_LOCATION_ID))));
+                    newTag.setLastSeenTime(date);
+                    newTag.setAlarm(Integer.parseInt(cursor.getString(cursor.getColumnIndex(TagTable.COL_ALARM))));
+                    tags.add(newTag);
+                    cursor.moveToNext();
                 }
             }
         }
@@ -196,16 +195,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String query = String.format("SELECT * FROM %s ", ActivityTable.TABLE);
             try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
                 cursor.moveToFirst();
-                while (cursor.moveToNext()) {
-                    activities.add(
-                            new Activity() {{
-                                Date date = new Date(cursor.getLong(cursor.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+                while (!cursor.isAfterLast()) {
+                    Activity newActivity = new Activity();
+                    Date date = new Date(cursor.getLong(cursor.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
 
-                                setId(cursor.getInt(cursor.getColumnIndex(ActivityTable.COL_ID)));
-                                setMessage(cursor.getString(cursor.getColumnIndex(ActivityTable.COL_MESSAGE)));
-                                setNotifiedOn(date);
-                            }}
-                    );
+                    newActivity.setId(cursor.getInt(cursor.getColumnIndex(ActivityTable.COL_ID)));
+                    newActivity.setMessage(cursor.getString(cursor.getColumnIndex(ActivityTable.COL_MESSAGE)));
+                    newActivity.setNotifiedOn(date);
+                    activities.add(newActivity);
+                    cursor.moveToNext();
                 }
             }
         }
