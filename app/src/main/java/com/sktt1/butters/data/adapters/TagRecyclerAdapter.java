@@ -47,7 +47,7 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
         if (lastSeenLocation != null) {
             Date lastSeenTime = mTags.get(position).getLastSeenTime();
-            if (lastSeenTime != null) {
+            if (lastSeenTime.compareTo(new Date(0)) > 0) {
                 String formattedDate = DateUtility.getFormattedDate(lastSeenTime, DateTimePattern.TIME);
                 tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
             }
@@ -129,7 +129,8 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         }
 
         void bindTagLocation(String content) {
-            if (content == null) {
+            String realContent = content.replace("Last location: ", "");
+            if (content == null || realContent.isEmpty()) {
                 tagLocation.setVisibility(View.GONE);
             } else {
                 tagLocation.setVisibility(View.VISIBLE);
@@ -141,7 +142,7 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
             if (content == null) {
                 tagTime.setVisibility(View.GONE);
             } else {
-                tagLocation.setVisibility(View.VISIBLE);
+                tagTime.setVisibility(View.VISIBLE);
                 tagTime.setText(content);
             }
         }

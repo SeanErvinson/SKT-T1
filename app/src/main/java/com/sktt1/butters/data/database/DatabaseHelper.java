@@ -57,13 +57,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int tagCreateDevice(String name, String macAddress, int lastSendLocationId, Date datetime) {
+    public int tagCreateDevice(String name, String macAddress) {
+
+        int lastSeenLocationId = locationCreateRow("", 0, 0);
+
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
 
+            Date datetime = new Date(0);
+
             tagValues.put(TagTable.COL_NAME, name);
             tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
-            tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSendLocationId);
+            tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, lastSeenLocationId);
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, datetime.getTime());
             tagValues.put(TagTable.COL_ALARM, 1);
 
@@ -79,10 +84,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void tagUpdateLocation(int tagId, int locationId, long lastSeenTime, String locationName, double longitude, double latitude) {
+    public void tagUpdateLocation(int tagId, Date lastSeenTime, String locationName, double longitude, double latitude) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
+            int locationId = tagId;
+
             ContentValues tagValues = new ContentValues();
-            tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
+            tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, locationId);
+            tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime.getTime());
             sqLiteDatabase.update(TagTable.TABLE, tagValues, "id = ?", new String[]{Integer.toString(tagId)});
 
             ContentValues locationValues = new ContentValues();

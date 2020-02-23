@@ -84,18 +84,17 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
                 Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
                 if (tag != null) {
                     mTagRecyclerAdapter.setTagConnected(tag.getMacAddress(), true);
-                    ((MainActivity)getActivity()).mBluetoothLeService.connect(tag.getMacAddress(), true);
+                    ((MainActivity) getActivity()).mBluetoothLeService.connect(tag.getMacAddress(), true);
                 } else {
                     if (mBluetoothName == null) return;
                     Tag newTag = new Tag() {{
                         setName(mBluetoothName);
                         setMacAddress(bluetoothDevice.getAddress());
-                        setLastSeenTime(new Date());
                         setConnected(true);
                     }};
                     mBluetoothName = null;
                     mTagRecyclerAdapter.addTag(newTag);
-                    databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress(), newTag.getLastSeenLocationId(), newTag.getLastSeenTime());
+                    databaseHelper.tagCreateDevice(newTag.getName(), newTag.getMacAddress());
                 }
             }
         };
@@ -178,7 +177,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
             if (gatt == null) return;
-            boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getAlarm());
+            boolean status = ((MainActivity) getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getAlarm());
             if (!status) {
                 Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
             }
