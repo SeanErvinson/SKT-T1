@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
 
-            Date datetime = new Date(0);
+            Date datetime = new Date();
 
             tagValues.put(TagTable.COL_NAME, name);
             tagValues.put(TagTable.COL_MAC_ADDRESS, macAddress);
@@ -84,10 +84,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void tagUpdateLocation(int tagId, Date lastSeenTime, String locationName, double longitude, double latitude) {
+    public void tagUpdateLocation(int tagId, String locationName, double longitude, double latitude) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             int locationId = tagId;
-
+            Date lastSeenTime = new Date();
+            
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, locationId);
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime.getTime());
