@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void tagUpdateLocation(int tagId, int locationId, String lastSeenTime, double longitude, double latitude) {
+    public void tagUpdateLocation(int tagId, int locationId, long lastSeenTime, double longitude, double latitude) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime);
