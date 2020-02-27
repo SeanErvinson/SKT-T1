@@ -11,7 +11,7 @@ public class SharedPreferenceHelper {
     private static final String INIT_LAUNCH = "initLaunch";
     private static final String PREFERENCE = "skt_pref";
 
-    // Shared Preferences
+
     private static final String USER_NAME = "userName";
     private static final String USER_NICKNAME = "userNickname";
     private static final String USER_FIND_MY_PHONE_ALARM = "userFindMyPhoneAlarm";

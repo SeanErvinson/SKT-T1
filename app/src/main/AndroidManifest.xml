@@ -28,6 +28,10 @@
             android:name=".data.services.BluetoothLEService"
             android:enabled="true" />
 
+
+        <activity
+            android:name=".SliderActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".EditFindMyPhoneAlarmActivity"
             android:screenOrientation="portrait" />

@@ -9,17 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import com.sktt1.butters.data.fragments.ActivityFragment;
 import com.sktt1.butters.data.preference.SharedPreferenceHelper;
 
 public class EditUserDetailsActivity extends AppCompatActivity {
 
     private EditText etEditName, etEditNickname;
-    private Button btSaveUserDetails;
     private SharedPreferenceHelper sharedPreferenceHelper;
-    private ImageView mBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +39,7 @@ public class EditUserDetailsActivity extends AppCompatActivity {
         Toolbar parent = (Toolbar) view.getParent();
         parent.setContentInsetsAbsolute(0, 0);
 
-        mBack = view.findViewById(R.id.iv_action_bar_back_button);
+        ImageView mBack = view.findViewById(R.id.iv_action_bar_back_button);
 
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +52,7 @@ public class EditUserDetailsActivity extends AppCompatActivity {
     private void initializeWidget() {
         etEditName = findViewById(R.id.et_edit_name);
         etEditNickname = findViewById(R.id.et_edit_nickname);
-        btSaveUserDetails = findViewById(R.id.bt_save_user_details);
+        Button btSaveUserDetails = findViewById(R.id.bt_save_user_details);
 
         btSaveUserDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,13 +63,12 @@ public class EditUserDetailsActivity extends AppCompatActivity {
                 if (etEditName.getText().length() != 0) {
                     name = etEditName.getText().toString();
                 }
-                if (etEditNickname.getText().length() != 0){
+                if (etEditNickname.getText().length() != 0) {
                     nickname = etEditNickname.getText().toString();
                 }
 
-                sharedPreferenceHelper.setUser(name,nickname);
+                sharedPreferenceHelper.setUser(name, nickname);
                 finish();
-
             }
         });
     }
