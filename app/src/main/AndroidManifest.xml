@@ -24,10 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EditTagActivity"></activity>
+
         <service
             android:name=".data.services.BluetoothLEService"
             android:enabled="true" />
-
 
         <activity
             android:name=".SliderActivity"

@@ -10,6 +10,7 @@
     android:paddingEnd="@dimen/mSpacing">
 
     <LinearLayout
+        android:id="@+id/ll_tag_details"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:layout_width="0dp"
