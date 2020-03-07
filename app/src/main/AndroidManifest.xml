@@ -24,7 +24,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditTagActivity"></activity>
+        <activity
+            android:name=".EditTagNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EditTagActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".data.services.BluetoothLEService"

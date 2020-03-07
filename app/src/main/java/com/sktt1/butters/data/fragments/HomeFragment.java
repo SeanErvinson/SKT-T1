@@ -183,4 +183,10 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializeRecyclerView();
+    }
 }

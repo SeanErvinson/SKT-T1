@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sktt1.butters.EditTagActivity;
-import com.sktt1.butters.MainActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Location;
@@ -41,11 +40,12 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TagViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TagViewHolder holder, final int position) {
         String tagLocation = null;
         String tagTime = null;
+        final Context context = holder.tagName.getContext();
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(holder.tagName.getContext());
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         Location lastSeenLocation = databaseHelper.getLocationById(mTags.get(position).getLastSeenLocationId());
         if (lastSeenLocation != null) {
             tagLocation = holder.itemView.getResources().getString(R.string.last_seen_location, lastSeenLocation.getName());
@@ -56,9 +56,18 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
             tagTime = holder.itemView.getResources().getString(R.string.last_seen_time, formattedDate);
         }
         holder.bindTagName(mTags.get(position).getName());
-//        holder.bindTagLocation(tagLocation);
+        holder.bindTagLocation(tagLocation);
         holder.bindTagTime(tagTime);
         holder.bindTagLocate(mTags.get(position).isConnected());
+
+        holder.tagDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EditTagActivity.class);
+                intent.putExtra("tag", getTag(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     public void loadTags(ArrayList<Tag> tags) {
@@ -120,14 +129,6 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
             this.onTagListener = onTagListener;
             tagLocate.setOnClickListener(this);
-            tagDetails.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Context context = tagDetails.getContext();
-                    Intent intent = new Intent(context, EditTagActivity.class);
-                    context.startActivity(intent);
-                }
-            });
         }
 
         void bindTagName(String content) {
