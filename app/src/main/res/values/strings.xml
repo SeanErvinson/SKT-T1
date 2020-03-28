@@ -45,6 +45,7 @@
     <string name="settings_find_my_phone_alarm">%1$s</string>
     <string name="activity_connected">A device has been connected.</string>
     <string name="activity_disconnected">%1$s has been disconnected.</string>
+    <string name="activity_alerted">Your phone has been alerted by Tag: %1$s</string>
     <string name="slider_message">Thank you for downloading the SKT-T1 application.</string>
     <string name="slider_message2">This application will help you locate objects where you placed the keychain on.</string>
     <string name="edit_tag_update">update</string>

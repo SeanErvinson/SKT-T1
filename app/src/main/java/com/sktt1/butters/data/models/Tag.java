@@ -34,6 +34,7 @@ public class Tag implements Parcelable {
         macAddress = in.readString();
         lastSeenLocationId = in.readInt();
         isConnected = in.readByte() != 0;
+        alarm = in.readInt();
     }
 
     public static final Creator<Tag> CREATOR = new Creator<Tag>() {
@@ -115,5 +116,6 @@ public class Tag implements Parcelable {
         parcel.writeString(macAddress);
         parcel.writeInt(lastSeenLocationId);
         parcel.writeByte((byte) (isConnected ? 1 : 0));
+        parcel.writeInt(alarm);
     }
 }
