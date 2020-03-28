@@ -31,6 +31,8 @@
             android:name=".EditTagActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".NotificationActivity"/>
+
         <service
             android:name=".data.services.BluetoothLEService"
             android:enabled="true" />
@@ -54,17 +56,21 @@
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+
+        <receiver android:name=".data.receivers.TagBroadcastReceiver"/>
     </application>
 
 </manifest>
