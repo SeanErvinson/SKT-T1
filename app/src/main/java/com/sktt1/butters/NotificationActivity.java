@@ -1,5 +1,6 @@
 package com.sktt1.butters;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -13,9 +14,10 @@ public class NotificationActivity {
 
     public NotificationActivity(Context context) {
         this.context = context;
+        notificationManager = NotificationManagerCompat.from(this.context);
     }
 
-    private NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+    private NotificationManagerCompat notificationManager;
 
     public void sendFMPNotification(String tagName) {
         Intent intent = new Intent(context, SplashActivity.class);

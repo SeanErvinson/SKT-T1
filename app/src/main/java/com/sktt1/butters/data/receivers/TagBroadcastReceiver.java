@@ -33,13 +33,14 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-        Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
+
         NotificationActivity notificationActivity = new NotificationActivity(context);
         final String action = intent.getAction();
 
         if (ACTION_PHONE_ALERTED.equals(action)) {
             // TODO fmp
+            final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+            Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_alerted,tag.getName()));
             notificationActivity.sendFMPNotification(tag.getName());
             // Play sound
@@ -47,6 +48,8 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
         } else if (ACTION_GATT_CONNECTED.equals(action)) {
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_connected));
         } else if (ACTION_GATT_DISCONNECTED.equals(action)) {
+            final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
+            Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_disconnected, tag.getName()));
             notificationActivity.sendDisconnectionNotification(tag.getName());
         } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
