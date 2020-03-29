@@ -26,7 +26,7 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
     private ArrayList<Tag> mTags;
     private OnTagListener onTagListener;
-
+    private Context context;
     public TagRecyclerAdapter(OnTagListener onTagListener) {
         this.mTags = new ArrayList<>();
         this.onTagListener = onTagListener;
@@ -43,7 +43,6 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
     public void onBindViewHolder(@NonNull TagViewHolder holder, final int position) {
         String tagLocation = null;
         String tagTime = null;
-        final Context context = holder.tagName.getContext();
 
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         Location lastSeenLocation = databaseHelper.getLocationById(mTags.get(position).getLastSeenLocationId());
