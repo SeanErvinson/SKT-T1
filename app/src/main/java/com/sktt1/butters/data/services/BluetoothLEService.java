@@ -177,7 +177,7 @@ public class BluetoothLEService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             String defaultIntent = TagBroadcastReceiver.ACTION_DATA_AVAILABLE;
-            if (UUID_FMP_CHAR.equals(characteristic.getUuid())) {
+            if (UUID.fromString(UUID_FMP_CHAR).equals(characteristic.getUuid())) {
                 defaultIntent = TagBroadcastReceiver.ACTION_PHONE_ALERTED;
             }
             broadcastUpdate(gatt.getDevice().getAddress(), defaultIntent, characteristic);
