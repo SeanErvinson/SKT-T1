@@ -54,7 +54,7 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         Context context = tvHighVolume.getContext();
-
+        alarmVolume = tag.getAlarm();
         switch (view.getId()) {
             case R.id.tv_tag_alarm_high:
                 alarmVolume = 2;
@@ -75,6 +75,7 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
                 break;
         }
+        tag.setAlarm(alarmVolume);
     }
 
     private void initializeActionBar() {
