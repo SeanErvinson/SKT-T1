@@ -29,8 +29,6 @@ import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 
-import java.util.Date;
-
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
