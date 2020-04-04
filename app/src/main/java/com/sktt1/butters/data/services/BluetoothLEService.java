@@ -247,13 +247,13 @@ public class BluetoothLEService extends Service {
 
     private void broadcastUpdate(String address, String intentAction, BluetoothGattCharacteristic characteristic) {
         Intent intent = new Intent(intentAction);
-        if (UUID_LAT_CHAR.equals(characteristic.getUuid())) {
+        if (UUID.fromString(UUID_LAT_CHAR).equals(characteristic.getUuid())) {
             final float latitude = parseFloatCharacteristic(characteristic);
             intent.putExtra(TagBroadcastReceiver.GPS_LAT_DATA, latitude);
-        } else if (UUID_LNG_CHAR.equals(characteristic.getUuid())) {
+        } else if (UUID.fromString(UUID_LNG_CHAR).equals(characteristic.getUuid())) {
             final float longitude = parseFloatCharacteristic(characteristic);
             intent.putExtra(TagBroadcastReceiver.GPS_LNG_DATA, longitude);
-        } else if (UUID_FMP_CHAR.equals(characteristic.getUuid())) {
+        } else if (UUID.fromString(UUID_FMP_CHAR).equals(characteristic.getUuid())) {
             final int fmp = parseIntCharacteristic(characteristic);
             intent.putExtra(TagBroadcastReceiver.FMP_DATA, fmp);
         }

@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_GATT_SERVICES_DISCOVERED);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_PHONE_ALERTED);
         return intentFilter;
     }
 

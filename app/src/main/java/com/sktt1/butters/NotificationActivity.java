@@ -1,12 +1,16 @@
 package com.sktt1.butters;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
+
+import com.sktt1.butters.data.preference.SharedPreferenceHelper;
 
 public class NotificationActivity {
 
@@ -23,6 +27,12 @@ public class NotificationActivity {
         Intent intent = new Intent(context, SplashActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(context);
+        Uri ringtoneSound = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE);
+        if (sharedPreferenceHelper.getUserFindMyPhoneAlarm() != null) {
+            ringtoneSound = Uri.parse(sharedPreferenceHelper.getUserFindMyPhoneAlarm());
+        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle("Find my phone alarm")
@@ -30,9 +40,17 @@ public class NotificationActivity {
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000})
                 .setAutoCancel(true)
+                .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SYSTEM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
-        notificationManager.notify(1, builder.build());
+
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            builder.setSound(ringtoneSound);
+        }
+        if (notificationManager != null) {
+            notificationManager.notify(1, builder.build());
+        }
     }
 
     public void sendDisconnectionNotification(String tagName) {

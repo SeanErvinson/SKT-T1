@@ -4,7 +4,6 @@ import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import com.sktt1.butters.NotificationActivity;
 import com.sktt1.butters.R;
@@ -39,9 +38,11 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
         final String action = intent.getAction();
 
         if (ACTION_PHONE_ALERTED.equals(action)) {
-            // TODO fmp
-
-            // Play sound
+            String address = intent.getStringExtra(TAG_DATA);
+            Tag tag = databaseHelper.getTagByMacAddress(address);
+            databaseHelper.activityCreateNotification(context.getString(R.string.activity_alerted, tag.getName()));
+            notificationActivity.sendFMPNotification(tag.getName());
+            intent.getIntExtra(FMP_DATA, 0);
         } else if (ACTION_GATT_CONNECTED.equals(action)) {
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_connected));
         } else if (ACTION_GATT_DISCONNECTED.equals(action)) {
@@ -51,12 +52,6 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
             notificationActivity.sendDisconnectionNotification(tag.getName());
         } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
         } else if (ACTION_DATA_AVAILABLE.equals(action)) {
-            final BluetoothDevice bluetoothDevice = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-            Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
-            databaseHelper.activityCreateNotification(context.getString(R.string.activity_alerted,tag.getName()));
-            notificationActivity.sendFMPNotification(tag.getName());
-            intent.getIntExtra(FMP_DATA, 0);
-            Toast.makeText(context, "Three button press", Toast.LENGTH_SHORT).show();
         }
         databaseHelper.close();
     }
