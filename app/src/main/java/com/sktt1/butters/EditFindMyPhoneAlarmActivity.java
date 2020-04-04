@@ -13,17 +13,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.sktt1.butters.data.adapters.FindMyPhoneAlarmAdapter;
 import com.sktt1.butters.data.models.Ringtone;
 import com.sktt1.butters.data.preference.SharedPreferenceHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
 
@@ -79,8 +75,15 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
                 Ringtone ringtone = ringtones.get(position);
 
                 Uri ringtoneSound = Uri.parse(ringtone.getRingtoneUri());
-                mp = MediaPlayer.create(getApplicationContext(), ringtoneSound);
-                mp.start();
+                if (mp == null) {
+                    mp = MediaPlayer.create(getApplicationContext(), ringtoneSound);
+                    mp.start();
+                } else {
+                    mp.release();
+                    mp = null;
+                    mp = MediaPlayer.create(getApplicationContext(), ringtoneSound);
+                    mp.start();
+                }
                 Toast.makeText(getApplicationContext(), ringtone.getRingtoneTitle(), Toast.LENGTH_SHORT).show();
                 sharedPreferenceHelper = new SharedPreferenceHelper(getApplicationContext());
                 sharedPreferenceHelper.setUserFindMyPhoneAlarm(ringtone.getRingtoneTitle());
@@ -94,7 +97,7 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
 
     public ArrayList<Ringtone> getNotifications() {
         RingtoneManager manager = new RingtoneManager(this);
-        manager.setType(RingtoneManager.TYPE_NOTIFICATION);
+        manager.setType(RingtoneManager.TYPE_RINGTONE);
         final Cursor cursor = manager.getCursor();
 
         ArrayList<Ringtone> list = new ArrayList<>();
@@ -115,8 +118,8 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
         super.onStop();
         if (mp != null) {
             mp.release();
+            mp = null;
         }
-        finish();
     }
 
     @Override
