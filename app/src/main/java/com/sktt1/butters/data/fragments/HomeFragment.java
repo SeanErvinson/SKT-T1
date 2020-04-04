@@ -176,6 +176,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         Tag tag = mTagRecyclerAdapter.getTag(index);
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
+            // TODO: Debug function for reading gps value
+//            ((MainActivity) getActivity()).mBluetoothLeService.readCharacteristic(gatt, gatt.getService(UUID.fromString(UUID_GPS_SERVICE)));
             if (gatt == null) return;
             boolean status = ((MainActivity) getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getAlarm());
             if (!status) {
