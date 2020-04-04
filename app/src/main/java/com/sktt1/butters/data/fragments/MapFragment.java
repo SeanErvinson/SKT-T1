@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +13,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -53,15 +53,22 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.sktt1.butters.MainActivity;
 import com.sktt1.butters.R;
+import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 import com.sktt1.butters.data.utilities.DateTimePattern;
 import com.sktt1.butters.data.utilities.DateUtility;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.GPS_LAT_DATA;
+import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.GPS_LNG_DATA;
+import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.TAG_DATA;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-    public static final String TAG = MapFragment.class.getSimpleName();
+    private static final String TAG = MapFragment.class.getSimpleName();
     private final static int LOCATION_ENABLE_REQUEST = 1002;
 
     private Button mBuzz, mSit;
@@ -77,25 +84,42 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private LocationCallback locationCallback;
     private BroadcastReceiver mBroadcastReceiver;
     private ArrayList<Marker> mMarkers = new ArrayList<>();
+    private ArrayList<Tag> tags;
     private Circle mTagRange;
+    private Geocoder mGeocoder;
+
+    private DatabaseHelper databaseHelper;
 
     private LocationRequest locationRequest;
 
     public MapFragment() {
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        databaseHelper = new DatabaseHelper(getActivity());
+        tags = databaseHelper.fetchTagData();
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //TODO Initialize marker from database and it's last seen location
-        // This will be shown in the map
         super.onViewCreated(view, savedInstanceState);
         initializeBroadcastReceiver();
         initializeWidget(view);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+        mGeocoder = new Geocoder(getContext());
         isLocationUpdate = false;
         initializeLocationCallback();
         initializeLocationRequest();
+    }
+
+    private void initializeMarkers() {
+        for (Tag tag : tags) {
+            com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(tag.getLastSeenLocationId());
+            if (location == null) continue;
+            mMarkers.add(addMapMarker(tag, new LatLng(location.getLatitude(), location.getLongitude())));
+        }
     }
 
     @Override
@@ -109,16 +133,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onReceive(Context context, Intent intent) {
                 final String action = intent.getAction();
                 if (TagBroadcastReceiver.ACTION_DATA_AVAILABLE.equals(action)) {
-                    // <Tag, GPS>
-//                    updateMarker();
+                    String address = intent.getStringExtra(TAG_DATA);
+                    Tag tag = getTagFromAddress(address);
+                    if (tag == null) return;
+                    com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(tag.getLastSeenLocationId());
+                    if (location == null) return;
+                    double lng = intent.getFloatExtra(GPS_LNG_DATA, (float) location.getLongitude());
+                    double lat = intent.getFloatExtra(GPS_LAT_DATA, (float) location.getLatitude());
+                    mGeocoder = new Geocoder(getContext());
+                    List<Address> addresses;
+                    String featuredName = location.getName();
+                    try {
+                        addresses = mGeocoder.getFromLocation(lat, lng, 1);
+                        featuredName = addresses.get(0).getFeatureName();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    // TODO: Remove this after
+                    Log.d(TAG, "-----------------------------");
+                    Log.d(TAG, "Receiving longitude: " + lat);
+                    Log.d(TAG, "Receiving latitude: " + lat);
+                    Log.d(TAG, "Place: " + featuredName);
+                    Log.d(TAG, "-----------------------------");
+                    databaseHelper.tagUpdateLocation(tag.getId(), featuredName, lng, location.getLatitude());
+                    updateMarker(address, new LatLng(lat, lng));
                 } else if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
                     BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    Log.d(TAG, "Connected from Map Fragment " + device.getName() + " -- " + device.getAddress());
-//                    Marker marker = mMap.addMarker(createTagMarker(location));
-//                    marker.setTag(device);
+                    if (getTagFromAddress(device.getAddress()) == null) {
+                        Tag tag = databaseHelper.getTagByMacAddress(device.getAddress());
+                        tags.add(tag);
+                        addMapMarker(tag, new LatLng(0, 0));
+                    }
                 }
             }
         };
+    }
+
+    private Tag getTagFromAddress(String address) {
+        for (Tag tag : tags) {
+            if (address.equals(tag.getMacAddress())) {
+                return tag;
+            }
+        }
+        return null;
     }
 
     private void initializeWidget(View view) {
@@ -169,13 +226,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 .strokeWidth(1));
     }
 
-    private void updateMarker(Tag tag, Location location) {
+    private void updateMarker(String address, LatLng location) {
         if (mMap == null) return;
         for (Marker marker : mMarkers) {
             Tag currentTag = (Tag) marker.getTag();
             if (currentTag == null) return;
-            if (currentTag.getMacAddress().equals(tag.getMacAddress())) {
-                marker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+            if (currentTag.getMacAddress().equals(address)) {
+                double lat = marker.getPosition().latitude;
+                double lng = marker.getPosition().longitude;
+                if (location.latitude != 0) lat = location.latitude;
+                if (location.longitude != 0) lng = location.longitude;
+                marker.setPosition(new LatLng(lat, lng));
                 return;
             }
         }
@@ -222,9 +283,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private MarkerOptions createTagMarker(Location location) {
+    private MarkerOptions createTagMarker(LatLng latLng) {
         return new MarkerOptions()
-                .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                .position(latLng)
                 .icon(bitmapDescriptorFromVector(getActivity(), R.drawable.ic_dot));
     }
 
@@ -244,7 +305,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.setOnMarkerClickListener(this);
         mMap.setMyLocationEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setMinZoomPreference(18);
 
         mMap.clear();
 
@@ -255,6 +315,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 .build();
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(mainCamera), 1000, null);
+        initializeMarkers();
     }
 
     private void setBottomSheetInformation(Marker selectedMarker) {
@@ -264,14 +325,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMapTagName.setText(selectedTag.getName());
         String time = DateUtility.getFormattedDate(selectedTag.getLastSeenTime(), DateTimePattern.TIME);
         mMapTagTime.setText(getString(R.string.time_recorded, time));
-//        String location = selectedTag.getLastSeenLocationId();
-        mMapTagLastLocation.setText(getString(R.string.last_seen_location, "UST"));
+        com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(selectedTag.getLastSeenLocationId());
+        mMapTagLastLocation.setText(getString(R.string.last_seen_location, location.getName()));
         mBuzz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BluetoothGatt bluetoothGatt = ((MainActivity)getActivity()).mBluetoothLeService.getBluetoothGatt(selectedTag.getMacAddress());
-                boolean status = ((MainActivity)getActivity()).mBluetoothLeService.writeLocateCharacteristic(bluetoothGatt, selectedTag.getAlarm());
-                if(!status){
+                BluetoothGatt bluetoothGatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(selectedTag.getMacAddress());
+                boolean status = ((MainActivity) getActivity()).mBluetoothLeService.writeLocateCharacteristic(bluetoothGatt, selectedTag.getAlarm());
+                if (!status) {
                     Toast.makeText(getContext(), "Unable to communicate with tag", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -318,9 +379,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return intentFilter;
     }
 
-    public void addMapMarker(BluetoothGatt device){
-//        Marker marker = mMap.addMarker(createTagMarker(location));
-//        marker.setTag(device);
+    private Marker addMapMarker(Tag tag, LatLng latLng) {
+        Marker marker = mMap.addMarker(createTagMarker(latLng));
+        marker.setTag(tag);
+        return marker;
     }
 
     @Override
