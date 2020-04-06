@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.ActivityRecyclerAdapter;
 import com.sktt1.butters.data.database.DatabaseHelper;
+import com.sktt1.butters.data.models.Activity;
 
 
 public class ActivityFragment extends Fragment implements ActivityRecyclerAdapter.OnActivityListener {
@@ -25,6 +26,17 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     private RecyclerView mActivityView;
     private ActivityRecyclerAdapter mActivityRecyclerAdapter;
     private DatabaseHelper databaseHelper;
+
+    @Override
+    public void onDelete(int index) {
+        Activity activity = mActivityRecyclerAdapter.getActivity(index);
+        if (activity != null) {
+            databaseHelper.activityUpdateNotification(activity.getId());
+            mActivityRecyclerAdapter.loadActivities(databaseHelper.fetchActivityData());
+            mActivityRecyclerAdapter.notifyItemRemoved(index);
+
+        }
+    }
 
     public ActivityFragment() {
     }
@@ -64,7 +76,7 @@ public class ActivityFragment extends Fragment implements ActivityRecyclerAdapte
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
-        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(getContext(),this);
+        mActivityRecyclerAdapter = new ActivityRecyclerAdapter(getContext(), this);
         mActivityRecyclerAdapter.loadActivities(databaseHelper.fetchActivityData());
     }
 

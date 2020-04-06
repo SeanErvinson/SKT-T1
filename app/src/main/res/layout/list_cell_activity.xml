@@ -31,12 +31,12 @@
             android:text="@string/activity_date_time_info">
         </TextView>
     </LinearLayout>
+
     <ImageButton
-        android:id="@+id/btn_activity_cell_actions"
-        android:layout_gravity="center"
+        android:id="@+id/btn_activity_cell_delete"
         android:layout_width="@dimen/xxlSize"
         android:layout_height="@dimen/xxlSize"
+        android:layout_gravity="center"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_more_vert_black_24dp">
-    </ImageButton>
+        android:src="@android:drawable/ic_menu_delete"></ImageButton>
 </LinearLayout>

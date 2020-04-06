@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues activityValues = new ContentValues();
             activityValues.put(ActivityTable.COL_MESSAGE, message);
             activityValues.put(ActivityTable.COL_NOTIFIED_ON, new Date().getTime());
-            activityValues.put(ActivityTable.COL_HAS_READ, false);
+            activityValues.put(ActivityTable.COL_HAS_READ, 0);
             return (int) sqLiteDatabase.insert(ActivityTable.TABLE, null, activityValues);
         }
     }
@@ -52,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void activityUpdateNotification(int id) {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             ContentValues activityValues = new ContentValues();
-            activityValues.put(ActivityTable.COL_HAS_READ, true);
+            activityValues.put(ActivityTable.COL_HAS_READ, 1);
             sqLiteDatabase.update(ActivityTable.TABLE, activityValues, "id = ?", new String[]{Long.toString(id)});
         }
     }
@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try (SQLiteDatabase sqLiteDatabase = this.getWritableDatabase()) {
             int locationId = tagId;
             Date lastSeenTime = new Date();
-            
+
             ContentValues tagValues = new ContentValues();
             tagValues.put(TagTable.COL_LAST_SEEN_LOCATION_ID, locationId);
             tagValues.put(TagTable.COL_LAST_SEEN_TIME, lastSeenTime.getTime());
@@ -206,13 +206,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try (Cursor cursor = sqLiteDatabase.rawQuery(query, null)) {
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
-                    Activity newActivity = new Activity();
-                    Date date = new Date(cursor.getLong(cursor.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+                    if(cursor.getInt(cursor.getColumnIndex(ActivityTable.COL_HAS_READ)) == 0){
 
-                    newActivity.setId(cursor.getInt(cursor.getColumnIndex(ActivityTable.COL_ID)));
-                    newActivity.setMessage(cursor.getString(cursor.getColumnIndex(ActivityTable.COL_MESSAGE)));
-                    newActivity.setNotifiedOn(date);
-                    activities.add(newActivity);
+                        Activity newActivity = new Activity();
+                        Date date = new Date(cursor.getLong(cursor.getColumnIndex(ActivityTable.COL_NOTIFIED_ON)));
+
+                        newActivity.setId(cursor.getInt(cursor.getColumnIndex(ActivityTable.COL_ID)));
+                        newActivity.setMessage(cursor.getString(cursor.getColumnIndex(ActivityTable.COL_MESSAGE)));
+                        newActivity.setNotifiedOn(date);
+                        activities.add(newActivity);
+                    }
                     cursor.moveToNext();
                 }
             }

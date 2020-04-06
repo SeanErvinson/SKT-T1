@@ -6,7 +6,16 @@ public class Activity {
     private int id;
     private String message;
     private Date notifiedOn;
-    private boolean hasRead = false;
+
+    public int getHasRead() {
+        return hasRead;
+    }
+
+    public void setHasRead(int hasRead) {
+        this.hasRead = hasRead;
+    }
+
+    private int hasRead = 0;
 
     public int getId() {
         return id;
@@ -30,13 +39,5 @@ public class Activity {
 
     public void setNotifiedOn(Date notifiedOn) {
         this.notifiedOn = notifiedOn;
-    }
-
-    public boolean isHasRead() {
-        return hasRead;
-    }
-
-    public void setHasRead(boolean hasRead) {
-        this.hasRead = hasRead;
     }
 }
