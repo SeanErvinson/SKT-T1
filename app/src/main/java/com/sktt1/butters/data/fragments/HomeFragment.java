@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sktt1.butters.AddTagActivity;
+import com.sktt1.butters.EditTagActivity;
 import com.sktt1.butters.MainActivity;
 import com.sktt1.butters.R;
 import com.sktt1.butters.data.adapters.TagRecyclerAdapter;
@@ -29,8 +30,11 @@ import com.sktt1.butters.data.database.DatabaseHelper;
 import com.sktt1.butters.data.models.Tag;
 import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 
+import java.util.UUID;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
+import static com.sktt1.butters.data.services.SKTGattAttributes.UUID_GPS_SERVICE;
 
 public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagListener {
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -45,6 +49,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     private BroadcastReceiver mTagBluetoothBroadcastReceiver;
 
     private String mBluetoothName;
+    private boolean isTagEdited = false;
+    private int tagEdited;
 
     public HomeFragment() {
     }
@@ -175,7 +181,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         if (tag != null) {
             BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
             // TODO: Debug function for reading gps value
-//            ((MainActivity) getActivity()).mBluetoothLeService.readCharacteristic(gatt, gatt.getService(UUID.fromString(UUID_GPS_SERVICE)));
+            ((MainActivity) getActivity()).mBluetoothLeService.readCharacteristic(gatt, gatt.getService(UUID.fromString(UUID_GPS_SERVICE)));
             if (gatt == null) return;
             boolean status = ((MainActivity) getActivity()).mBluetoothLeService.writeLocateCharacteristic(gatt, tag.getAlarm());
             if (!status) {
@@ -185,8 +191,34 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     }
 
     @Override
+    public void editTagDetails(int index) {
+        Tag tag = mTagRecyclerAdapter.getTag(index);
+        if (tag != null){
+            Context context = getContext();
+            Intent intent = new Intent(context, EditTagActivity.class);
+            intent.putExtra("tag",tag);
+            context.startActivity(intent);
+            setTagEdited(true, index);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        initializeRecyclerView();
+
+        if(isTagEdited){
+            mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
+            mTagRecyclerAdapter.notifyItemChanged(tagEdited, null);
+            tagEdited = 0;
+        }
+    }
+
+    public void setTagEdited(boolean isEdited, int index){
+        if(isEdited){
+            tagEdited = index;
+            isTagEdited = true;
+        } else {
+            isTagEdited = false;
+        }
     }
 }

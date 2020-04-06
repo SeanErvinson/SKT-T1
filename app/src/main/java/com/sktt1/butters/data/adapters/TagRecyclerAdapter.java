@@ -59,15 +59,6 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         holder.bindTagLocation(tagLocation);
         holder.bindTagTime(tagTime);
         holder.bindTagLocate(mTags.get(position).isConnected());
-
-        holder.tagDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, EditTagActivity.class);
-                intent.putExtra("tag", getTag(position));
-                context.startActivity(intent);
-            }
-        });
     }
 
     public void loadTags(ArrayList<Tag> tags) {
@@ -118,7 +109,7 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         private TextView tagLocate;
         private OnTagListener onTagListener;
 
-        TagViewHolder(@NonNull View itemView, OnTagListener onTagListener) {
+        TagViewHolder(@NonNull View itemView, final OnTagListener onTagListener) {
             super(itemView);
 
             tagDetails = itemView.findViewById(R.id.ll_tag_details);
@@ -129,6 +120,18 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
 
             this.onTagListener = onTagListener;
             tagLocate.setOnClickListener(this);
+
+            tagDetails.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onTagListener != null){
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION){
+                            onTagListener.editTagDetails(position);
+                        }
+                    }
+                }
+            });
         }
 
         void bindTagName(String content) {
@@ -159,11 +162,11 @@ public class TagRecyclerAdapter extends RecyclerView.Adapter<TagRecyclerAdapter.
         @Override
         public void onClick(View view) {
             onTagListener.onClick(getAdapterPosition());
-
         }
     }
 
     public interface OnTagListener {
         void onClick(int index);
+        void editTagDetails(int index);
     }
 }
