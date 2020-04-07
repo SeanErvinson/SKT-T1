@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 finish();
             }
             for (Tag tag : tags) {
-                mBluetoothLeService.connect(tag.getMacAddress(), true);
+                mBluetoothLeService.connect(tag.getMacAddress(), false);
             }
         }
 
