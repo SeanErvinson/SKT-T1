@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if (!mBluetoothLeService.initialize()) {
                 finish();
             }
-            for(Tag tag: tags){
+            for (Tag tag : tags) {
                 mBluetoothLeService.connect(tag.getMacAddress(), true);
             }
         }
@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public ArrayList<Tag> getTags() {
+        return tags;
     }
 
     @Override
