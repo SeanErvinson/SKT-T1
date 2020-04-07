@@ -61,11 +61,14 @@ import com.sktt1.butters.data.utilities.DateUtility;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.GPS_LAT_DATA;
 import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.GPS_LNG_DATA;
 import static com.sktt1.butters.data.receivers.TagBroadcastReceiver.TAG_DATA;
+import static com.sktt1.butters.data.services.SKTGattAttributes.UUID_GPS_SERVICE;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private static final String TAG = MapFragment.class.getSimpleName();
@@ -85,6 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private BroadcastReceiver mBroadcastReceiver;
     private ArrayList<Marker> mMarkers = new ArrayList<>();
     private ArrayList<Tag> tags;
+    private HashMap<Integer, com.sktt1.butters.data.models.Location> locations;
     private Circle mTagRange;
     private Geocoder mGeocoder;
 
@@ -100,6 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
         tags = databaseHelper.fetchTagData();
+        locations = new HashMap<>();
     }
 
     @Override
@@ -117,8 +122,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private void initializeMarkers() {
         for (Tag tag : tags) {
             com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(tag.getLastSeenLocationId());
+            locations.put(tag.getLastSeenLocationId(), location);
             if (location == null) continue;
             mMarkers.add(addMapMarker(tag, new LatLng(location.getLatitude(), location.getLongitude())));
+            BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(tag.getMacAddress());
+            ((MainActivity) getActivity()).mBluetoothLeService.readCharacteristic(gatt, gatt.getService(UUID.fromString(UUID_GPS_SERVICE)));
         }
     }
 
@@ -136,7 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     String address = intent.getStringExtra(TAG_DATA);
                     Tag tag = getTagFromAddress(address);
                     if (tag == null) return;
-                    com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(tag.getLastSeenLocationId());
+                    com.sktt1.butters.data.models.Location location = locations.get(tag.getLastSeenLocationId());
                     if (location == null) return;
                     double lng = intent.getFloatExtra(GPS_LNG_DATA, (float) location.getLongitude());
                     double lat = intent.getFloatExtra(GPS_LAT_DATA, (float) location.getLatitude());
@@ -155,7 +163,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     Log.d(TAG, "Receiving latitude: " + lat);
                     Log.d(TAG, "Place: " + featuredName);
                     Log.d(TAG, "-----------------------------");
-                    databaseHelper.tagUpdateLocation(tag.getId(), featuredName, lng, location.getLatitude());
+                    databaseHelper.tagUpdateLocation(tag.getId(), featuredName, lng, lat);
                     updateMarker(address, new LatLng(lat, lng));
                 } else if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
                     BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
@@ -325,7 +333,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMapTagName.setText(selectedTag.getName());
         String time = DateUtility.getFormattedDate(selectedTag.getLastSeenTime(), DateTimePattern.TIME);
         mMapTagTime.setText(getString(R.string.time_recorded, time));
-        com.sktt1.butters.data.models.Location location = databaseHelper.getLocationById(selectedTag.getLastSeenLocationId());
+        com.sktt1.butters.data.models.Location location = locations.get(selectedTag.getLastSeenLocationId());
         mMapTagLastLocation.setText(getString(R.string.last_seen_location, location.getName()));
         mBuzz.setOnClickListener(new View.OnClickListener() {
             @Override
