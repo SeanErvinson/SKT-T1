@@ -103,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         databaseHelper = new DatabaseHelper(getActivity());
-        tags = databaseHelper.fetchTagData();
+        tags =  ((MainActivity)getActivity()).getTags();
         locations = new HashMap<>();
     }
 
@@ -167,11 +167,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     updateMarker(address, new LatLng(lat, lng));
                 } else if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
                     BluetoothDevice device = intent.getParcelableExtra(TagBroadcastReceiver.EXTRA_DATA);
-                    if (getTagFromAddress(device.getAddress()) == null) {
-                        Tag tag = databaseHelper.getTagByMacAddress(device.getAddress());
-                        tags.add(tag);
-                        addMapMarker(tag, new LatLng(0, 0));
-                    }
+                    BluetoothGatt gatt = ((MainActivity) getActivity()).mBluetoothLeService.getBluetoothGatt(device.getAddress());
+                    ((MainActivity) getActivity()).mBluetoothLeService.readCharacteristic(gatt, gatt.getService(UUID.fromString(UUID_GPS_SERVICE)));
                 }
             }
         };
