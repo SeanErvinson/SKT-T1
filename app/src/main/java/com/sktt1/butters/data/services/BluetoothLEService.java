@@ -217,8 +217,9 @@ public class BluetoothLEService extends Service {
         if (bluetoothGatt != null) {
             if (bluetoothGatt.connect()) {
                 return true;
+            } else {
+                return false;
             }
-            return false;
         }
 
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macAddress);
