@@ -144,7 +144,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         mTagRecyclerAdapter = new TagRecyclerAdapter(this);
         mTagsView.setAdapter(mTagRecyclerAdapter);
         mTagsView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
+        mTagRecyclerAdapter.loadTags(((MainActivity) getActivity()).getTags());
     }
 
 
