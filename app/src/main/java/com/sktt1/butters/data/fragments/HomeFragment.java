@@ -155,13 +155,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getContext() != null)
-            getContext().registerReceiver(mTagBluetoothBroadcastReceiver, createTagIntentFilter());
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         if (getContext() != null)
@@ -205,6 +198,8 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onResume() {
         super.onResume();
+        if (getContext() != null)
+            getContext().registerReceiver(mTagBluetoothBroadcastReceiver, createTagIntentFilter());
 
         if(isTagEdited){
             mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
