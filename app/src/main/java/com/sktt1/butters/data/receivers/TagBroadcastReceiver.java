@@ -18,6 +18,7 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
     public final static String ACTION_DATA_AVAILABLE = "com.sktt1.butters.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA = "com.sktt1.butters.EXTRA_DATA";
     public static final String ACTION_PHONE_ALERTED = "com.sktt1.butters.FMP_AVAILABLE";
+    public static final String ACTION_SIT_ALERTED = "com.sktt1.butters.SIT_AVAILABLE";
     public static final String TAG_DATA = "com.sktt1.butters.TAG_DATA";
     public static final String GPS_LAT_DATA = "com.sktt1.butters.GPS_LAT_DATA";
     public static final String GPS_LNG_DATA = "com.sktt1.butters.GPS_LNG_DATA";
@@ -52,6 +53,8 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
             notificationActivity.sendDisconnectionNotification(tag.getName());
         } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
         } else if (ACTION_DATA_AVAILABLE.equals(action)) {
+        } else if (ACTION_SIT_ALERTED.equals(action)){
+            // TODO: Same logic as PHONE_ALERTED
         }
         databaseHelper.close();
     }

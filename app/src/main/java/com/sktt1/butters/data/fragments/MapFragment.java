@@ -144,10 +144,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     String address = intent.getStringExtra(TAG_DATA);
                     Tag tag = getTagFromAddress(address);
                     if (tag == null) return;
+                    if (tag.isSit()) {
+                        Intent sitIntent = new Intent(TagBroadcastReceiver.ACTION_SIT_ALERTED);
+                        sitIntent.putExtra(TagBroadcastReceiver.TAG_DATA, address);
+                        getActivity().sendBroadcast(sitIntent);
+                        tag.setSit(false);
+                    }
                     com.sktt1.butters.data.models.Location location = locations.get(tag.getLastSeenLocationId());
                     if (location == null) return;
                     double lng = intent.getFloatExtra(GPS_LNG_DATA, (float) location.getLongitude());
                     double lat = intent.getFloatExtra(GPS_LAT_DATA, (float) location.getLatitude());
+                    if(lng == 0 && lat == 0) return;
                     mGeocoder = new Geocoder(getContext());
                     List<Address> addresses;
                     String featuredName = location.getName();
@@ -345,7 +352,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mSit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Sit " + selectedTag.getName(), Toast.LENGTH_SHORT).show();
+                selectedTag.setSit(true);
             }
         });
     }
