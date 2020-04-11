@@ -64,9 +64,9 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initializeBroadcastReceiver();
         initializeWidget(view);
         initializeRecyclerView();
+        initializeBroadcastReceiver();
     }
 
 
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
             }
 
             private void createUpdateConnectedDevice(final BluetoothDevice bluetoothDevice) {
-                Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
+                Tag tag = mTagRecyclerAdapter.getTagByAddress(bluetoothDevice.getAddress());
                 if (tag != null) {
                     mTagRecyclerAdapter.setTagConnected(tag.getMacAddress(), true);
                     ((MainActivity) getActivity()).mBluetoothLeService.connect(tag.getMacAddress(), true);
