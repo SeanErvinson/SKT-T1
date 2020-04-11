@@ -154,6 +154,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     if (location == null) return;
                     double lng = intent.getFloatExtra(GPS_LNG_DATA, (float) location.getLongitude());
                     double lat = intent.getFloatExtra(GPS_LAT_DATA, (float) location.getLatitude());
+                    lat = lat == 0 ? location.getLatitude() : lat;
+                    lng = lng == 0 ? location.getLongitude() : lng;
                     if(lng == 0 && lat == 0) return;
                     mGeocoder = new Geocoder(getContext());
                     List<Address> addresses;
