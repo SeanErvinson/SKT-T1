@@ -172,6 +172,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     Log.d(TAG, "Receiving latitude: " + lat);
                     Log.d(TAG, "Place: " + featuredName);
                     Log.d(TAG, "-----------------------------");
+                    location.setLatitude(lat);
+                    location.setLongitude(lng);
+                    location.setName(featuredName);
                     databaseHelper.tagUpdateLocation(tag.getId(), featuredName, lng, lat);
                     updateMarker(address, new LatLng(lat, lng));
                 } else if (TagBroadcastReceiver.ACTION_GATT_CONNECTED.equals(action)) {
