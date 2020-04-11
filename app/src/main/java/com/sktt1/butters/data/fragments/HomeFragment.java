@@ -186,10 +186,10 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
     @Override
     public void editTagDetails(int index) {
         Tag tag = mTagRecyclerAdapter.getTag(index);
-        if (tag != null){
+        if (tag != null) {
             Context context = getContext();
             Intent intent = new Intent(context, EditTagActivity.class);
-            intent.putExtra("tag",tag);
+            intent.putExtra("tag", tag);
             context.startActivity(intent);
             setTagEdited(true, index);
         }
@@ -201,15 +201,15 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         if (getContext() != null)
             getContext().registerReceiver(mTagBluetoothBroadcastReceiver, createTagIntentFilter());
 
-        if(isTagEdited){
+        if (isTagEdited) {
             mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
             mTagRecyclerAdapter.notifyItemChanged(tagEdited, null);
             tagEdited = 0;
         }
     }
 
-    public void setTagEdited(boolean isEdited, int index){
-        if(isEdited){
+    public void setTagEdited(boolean isEdited, int index) {
+        if (isEdited) {
             tagEdited = index;
             isTagEdited = true;
         } else {
