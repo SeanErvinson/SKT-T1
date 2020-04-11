@@ -8,6 +8,17 @@ import androidx.annotation.NonNull;
 import java.util.Date;
 
 public class Tag implements Parcelable {
+    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
+        @Override
+        public Tag createFromParcel(Parcel in) {
+            return new Tag(in);
+        }
+
+        @Override
+        public Tag[] newArray(int size) {
+            return new Tag[size];
+        }
+    };
     private int id;
     private String name;
     private String macAddress;
@@ -15,15 +26,7 @@ public class Tag implements Parcelable {
     private Date lastSeenTime;
     private boolean isConnected;
     private int alarm;
-
-    public int getAlarm() {
-        return alarm;
-    }
-
-    public void setAlarm(int alarm) {
-        this.alarm = alarm;
-    }
-
+    private boolean isSit;
 
     public Tag() {
     }
@@ -37,18 +40,21 @@ public class Tag implements Parcelable {
         alarm = in.readInt();
     }
 
-    public static final Creator<Tag> CREATOR = new Creator<Tag>() {
-        @Override
-        public Tag createFromParcel(Parcel in) {
-            return new Tag(in);
-        }
+    public boolean isSit() {
+        return isSit;
+    }
 
-        @Override
-        public Tag[] newArray(int size) {
-            return new Tag[size];
-        }
-    };
+    public void setSit(boolean sit) {
+        isSit = sit;
+    }
 
+    public int getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(int alarm) {
+        this.alarm = alarm;
+    }
 
     public boolean isConnected() {
         return isConnected;
