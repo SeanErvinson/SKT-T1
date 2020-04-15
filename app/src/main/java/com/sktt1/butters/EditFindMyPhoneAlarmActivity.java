@@ -75,6 +75,10 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
                 Ringtone ringtone = ringtones.get(position);
 
                 Uri ringtoneSound = Uri.parse(ringtone.getRingtoneUri());
+                sharedPreferenceHelper = new SharedPreferenceHelper(getApplicationContext());
+                sharedPreferenceHelper.setUserFindMyPhoneAlarm(ringtone.getRingtoneUri());
+                ringtoneSound = Uri.parse(sharedPreferenceHelper.getUserFindMyPhoneAlarm());
+
                 if (mp == null) {
                     mp = MediaPlayer.create(getApplicationContext(), ringtoneSound);
                     mp.start();
@@ -85,8 +89,7 @@ public class EditFindMyPhoneAlarmActivity extends AppCompatActivity {
                     mp.start();
                 }
                 Toast.makeText(getApplicationContext(), ringtone.getRingtoneTitle(), Toast.LENGTH_SHORT).show();
-                sharedPreferenceHelper = new SharedPreferenceHelper(getApplicationContext());
-                sharedPreferenceHelper.setUserFindMyPhoneAlarm(ringtone.getRingtoneTitle());
+
             }
         });
     }

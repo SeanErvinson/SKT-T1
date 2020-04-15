@@ -6,6 +6,7 @@ import androidx.core.app.NotificationManagerCompat;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -22,6 +23,7 @@ public class NotificationActivity {
     }
 
     private NotificationManagerCompat notificationManager;
+    private MediaPlayer mp;
 
     public void sendFMPNotification(String tagName) {
         Intent intent = new Intent(context, SplashActivity.class);
@@ -33,6 +35,17 @@ public class NotificationActivity {
         if (sharedPreferenceHelper.getUserFindMyPhoneAlarm() != null) {
             ringtoneSound = Uri.parse(sharedPreferenceHelper.getUserFindMyPhoneAlarm());
         }
+
+        if (mp == null) {
+            mp = MediaPlayer.create(context, ringtoneSound);
+            mp.start();
+        } else {
+            mp.release();
+            mp = null;
+            mp = MediaPlayer.create(context, ringtoneSound);
+            mp.start();
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle("Find my phone alarm")
@@ -43,6 +56,7 @@ public class NotificationActivity {
                 .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SYSTEM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
+
 
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
