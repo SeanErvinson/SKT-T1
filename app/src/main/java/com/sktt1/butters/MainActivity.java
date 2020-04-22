@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         intentFilter.addAction(TagBroadcastReceiver.ACTION_DATA_AVAILABLE);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_PHONE_ALERTED);
         intentFilter.addAction(TagBroadcastReceiver.ACTION_SIT_ALERTED);
+        intentFilter.addAction(TagBroadcastReceiver.ACTION_STOP_SOUND);
         return intentFilter;
     }
 

@@ -7,11 +7,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 
-import com.sktt1.butters.data.preference.SharedPreferenceHelper;
+import com.sktt1.butters.data.receivers.TagBroadcastReceiver;
 
 public class NotificationActivity {
 
@@ -30,21 +27,9 @@ public class NotificationActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(context);
-        Uri ringtoneSound = RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_RINGTONE);
-        if (sharedPreferenceHelper.getUserFindMyPhoneAlarm() != null) {
-            ringtoneSound = Uri.parse(sharedPreferenceHelper.getUserFindMyPhoneAlarm());
-        }
-
-        if (mp == null) {
-            mp = MediaPlayer.create(context, ringtoneSound);
-            mp.start();
-        } else {
-            mp.release();
-            mp = null;
-            mp = MediaPlayer.create(context, ringtoneSound);
-            mp.start();
-        }
+        Intent broadcastIntent = new Intent(context, TagBroadcastReceiver.class);
+        broadcastIntent.setAction(TagBroadcastReceiver.ACTION_STOP_SOUND);
+        PendingIntent stopPendingIntent = PendingIntent.getActivity(context, 0, broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
@@ -53,17 +38,39 @@ public class NotificationActivity {
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000})
                 .setAutoCancel(true)
+                .addAction(R.mipmap.ic_launcher, "STOP SOUND", stopPendingIntent)
                 .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SYSTEM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            builder.setSound(ringtoneSound);
-        }
         if (notificationManager != null) {
             notificationManager.notify(1, builder.build());
+        }
+    }
+
+    public void sendSitAlertedNotification(String tagName) {
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+        Intent broadcastIntent = new Intent(context, TagBroadcastReceiver.class);
+        broadcastIntent.setAction(TagBroadcastReceiver.ACTION_STOP_SOUND);
+        PendingIntent stopPendingIntent = PendingIntent.getActivity(context, 0, broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle("Find my phone alarm")
+                .setContentText(context.getString(R.string.activity_sit_alerted, tagName))
+                .setContentIntent(pendingIntent)
+                .setVibrate(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000})
+                .setAutoCancel(true)
+                .addAction(R.mipmap.ic_launcher, "STOP SOUND", stopPendingIntent)
+                .setOngoing(true)
+                .setCategory(NotificationCompat.CATEGORY_SYSTEM)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        if (notificationManager != null) {
+            notificationManager.notify(4, builder.build());
         }
     }
 
@@ -81,4 +88,21 @@ public class NotificationActivity {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         notificationManager.notify(2, builder.build());
     }
+
+
+    public void sendConnectionNotification(String tagName) {
+        Intent intent = new Intent(context, SplashActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.TAG_NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle("Tag disconnection")
+                .setContentText(context.getString(R.string.activity_connection, tagName))
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationManager.notify(3, builder.build());
+    }
+
 }

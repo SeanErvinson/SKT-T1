@@ -37,18 +37,6 @@ public class App extends Application {
             phoneAlertChannel.setVibrationPattern(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000});
             phoneAlertChannel.setDescription("Phone alert");
 
-            SharedPreferenceHelper sharedPreferenceHelper = new SharedPreferenceHelper(getApplicationContext());
-            Uri ringtoneSound = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
-            if (sharedPreferenceHelper.getUserFindMyPhoneAlarm() != null) {
-                ringtoneSound = Uri.parse(sharedPreferenceHelper.getUserFindMyPhoneAlarm());
-            }
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                    .build();
-
-            phoneAlertChannel.setSound(ringtoneSound, audioAttributes);
-
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(generalChannel);
             notificationManager.createNotificationChannel(alertChannel);
