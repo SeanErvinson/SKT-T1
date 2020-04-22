@@ -200,7 +200,6 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         super.onResume();
         if (getContext() != null)
             getContext().registerReceiver(mTagBluetoothBroadcastReceiver, createTagIntentFilter());
-
         if (isTagEdited) {
             mTagRecyclerAdapter.loadTags(databaseHelper.fetchTagData());
             mTagRecyclerAdapter.notifyItemChanged(tagEdited, null);
@@ -208,7 +207,7 @@ public class HomeFragment extends Fragment implements TagRecyclerAdapter.OnTagLi
         }
     }
 
-    public void setTagEdited(boolean isEdited, int index) {
+    private void setTagEdited(boolean isEdited, int index) {
         if (isEdited) {
             tagEdited = index;
             isTagEdited = true;
