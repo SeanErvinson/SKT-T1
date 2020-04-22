@@ -25,6 +25,7 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout llEditTag;
     private int alarmVolume = 1;
     private Tag tag;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
         alarmVolume = tag.getAlarm();
         switch (view.getId()) {
             case R.id.tv_tag_alarm_high:
-                alarmVolume = 2;
+                alarmVolume = 0;
                 Toast.makeText(context, "Alarm volume set to high", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_tag_alarm_medium:
@@ -65,7 +66,7 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(context, "Alarm volume set to medium", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_tag_alarm_low:
-                alarmVolume = 0;
+                alarmVolume = 2;
                 Toast.makeText(context, "Alarm volume set to low", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ll_tag_name:
@@ -76,6 +77,8 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
         tag.setAlarm(alarmVolume);
+        databaseHelper = new DatabaseHelper(this);
+        databaseHelper.tagUpdateSoundAlarm(tag.getId(), alarmVolume);
     }
 
     private void initializeActionBar() {
@@ -104,8 +107,6 @@ public class EditTagActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        databaseHelper.tagUpdateSoundAlarm(tag.getId(), alarmVolume);
         databaseHelper.close();
     }
 }
