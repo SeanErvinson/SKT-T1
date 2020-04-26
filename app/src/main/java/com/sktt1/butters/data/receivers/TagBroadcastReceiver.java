@@ -62,8 +62,6 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
             Tag tag = databaseHelper.getTagByMacAddress(bluetoothDevice.getAddress());
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_disconnected, tag.getName()));
             notificationActivity.sendDisconnectionNotification(tag.getName());
-        } else if (ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
-        } else if (ACTION_DATA_AVAILABLE.equals(action)) {
         } else if (ACTION_SIT_ALERTED.equals(action)) {
             String address = intent.getStringExtra(TAG_DATA);
             Tag tag = databaseHelper.getTagByMacAddress(address);
