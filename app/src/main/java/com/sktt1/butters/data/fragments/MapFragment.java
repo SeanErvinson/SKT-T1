@@ -166,12 +166,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    // TODO: Remove this after
-                    Log.d(TAG, "-----------------------------");
-                    Log.d(TAG, "Receiving longitude: " + lng);
-                    Log.d(TAG, "Receiving latitude: " + lat);
-                    Log.d(TAG, "Place: " + featuredName);
-                    Log.d(TAG, "-----------------------------");
                     location.setLatitude(lat);
                     location.setLongitude(lng);
                     location.setName(featuredName);
