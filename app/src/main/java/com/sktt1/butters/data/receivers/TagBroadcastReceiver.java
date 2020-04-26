@@ -68,7 +68,6 @@ public class TagBroadcastReceiver extends BroadcastReceiver {
             String address = intent.getStringExtra(TAG_DATA);
             Tag tag = databaseHelper.getTagByMacAddress(address);
             databaseHelper.activityCreateNotification(context.getString(R.string.activity_sit_alerted, tag.getName()));
-            playSound(context);
             notificationActivity.sendSitAlertedNotification(tag.getName());
             intent.getIntExtra(FMP_DATA, 0);
         } else if (ACTION_STOP_SOUND.equals(action)) {

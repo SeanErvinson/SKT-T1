@@ -53,10 +53,6 @@ public class NotificationActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        Intent broadcastIntent = new Intent(context, TagBroadcastReceiver.class);
-        broadcastIntent.setAction(TagBroadcastReceiver.ACTION_STOP_SOUND);
-        PendingIntent stopPendingIntent = PendingIntent.getActivity(context, 0, broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle("Find my phone alarm")
@@ -64,8 +60,7 @@ public class NotificationActivity {
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000})
                 .setAutoCancel(true)
-                .addAction(R.mipmap.ic_launcher, "STOP SOUND", stopPendingIntent)
-                .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setCategory(NotificationCompat.CATEGORY_SYSTEM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
