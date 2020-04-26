@@ -28,7 +28,7 @@ public class NotificationActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         Intent intentAction = new Intent(TagBroadcastReceiver.ACTION_STOP_SOUND);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context,6141,intentAction,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context,6141,intentAction,PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
@@ -36,12 +36,10 @@ public class NotificationActivity {
                 .setContentText(context.getString(R.string.activity_alerted, tagName))
                 .setContentIntent(pendingIntent)
                 .setVibrate(new long[]{250, 1000, 250, 1000, 250, 1000, 250, 1000})
-                .setAutoCancel(true)
                 .addAction(R.mipmap.ic_launcher, "STOP SOUND", stopPendingIntent)
                 .setOngoing(true)
                 .setCategory(NotificationCompat.CATEGORY_SYSTEM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
-
         if (notificationManager != null) {
             notificationManager.notify(1, builder.build());
         }
