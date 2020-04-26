@@ -29,7 +29,7 @@ public class NotificationActivity {
 
         Intent broadcastIntent = new Intent(context, TagBroadcastReceiver.class);
         broadcastIntent.setAction(TagBroadcastReceiver.ACTION_STOP_SOUND);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0, broadcastIntent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0, broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, App.ALERT_PHONE_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_logo)
